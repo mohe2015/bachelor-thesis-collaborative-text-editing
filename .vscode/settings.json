@@ -1,0 +1,25 @@
+{
+    "files.watcherExclude": {
+        "**/target": true
+    },
+    "latex-workshop.latex.recipe.default": "lastUsed",
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "latexmk (latexmkrc)",
+            "tools": [
+                "latexmk_rconly"
+            ]
+        },
+    ],
+    "latex-workshop.latexindent.args": [
+        "-l",
+        "-c",
+        "%DIR%/",
+        "%TMPFILE%",
+        "-y=defaultIndent: '%INDENT%'"
+    ],
+    "editor.wordWrap": "on",
+    "terminal.integrated.scrollback": 1000000,
+    "editor.formatOnSave": true,
+    "debug.inlineValues": "off",
+}
