@@ -1,0 +1,21 @@
+"Benchmark","Mode","Threads","Samples","Score","Score Error (99.9%)","Unit","Param: count","Param: factoryConstructor","Param: shouldMeasureMemory"
+"text_rdt.MyRealWorldBenchmarkLocal.local","thrpt",1,1,5.230422,NaN,"ops/s",50000,simpleavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local:memory","thrpt",1,1,13580336.000000,NaN,"#",50000,simpleavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local","thrpt",1,1,8.140500,NaN,"ops/s",50000,complexavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local:memory","thrpt",1,1,1391648.000000,NaN,"#",50000,complexavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local","thrpt",1,1,2.996312,NaN,"ops/s",100000,simpleavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local:memory","thrpt",1,1,26724376.000000,NaN,"#",100000,simpleavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local","thrpt",1,1,7.386583,NaN,"ops/s",100000,complexavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local:memory","thrpt",1,1,2481256.000000,NaN,"#",100000,complexavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local","thrpt",1,1,2.176076,NaN,"ops/s",150000,simpleavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local:memory","thrpt",1,1,38357392.000000,NaN,"#",150000,simpleavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local","thrpt",1,1,6.012037,NaN,"ops/s",150000,complexavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local:memory","thrpt",1,1,3349776.000000,NaN,"#",150000,complexavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local","thrpt",1,1,1.964880,NaN,"ops/s",200000,simpleavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local:memory","thrpt",1,1,48806776.000000,NaN,"#",200000,simpleavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local","thrpt",1,1,4.190119,NaN,"ops/s",200000,complexavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local:memory","thrpt",1,1,4315672.000000,NaN,"#",200000,complexavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local","thrpt",1,1,1.566753,NaN,"ops/s",259778,simpleavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local:memory","thrpt",1,1,60276360.000000,NaN,"#",259778,simpleavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local","thrpt",1,1,3.537418,NaN,"ops/s",259778,complexavl,true
+"text_rdt.MyRealWorldBenchmarkLocal.local:memory","thrpt",1,1,6219808.000000,NaN,"#",259778,complexavl,true

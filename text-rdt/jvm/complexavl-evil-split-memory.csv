@@ -1,0 +1,11 @@
+"Benchmark","Mode","Threads","Samples","Score","Score Error (99.9%)","Unit","Param: count","Param: shouldMeasureMemory"
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilSplitComplexAVL","thrpt",1,1,3.885046,NaN,"ops/s",50000,true
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilSplitComplexAVL:memory","thrpt",1,1,12277432.000000,NaN,"#",50000,true
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilSplitComplexAVL","thrpt",1,1,2.754536,NaN,"ops/s",100000,true
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilSplitComplexAVL:memory","thrpt",1,1,24552024.000000,NaN,"#",100000,true
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilSplitComplexAVL","thrpt",1,1,1.424963,NaN,"ops/s",150000,true
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilSplitComplexAVL:memory","thrpt",1,1,37506376.000000,NaN,"#",150000,true
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilSplitComplexAVL","thrpt",1,1,1.102012,NaN,"ops/s",200000,true
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilSplitComplexAVL:memory","thrpt",1,1,49647576.000000,NaN,"#",200000,true
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilSplitComplexAVL","thrpt",1,1,1.035401,NaN,"ops/s",259778,true
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilSplitComplexAVL:memory","thrpt",1,1,64030184.000000,NaN,"#",259778,true

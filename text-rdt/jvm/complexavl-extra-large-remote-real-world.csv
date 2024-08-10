@@ -1,0 +1,11 @@
+"Benchmark","Mode","Threads","Samples","Score","Score Error (99.9%)","Unit","Param: count","Param: factoryConstructor","Param: shouldMeasureMemory"
+"text_rdt.MyRealWorldBenchmarkLargeRemote.remote","thrpt",1,5,0.313609,0.026501,"ops/s",20,complexavl,false
+"text_rdt.MyRealWorldBenchmarkLargeRemote.remote:memory","thrpt",1,5,0.000000,NaN,"#",20,complexavl,false
+"text_rdt.MyRealWorldBenchmarkLargeRemote.remote","thrpt",1,5,0.137438,0.030012,"ops/s",40,complexavl,false
+"text_rdt.MyRealWorldBenchmarkLargeRemote.remote:memory","thrpt",1,5,0.000000,NaN,"#",40,complexavl,false
+"text_rdt.MyRealWorldBenchmarkLargeRemote.remote","thrpt",1,5,0.094699,0.018421,"ops/s",60,complexavl,false
+"text_rdt.MyRealWorldBenchmarkLargeRemote.remote:memory","thrpt",1,5,0.000000,NaN,"#",60,complexavl,false
+"text_rdt.MyRealWorldBenchmarkLargeRemote.remote","thrpt",1,5,0.072184,0.019196,"ops/s",80,complexavl,false
+"text_rdt.MyRealWorldBenchmarkLargeRemote.remote:memory","thrpt",1,5,0.000000,NaN,"#",80,complexavl,false
+"text_rdt.MyRealWorldBenchmarkLargeRemote.remote","thrpt",1,5,0.053256,0.007015,"ops/s",100,complexavl,false
+"text_rdt.MyRealWorldBenchmarkLargeRemote.remote:memory","thrpt",1,5,0.000000,NaN,"#",100,complexavl,false

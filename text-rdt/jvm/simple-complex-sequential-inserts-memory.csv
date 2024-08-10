@@ -1,0 +1,21 @@
+"Benchmark","Mode","Threads","Samples","Score","Score Error (99.9%)","Unit","Param: count","Param: factoryConstructor","Param: shouldMeasureMemory"
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts","thrpt",1,1,0.637495,NaN,"ops/s",4000,simple,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts:memory","thrpt",1,1,1467088.000000,NaN,"#",4000,simple,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts","thrpt",1,1,10.202841,NaN,"ops/s",4000,complex,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts:memory","thrpt",1,1,354192.000000,NaN,"#",4000,complex,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts","thrpt",1,1,0.176515,NaN,"ops/s",8000,simple,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts:memory","thrpt",1,1,2915032.000000,NaN,"#",8000,simple,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts","thrpt",1,1,11.366565,NaN,"ops/s",8000,complex,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts:memory","thrpt",1,1,706960.000000,NaN,"#",8000,complex,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts","thrpt",1,1,0.074256,NaN,"ops/s",12000,simple,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts:memory","thrpt",1,1,4355800.000000,NaN,"#",12000,simple,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts","thrpt",1,1,12.532135,NaN,"ops/s",12000,complex,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts:memory","thrpt",1,1,1092496.000000,NaN,"#",12000,complex,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts","thrpt",1,1,0.041532,NaN,"ops/s",16000,simple,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts:memory","thrpt",1,1,5829336.000000,NaN,"#",16000,simple,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts","thrpt",1,1,10.696229,NaN,"ops/s",16000,complex,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts:memory","thrpt",1,1,1418792.000000,NaN,"#",16000,complex,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts","thrpt",1,1,0.025889,NaN,"ops/s",20000,simple,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts:memory","thrpt",1,1,7302872.000000,NaN,"#",20000,simple,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts","thrpt",1,1,10.874224,NaN,"ops/s",20000,complex,true
+"text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts:memory","thrpt",1,1,1863816.000000,NaN,"#",20000,complex,true

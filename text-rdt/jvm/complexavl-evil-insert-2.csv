@@ -1,0 +1,11 @@
+"Benchmark","Mode","Threads","Samples","Score","Score Error (99.9%)","Unit","Param: count","Param: shouldMeasureMemory"
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilInsert2ComplexAVL","thrpt",1,5,3.130979,0.362907,"ops/s",50000,false
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilInsert2ComplexAVL:memory","thrpt",1,5,0.000000,NaN,"#",50000,false
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilInsert2ComplexAVL","thrpt",1,5,1.668914,0.237352,"ops/s",100000,false
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilInsert2ComplexAVL:memory","thrpt",1,5,0.000000,NaN,"#",100000,false
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilInsert2ComplexAVL","thrpt",1,5,1.092958,0.148648,"ops/s",150000,false
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilInsert2ComplexAVL:memory","thrpt",1,5,0.000000,NaN,"#",150000,false
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilInsert2ComplexAVL","thrpt",1,5,0.813309,0.110763,"ops/s",200000,false
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilInsert2ComplexAVL:memory","thrpt",1,5,0.000000,NaN,"#",200000,false
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilInsert2ComplexAVL","thrpt",1,5,0.617063,0.075054,"ops/s",259778,false
+"text_rdt.MyTerribleBenchmarkEvilInsert.evilInsert2ComplexAVL:memory","thrpt",1,5,0.000000,NaN,"#",259778,false
