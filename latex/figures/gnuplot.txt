@@ -1,0 +1,127 @@
+set terminal pdf
+set datafile separator ","
+set xlabel "character operations"
+set terminal pdfcairo font 'Liberation Sans,15'
+
+set ylabel "time (microseconds) / character operation"
+set key left top
+
+set xrange [0:20000]
+set yrange [0:2000]
+set border lc "dark-green"
+
+set output "text-rdt/jvm/figure-benchmark-results/simple-sequential-inserts.pdf"
+plot 'text-rdt/jvm/simple-complex-sequential-inserts.csv' every 4::1 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "simple" pointtype 1 linetype 1
+
+set output "text-rdt/jvm/figure-benchmark-results/simple-complex-sequential-inserts.pdf"
+plot 'text-rdt/jvm/simple-complex-sequential-inserts.csv' every 4::1 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "simple" pointtype 1 linetype 1, \
+     'text-rdt/jvm/simple-complex-sequential-inserts.csv' every 4::3 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "batching" pointtype 2 linetype 2
+
+set output "text-rdt/jvm/figure-benchmark-results/simple-complex-real-world.pdf"
+plot 'text-rdt/jvm/simple-complex-simpleavl-real-world.csv' every 6::1 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "simple" pointtype 1 linetype 1, \
+     'text-rdt/jvm/simple-complex-simpleavl-real-world.csv' every 6::3 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "batching" pointtype 2 linetype 2
+
+set output "text-rdt/jvm/figure-benchmark-results/simple-complex-simpleavl-real-world.pdf"
+plot 'text-rdt/jvm/simple-complex-simpleavl-real-world.csv' every 6::1 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "simple" pointtype 1 linetype 1, \
+     'text-rdt/jvm/simple-complex-simpleavl-real-world.csv' every 6::3 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "batching" pointtype 2 linetype 2, \
+     'text-rdt/jvm/simple-complex-simpleavl-real-world.csv' every 6::5 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "simple AVL" pointtype 3 linetype 3
+
+
+set xrange [0:259778]
+set yrange [0:14]
+set border lc "medium-blue"
+
+set output "text-rdt/jvm/figure-benchmark-results/simpleavl-real-world.pdf"
+plot 'text-rdt/jvm/simpleavl-complexavl-large-real-world.csv' every 4::1 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "simple AVL" pointtype 3 linetype 3
+
+set output "text-rdt/jvm/figure-benchmark-results/simpleavl-complexavl-real-world.pdf"
+plot 'text-rdt/jvm/simpleavl-complexavl-large-real-world.csv' every 4::1 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "simple AVL" pointtype 3 linetype 3, \
+     'text-rdt/jvm/simpleavl-complexavl-large-real-world.csv' every 4::3 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+set output "text-rdt/jvm/figure-benchmark-results/complexavl-evil-children.pdf"
+plot 'text-rdt/jvm/complexavl-evil-children.csv' every 2::1 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+set output "text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-1.pdf"
+plot 'text-rdt/jvm/complexavl-evil-insert-1.csv' every 2::1 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+set output "text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-2.pdf"
+plot 'text-rdt/jvm/complexavl-evil-insert-2.csv' every 2::1 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+set output "text-rdt/jvm/figure-benchmark-results/complexavl-evil-split-many-right-children.pdf"
+plot 'text-rdt/jvm/complexavl-evil-split-many-right-children.csv' every 2::1 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+set output "text-rdt/jvm/figure-benchmark-results/complexavl-evil-split.pdf"
+plot 'text-rdt/jvm/complexavl-evil-split.csv' every 2::1 using 8:(1000000/($5*$8)):xtic(8) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+
+set xrange [0:100*259778]
+set yrange [0:1]
+set border lc "black"
+
+set output "text-rdt/jvm/figure-benchmark-results/complexavl-extra-large-local-real-world.pdf"
+plot 'text-rdt/jvm/complexavl-extra-large-local-real-world.csv' every 2::1 using ($8*259778):(1000000/($5*$8*259778)):xtic($8*259778) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+set output "text-rdt/jvm/figure-benchmark-results/complexavl-extra-large-remote-real-world.pdf"
+plot 'text-rdt/jvm/complexavl-extra-large-remote-real-world.csv' every 2::1 using ($8*259778):(1000000/($5*$8*259778)):xtic($8*259778) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+
+set ylabel "memory (bytes) / character operation"
+set key left top
+set yrange [0:1600]
+
+
+set xrange [0:20000]
+set border lc "dark-green"
+
+set output "text-rdt/jvm/figure-benchmark-results/simple-sequential-inserts-memory.pdf"
+plot 'text-rdt/jvm/simple-complex-sequential-inserts-memory.csv' every 4::2 using 8:($5/$8):xtic(8) with linespoints title "simple" pointtype 1 linetype 1
+
+set output "text-rdt/jvm/figure-benchmark-results/simple-complex-sequential-inserts-memory.pdf"
+plot 'text-rdt/jvm/simple-complex-sequential-inserts-memory.csv' every 4::2 using 8:($5/$8):xtic(8) with linespoints title "simple" pointtype 1 linetype 1, \
+     'text-rdt/jvm/simple-complex-sequential-inserts-memory.csv' every 4::4 using 8:($5/$8):xtic(8) with linespoints title "batching" pointtype 2 linetype 2
+
+set output "text-rdt/jvm/figure-benchmark-results/simple-complex-real-world-memory.pdf"
+plot 'text-rdt/jvm/simple-complex-simpleavl-real-world-memory.csv' every 6::2 using 8:($5/$8):xtic(8) with linespoints title "simple" pointtype 1 linetype 1, \
+     'text-rdt/jvm/simple-complex-simpleavl-real-world-memory.csv' every 6::4 using 8:($5/$8):xtic(8) with linespoints title "batching" pointtype 2 linetype 2
+
+set output "text-rdt/jvm/figure-benchmark-results/simple-complex-simpleavl-real-world-memory.pdf"
+plot 'text-rdt/jvm/simple-complex-simpleavl-real-world-memory.csv' every 6::2 using 8:($5/$8):xtic(8) with linespoints title "simple" pointtype 1 linetype 1, \
+     'text-rdt/jvm/simple-complex-simpleavl-real-world-memory.csv' every 6::4 using 8:($5/$8):xtic(8) with linespoints title "batching" pointtype 2 linetype 2, \
+     'text-rdt/jvm/simple-complex-simpleavl-real-world-memory.csv' every 6::6 using 8:($5/$8):xtic(8) with linespoints title "simple AVL" pointtype 3 linetype 3
+
+
+set xrange [0:259778]
+set border lc "medium-blue"
+
+set output "text-rdt/jvm/figure-benchmark-results/simpleavl-real-world-memory.pdf"
+plot 'text-rdt/jvm/simpleavl-complexavl-large-real-world-memory.csv' every 4::2 using 8:($5/$8):xtic(8) with linespoints title "simple AVL" pointtype 3 linetype 3
+
+set output "text-rdt/jvm/figure-benchmark-results/simpleavl-complexavl-real-world-memory.pdf"
+plot 'text-rdt/jvm/simpleavl-complexavl-large-real-world-memory.csv' every 4::2 using 8:($5/$8):xtic(8) with linespoints title "simple AVL" pointtype 3 linetype 3, \
+     'text-rdt/jvm/simpleavl-complexavl-large-real-world-memory.csv' every 4::4 using 8:($5/$8):xtic(8) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+set output "text-rdt/jvm/figure-benchmark-results/complexavl-evil-children-memory.pdf"
+plot 'text-rdt/jvm/complexavl-evil-children-memory.csv' every 2::2 using 8:($5/$8):xtic(8) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+set output "text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-1-memory.pdf"
+plot 'text-rdt/jvm/complexavl-evil-insert-1-memory.csv' every 2::2 using 8:($5/$8):xtic(8) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+set output "text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-2-memory.pdf"
+plot 'text-rdt/jvm/complexavl-evil-insert-2-memory.csv' every 2::2 using 8:($5/$8):xtic(8) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+set output "text-rdt/jvm/figure-benchmark-results/complexavl-evil-split-many-right-children-memory.pdf"
+plot 'text-rdt/jvm/complexavl-evil-split-many-right-children-memory.csv' every 2::2 using 8:($5/$8):xtic(8) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+set output "text-rdt/jvm/figure-benchmark-results/complexavl-evil-split-memory.pdf"
+plot 'text-rdt/jvm/complexavl-evil-split-memory.csv' every 2::2 using 8:($5/$8):xtic(8) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+
+set xrange [0:100*259778]
+set yrange [0:30]
+set border lc "black"
+
+set output "text-rdt/jvm/figure-benchmark-results/complexavl-extra-large-local-real-world-memory.pdf"
+plot 'text-rdt/jvm/complexavl-extra-large-local-real-world-memory.csv' every 2::2 using ($8*259778):($5/($8*259778)):xtic($8*259778) with linespoints title "batching AVL" pointtype 4 linetype 4
+
+set output "text-rdt/jvm/figure-benchmark-results/complexavl-extra-large-remote-real-world-memory.pdf"
+plot 'text-rdt/jvm/complexavl-extra-large-remote-real-world-memory.csv' every 2::2 using ($8*259778):($5/($8*259778)):xtic($8*259778) with linespoints title "batching AVL" pointtype 4 linetype 4

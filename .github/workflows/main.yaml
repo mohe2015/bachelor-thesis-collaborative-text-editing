@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  push:
+    branches: [ mainh ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: DeterminateSystems/flake-checker-action@main
+      - run: nix build .#text-rdt-frontend .#latex-info .#text-rdt-sbt-tests-all

@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "james-yu.latex-workshop",
-        "scalameta.metals"
+        "scalameta.metals",
+        "myriad-dreamin.tinymist"
     ]
 }
