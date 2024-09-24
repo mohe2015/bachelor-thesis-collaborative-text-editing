@@ -1,0 +1,368 @@
+\ExplSyntaxOn
+\sys_gset_rand_seed:n {42}
+\ExplSyntaxOff
+\DocumentMetadata{pdfstandard=A-3a,pdfstandard=X-5,pdfstandard=UA-1,lang=en-US,pdfversion=1.7,testphase={phase-I,firstaid,title,graphic}}
+
+\PassOptionsToPackage{scaled=0.85}{roboto-mono}
+\documentclass[
+	english,
+	ruledheaders=section,
+	class=report,
+	thesis={type=bachelor},
+	accentcolor=9c,
+	custommargins=true,
+	marginpar=false,
+	parskip=half-,
+	fontsize=11pt,
+    listof=totoc
+]{tudapub}
+
+\usepackage[export]{adjustbox}
+
+\usepackage[german, main=english]{babel}
+
+\usepackage{microtype}
+
+\usepackage{unicode-math}
+
+\newcommand{\todo}[2][]{{\color{red} TODO: {#2}}}
+
+\definecolor{mygreen}{RGB}{38,162,105}
+
+\usepackage[acronym]{glossaries-extra}
+
+\setabbreviationstyle[acronym]{long-short}
+
+\renewcommand{\glsxtrtitleopts}{}
+
+\newignoredglossary{ignored}
+
+\makeglossaries
+
+\newglossaryentry{simple algorithm}
+{
+    type={ignored},
+    name=simple algorithm,
+    description={Our algorithm without batching and without an AVL tree}
+}
+
+\newglossaryentry{simple ID}
+{
+    type={ignored},
+    name=simple ID,
+    description={The ID for our simple algorithm}  
+}
+
+\newglossaryentry{batching ID}
+{
+    type={ignored},
+    name=batching ID,
+    description={The ID for our batching algorithm}
+}
+
+\newglossaryentry{batching algorithm}
+{
+    type={ignored},
+    name=batching algorithm,
+    description={Our algorithm with batching but without an AVL tree}
+}
+
+\newglossaryentry{simple AVL algorithm}
+{
+    type={ignored},
+    name=simple AVL algorithm,
+    description={Our algorithm without batching but with an AVL tree}
+}
+
+\newglossaryentry{batching AVL algorithm}
+{
+    type={ignored},
+    name=batching AVL algorithm,
+    description={Our algorithm with batching and with an AVL tree}
+}
+
+\newacronym{crdt}{CRDT}{conflict-free replicated data type}
+\newacronym{ot}{OT}{operational transformation}
+\newacronym{oo}{OO}{Object-oriented}
+\newacronym{fp}{FP}{Functional programming}
+\newacronym{p2p}{P2P}{peer-to-peer}
+\newacronym{dtn}{DTN}{delay tolerant network}
+\newacronym{rdt}{RDT}{replicated data type}
+\newacronym{woot}{WOOT}{WithOut Operational Transforms}
+\newacronym{rga}{RGA}{Replicated Growable Array}
+\newacronym{yata}{YATA}{Yet Another Transformation Approach}
+\newacronym{manet}{MANET}{mobile ad hoc network}
+
+\usepackage{fancyvrb}
+\fvset{vspace=0pt}
+
+\usepackage[newfloat]{minted}
+\setminted{linenos,frame=lines}
+\usepackage{caption}
+\captionsetup[listing]{skip=0pt}
+
+\usepackage[autostyle]{csquotes}
+
+\usepackage{biblatex}
+
+\usepackage{cleveref}
+
+\usepackage{subcaption}
+
+\pdfvariable omitcidset=1
+
+\addbibresource{literature.bib}
+
+\makeatletter
+\let\ORG@Gscale@box\Gscale@box
+\long\def\Gscale@box#1{%
+  \xdef\thelastscalefactor{#1}%
+  \ORG@Gscale@box{#1}}
+\makeatother
+
+\ExplSyntaxOn
+\makeatletter
+\renewcommand*{\@author}{
+    \begingroup
+        \seq_use:Nnnn \g_ptxcd_author_seq {~\authorandname{}~} {,~} {~\&~}
+    \endgroup
+}
+\makeatother
+\ExplSyntaxOff
+
+\begin{document}
+
+\title{Optimizing Collaborative Plain~Text Editing Algorithms}
+\subtitle{for Decentralized Non-Realtime Text Editing}
+\author{Moritz Hedtke}
+\reviewer{Prof. Dr.-Ing. Mira Mezini \and Dr.-Ing. Ragnar Mogk}
+
+\department{inf}
+\institute{TU Darmstadt}
+\group{Software Technology Group}
+
+\submissiondate{\today}
+\examdate{\today}
+
+\tuprints{urn=278347,printid=27834,year=2024}
+
+\maketitle
+\affidavit
+\include{chapters/abstract}
+\tableofcontents
+
+\newlength{\imagea}
+\newlength{\imageb}
+
+\newcommand{\twoMinipageFigures}[4]{
+    \settoheight{\imagea}{\includegraphics{#1}}
+    \settoheight{\imageb}{\includegraphics{#3}}
+
+    \ifdim\imagea>\imageb
+        \begin{figure}
+            \begin{minipage}[t]{.4875\textwidth}
+                \sbox0{\includegraphics[max width=\textwidth,valign=t]{#1}}
+                \includegraphics[scale=\thelastscalefactor,valign=t]{#1}
+                #2
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{.4875\textwidth}
+                \includegraphics[scale=\thelastscalefactor,valign=t]{#3}
+                \vphantom{\includegraphics[scale=\thelastscalefactor,valign=t]{#1}}
+                #4
+            \end{minipage}
+        \end{figure}
+    \else
+        \begin{figure}
+            \begin{minipage}[t]{.4875\textwidth}
+                \sbox0{\includegraphics[max width=\textwidth,valign=t]{#3}}
+                \includegraphics[scale=\thelastscalefactor,valign=t]{#1}
+                \vphantom{\includegraphics[scale=\thelastscalefactor,valign=t]{#3}}
+                #2
+            \end{minipage}
+            \hfill
+            \begin{minipage}[t]{.4875\textwidth}
+                \includegraphics[scale=\thelastscalefactor,valign=t]{#3}
+                #4
+            \end{minipage}
+        \end{figure}
+    \fi
+}
+
+\newcommand{\twoSubfigures}[4]{
+    \settoheight{\imagea}{\includegraphics{#1}}
+    \settoheight{\imageb}{\includegraphics{#3}}
+
+    \ifdim\imagea>\imageb
+        \begin{subfigure}{.5\textwidth}
+            \sbox0{\includegraphics[max width=\textwidth,valign=t]{#1}}
+            \includegraphics[scale=\thelastscalefactor,valign=t]{#1}
+            #2
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+            \includegraphics[scale=\thelastscalefactor,valign=t]{#3}
+            \vphantom{\includegraphics[scale=\thelastscalefactor,valign=t]{#1}}
+            #4
+        \end{subfigure}%
+    \else
+        \begin{subfigure}{.5\textwidth}
+            \sbox0{\includegraphics[max width=\textwidth,valign=t]{#3}}
+            \includegraphics[scale=\thelastscalefactor,valign=t]{#1}
+            \vphantom{\includegraphics[scale=\thelastscalefactor,valign=t]{#3}}
+            #2
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+            \includegraphics[scale=\thelastscalefactor,valign=t]{#3}
+            #4
+        \end{subfigure}%
+    \fi
+}
+
+\newcommand{\benchmarkResults}[2]{
+    \begin{figure}
+        \begin{subfigure}{.5\textwidth}
+            \includegraphics[width=\textwidth]{../text-rdt/jvm/figure-benchmark-results/#1.pdf}
+            \caption{time}
+            \label{fig:#1-time}
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+            \includegraphics[width=\textwidth]{../text-rdt/jvm/figure-benchmark-results/#1-memory.pdf}
+            \caption{memory}
+            \label{fig:#1-memory}
+        \end{subfigure}
+        \caption{#2}
+        \label{fig:#1}
+    \end{figure}
+}
+
+\newcommand{\evilEdgeCase}[2]{
+    \begin{figure}
+        \twoSubfigures{../text-rdt/target/pdfs/#1-before.pdf}{\caption{before}
+            \label{fig:edge-case-#1-before}}{../text-rdt/target/pdfs/#1-after.pdf}{\caption{after}
+            \label{fig:edge-case-#1-after}}
+        \caption{Example for #2}
+        \label{fig:edge-case-#1-example}
+    \end{figure}
+}
+
+\IMRADlabel{introduction}
+\include{chapters/introduction}
+\include{chapters/challenges}
+\include{chapters/background}
+\IMRADlabel{methods}
+\include{chapters/implementation}
+\include{chapters/optimization}
+\IMRADlabel{results}
+\include{chapters/evaluation}
+\IMRADlabel{discussion}
+\include{chapters/future-work}
+\include{chapters/conclusion}
+\chapter*{Acknowledgments}
+I would like to thank everyone who reviewed drafts of this thesis. I would also like to thank my human and non-human rubber ducks for their help in debugging my code.
+
+\printglossary[type=\acronymtype]
+
+\printbibliography
+
+\appendix
+
+\RedeclareSectionCommand[beforeskip=0pt]{chapter}
+\chapter{Appendix}
+\label{appendix:appendix}
+\section{CPU Profile for Simple Algorithm with Sequential Insertions}
+\label{appendix:simple-sequential-inserts-cpu}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../text-rdt/target/pdfs/simple-sequential-inserts-cpu.pdf}
+\section{CPU Profile for Batching Algorithm with Sequential Insertions}
+\label{appendix:complex-sequential-inserts-cpu}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../text-rdt/target/pdfs/complex-sequential-inserts-cpu.pdf}
+\section{Allocation Profile for Batching Algorithm with Sequential Insertions}
+\label{appendix:complex-sequential-inserts-alloc}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../text-rdt/target/pdfs/complex-sequential-inserts-alloc.pdf}
+\section{CPU Profile for Batching Algorithm with Real World Dataset}
+\label{appendix:complex-real-world-cpu}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../text-rdt/target/pdfs/complex-real-world-cpu.pdf}
+\section{CPU Profile for Simple AVL Algorithm with Real World Dataset}
+\label{appendix:simpleavl-real-world-cpu}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../text-rdt/target/pdfs/simpleavl-real-world-cpu.pdf}
+\section{Allocation Profile for Simple AVL Algorithm with Real World Dataset}
+\label{appendix:simpleavl-real-world-alloc}
+\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../text-rdt/target/pdfs/simpleavl-real-world-alloc.pdf}
+
+\clearpage
+
+\section{Code Showing FugueMax Is Interleaving}
+\label{appendix:code-fuguemax-interleaving}
+\begin{minted}{typescript}
+let rng = seedrandom("42");
+let docA = new CRuntime({
+  debugReplicaID: ReplicaIDs.pseudoRandom(rng),
+});
+let ctextA = docA.registerCollab(
+  "text",
+  (init) => new FugueMaxSimple(init)
+);
+let docB = new CRuntime({
+  debugReplicaID: ReplicaIDs.pseudoRandom(rng),
+});
+let ctextB = docB.registerCollab(
+  "text",
+  (init) => new FugueMaxSimple(init)
+);
+let messageA: Uint8Array = null!
+docA.on("Send", (e) => {
+  messageA = e.message
+})
+let messageB: Uint8Array = null!
+docB.on("Send", (e) => {
+  messageB = e.message
+})
+docA.transact(() => {
+  ctextA.insert(0, 'S')
+  ctextA.insert(1, 'h')
+  ctextA.insert(2, 'o')
+  ctextA.insert(3, 'p')
+  ctextA.insert(4, 'p')
+  ctextA.insert(5, 'i')
+  ctextA.insert(6, 'n')
+  ctextA.insert(7, 'g')
+})
+docB.receive(messageA)
+docB.transact(() => {
+  ctextB.insert(8, '*')
+  ctextB.insert(9, 'b')
+  ctextB.insert(10, 'r')
+  ctextB.insert(11, 'e')
+  ctextB.insert(12, 'a')
+  ctextB.insert(13, 'd')
+  ctextB.delete(7)
+  ctextB.insert(7, 'g')
+  ctextB.insert(8, 'B')
+  ctextB.insert(9, 'a')
+  ctextB.insert(10, 'k')
+  ctextB.insert(11, 'e')
+  ctextB.insert(12, 'r')
+  ctextB.insert(13, 'y')
+  ctextB.insert(14, ':')
+})
+docA.transact(() => {
+  ctextA.insert(8, '*')
+  ctextA.insert(9, 'a')
+  ctextA.insert(10, 'p')
+  ctextA.insert(11, 'p')
+  ctextA.insert(12, 'l')
+  ctextA.insert(13, 'e')
+  ctextA.insert(14, 's')
+  ctextA.insert(8, 'F')
+  ctextA.insert(9, 'r')
+  ctextA.insert(10, 'u')
+  ctextA.insert(11, 'i')
+  ctextA.insert(12, 't')
+  ctextA.insert(13, ':')
+})
+docB.receive(messageA)
+docA.receive(messageB)
+console.log([...ctextA.values()].join(""))
+console.log([...ctextB.values()].join(""))
+\end{minted}
+
+\end{document}

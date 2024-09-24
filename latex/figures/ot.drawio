@@ -1,0 +1,58 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0" version="24.7.6">
+  <diagram name="Page-1" id="2YBvvXClWsGukQMizWep">
+    <mxGraphModel dx="1838" dy="533" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="aM9ryv3xv72pqoxQDRHE-5" value="&lt;div&gt;Bob&lt;/div&gt;" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};points=[[0.5,0.5,0,0,0],[0.5,0.8,0,0,0]];fillColor=#dae8fc;strokeColor=#6c8ebf;" parent="1" vertex="1">
+          <mxGeometry x="240" y="40" width="100" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="-l6yrs5uClqqt1_GIO8O-1" value="Alice" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=0;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;edgeStyle&quot;:&quot;elbowEdgeStyle&quot;,&quot;elbow&quot;:&quot;vertical&quot;,&quot;curved&quot;:0,&quot;rounded&quot;:0};points=[[0.5,0.5,0,0,0],[0.5,0.8,0,0,0]];fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="40" y="40" width="100" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="YyohquPobj0vO8kDmNYr-1" value="&lt;font color=&quot;#ff0000&quot;&gt;x&lt;/font&gt;abc" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="150" width="50" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="YyohquPobj0vO8kDmNYr-2" value="ab" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="300" y="150" width="50" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="YyohquPobj0vO8kDmNYr-3" value="" style="endArrow=classic;html=1;rounded=0;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0.8;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="-l6yrs5uClqqt1_GIO8O-1" target="aM9ryv3xv72pqoxQDRHE-5" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="240" as="sourcePoint" />
+            <mxPoint x="260" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="YyohquPobj0vO8kDmNYr-5" value="&lt;font color=&quot;#ff0000&quot;&gt;O1 = Ins(0, &quot;x&quot;)&lt;/font&gt;" style="edgeLabel;resizable=0;html=1;;align=right;verticalAlign=bottom;" parent="YyohquPobj0vO8kDmNYr-3" connectable="0" vertex="1">
+          <mxGeometry x="-1" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="YyohquPobj0vO8kDmNYr-6" value="O1&#39; = T(&lt;font color=&quot;#ff0000&quot;&gt;O1&lt;/font&gt;, &lt;font color=&quot;#0000ff&quot;&gt;O2&lt;/font&gt;) = Ins(0, &quot;x&quot;)" style="edgeLabel;resizable=0;html=1;;align=left;verticalAlign=bottom;rotation=0;" parent="YyohquPobj0vO8kDmNYr-3" connectable="0" vertex="1">
+          <mxGeometry x="1" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="YyohquPobj0vO8kDmNYr-7" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0.8;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.5;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="aM9ryv3xv72pqoxQDRHE-5" target="-l6yrs5uClqqt1_GIO8O-1" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="100" y="137" as="sourcePoint" />
+            <mxPoint x="300" y="332" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="YyohquPobj0vO8kDmNYr-8" value="&lt;font color=&quot;#0000ff&quot;&gt;O2 = Del(2)&lt;/font&gt;" style="edgeLabel;resizable=0;html=1;;align=left;verticalAlign=bottom;" parent="YyohquPobj0vO8kDmNYr-7" connectable="0" vertex="1">
+          <mxGeometry x="-1" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="YyohquPobj0vO8kDmNYr-9" value="O2&#39; = T(&lt;font color=&quot;#0000ff&quot;&gt;O2&lt;/font&gt;, &lt;font color=&quot;#ff0000&quot;&gt;O1&lt;/font&gt;) = Del(3)" style="edgeLabel;resizable=0;html=1;;align=right;verticalAlign=bottom;" parent="YyohquPobj0vO8kDmNYr-7" connectable="0" vertex="1">
+          <mxGeometry x="1" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="YyohquPobj0vO8kDmNYr-10" value="abc" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="90" width="50" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="YyohquPobj0vO8kDmNYr-11" value="abc" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="300" y="90" width="50" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="YyohquPobj0vO8kDmNYr-12" value="&lt;font color=&quot;#ff0000&quot;&gt;x&lt;/font&gt;ab" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="30" y="210" width="50" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="YyohquPobj0vO8kDmNYr-13" value="&lt;font color=&quot;#ff0000&quot;&gt;x&lt;/font&gt;ab" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="300" y="210" width="50" height="20" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

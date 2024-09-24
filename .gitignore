@@ -1,3 +1,6 @@
+output*.json
+presentation/main.pdf
+presentation/tuda-beamer-2023-theme.pdf
 thesis.pdf
 test.json
 log.txt

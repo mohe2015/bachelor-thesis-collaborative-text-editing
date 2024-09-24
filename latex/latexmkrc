@@ -1,0 +1,15 @@
+$ENV{'TZ'}='Europe/Berlin';
+$pdf_mode = 4; # lualatex
+set_tex_cmds( '%C-dev --file-line-error --shell-escape -interaction=nonstopmode -halt-on-error %O %S' );
+
+add_cus_dep( 'acn', 'acr', 0, 'makeglossaries' );
+add_cus_dep( 'glo', 'gls', 0, 'makeglossaries' );
+$clean_ext = "acr acn alg glo gls glg deriv equ glo gls gsprogs hd listing lol" .
+" _minted-%R/* _minted-%R nav snm synctex.gz tcbtemp vpprogs";
+
+sub makeglossaries {
+    my ($base_name, $path) = fileparse( $_[0] );
+    my @args = ( "-q", "-d", $path, $base_name );
+    if ($silent) { unshift @args, "-q"; }
+    return system "makeglossaries", "-d", $path, $base_name; 
+}
