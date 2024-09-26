@@ -11,6 +11,9 @@ import scala.concurrent.duration.Duration
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import upickle.default._
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.bidi.browsingcontext.BrowsingContext
+import org.openqa.selenium.print.PrintOptions
 
 class ThesisTestSuite extends FunSuite {
 
@@ -23,12 +26,19 @@ class ThesisTestSuite extends FunSuite {
       data: MyD3TreeNode,
       filename: String
   ): Unit = {
-    val page = webDriverFixture.getOrCreateWebDriver()
+    val page: WebDriver = webDriverFixture.getOrCreateWebDriver()
     try {
-      val _ = page.navigate(
+      val _ = page.get(
         s"http://localhost:5173/?tree=${URLEncoder.encode(write(data), StandardCharsets.UTF_8)}"
       )
-      val _ = page.pdf(
+      val browsingContext = new BrowsingContext(page, page.getWindowHandle());
+
+      page.get("https://www.selenium.dev/selenium/web/formPage.html");
+      val printOptions = new PrintOptions();
+
+      val printPage = browsingContext.print(printOptions);
+
+     /* val _ = page.pdf(
         new Page.PdfOptions()
           .setPreferCSSPageSize(true)
           .nn
@@ -37,7 +47,7 @@ class ThesisTestSuite extends FunSuite {
           .setOutline(true)
           .nn
           .setPath(Paths.get(s"target/pdfs/$filename.pdf"))
-      )
+      )*/
     } finally {
       webDriverFixture.giveBack(page, UUID.randomUUID().nn)
     }
@@ -604,7 +614,7 @@ class ThesisTestSuite extends FunSuite {
     val driver = webDriverFixture.getOrCreateWebDriver()
 
     try {
-      driver.navigate(
+      driver.get(
         Paths
           .get(
             "jvm/figure-benchmark-results/text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts-Throughput-count-20000-factoryConstructor-simple-shouldMeasureMemory-false/cpu.html"
