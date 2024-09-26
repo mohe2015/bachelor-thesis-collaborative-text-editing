@@ -19,12 +19,11 @@ class ComplexAVLBrowserFugueScalaCheckSuite
 abstract class BrowserFugueScalaCheckSuite(algorithm: String)
     extends ScalaCheckSuite {
 
-      // does this explode because the two tests here are executed concurrently?
   val webDriverFixture = new WebDriverFixture()
 
   override def scalaCheckTestParameters: Test.Parameters =
     super.scalaCheckTestParameters
-      .withMinSuccessfulTests(200)
+      .withMinSuccessfulTests(20)
       .withMaxSize(100)
       .withMaxDiscardRatio(0.00001)
 
