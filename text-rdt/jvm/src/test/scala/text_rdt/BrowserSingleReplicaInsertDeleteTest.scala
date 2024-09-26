@@ -6,6 +6,7 @@ import text_rdt.helper.WebDriverFixture
 import java.util.UUID
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.By
+import org.openqa.selenium.JavascriptExecutor
 
 case class SutSingleType(
     driver: WebDriver,
@@ -25,13 +26,13 @@ case class BrowserSingleReplicaInsertDeleteTest(
 
   override def newSut(state: State): Sut = {
     assert(state.isEmpty)
-    val driver = webDriverFixture.getOrCreateWebDriver()
+    val driver: WebDriver = webDriverFixture.getOrCreateWebDriver()
     val traceUuid = UUID.randomUUID().nn
     try {
       driver.get(s"http://localhost:5173/?$algorithm")
-      val createEditor = driver.locator("#create-editor").nn
+      val createEditor = driver.findElement(By.cssSelector("#create-editor")).nn
       createEditor.click()
-      val editor = driver.locator("#editor0 div").nn
+      val editor = driver.findElement(By.cssSelector("#editor0 div")).nn
       SutSingleType(driver, editor, traceUuid)
     } catch
       case e => {
@@ -81,7 +82,8 @@ case class BrowserSingleReplicaInsertDeleteTest(
 
     override def run(sut: Sut): Result = {
       val oldText =
-        sut.element.textContent().nn
+        sut.driver.findElement(sut.element).getText().nn
+      sut.driver.asInstanceOf[JavascriptExecutor].executeScript("hi", sut.driver.findElement(sut.element))
       sut.element
         .fill(StringBuilder(oldText).insert(index, character).toString)
       (sut.element.textContent().nn, sut.traceUuid)
