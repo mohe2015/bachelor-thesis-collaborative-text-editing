@@ -32,8 +32,7 @@ case class BrowserSingleReplicaInsertDeleteTest(
       driver.get(s"http://localhost:5173/?$algorithm")
       val createEditor = driver.findElement(By.cssSelector("#create-editor")).nn
       createEditor.click()
-      val editor = driver.findElement(By.cssSelector("#editor0 div")).nn
-      SutSingleType(driver, editor, traceUuid)
+      SutSingleType(driver, By.cssSelector("#editor0 div"), traceUuid)
     } catch
       case e => {
         webDriverFixture.giveBack(driver, traceUuid); throw e
@@ -83,7 +82,7 @@ case class BrowserSingleReplicaInsertDeleteTest(
     override def run(sut: Sut): Result = {
       val oldText =
         sut.driver.findElement(sut.element).getText().nn
-      sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0] = `${StringBuilder(oldText).insert(index, character).toString}`", sut.driver.findElement(sut.element))
+      sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = `${StringBuilder(oldText).insert(index, character).toString}`", sut.driver.findElement(sut.element))
       (sut.driver.findElement(sut.element).getText().nn, sut.traceUuid)
     }
 
@@ -99,16 +98,14 @@ case class BrowserSingleReplicaInsertDeleteTest(
   case class Delete(index: Int) extends BaseCommand {
 
     override def run(sut: Sut): Result = {
-      val oldText =
-        sut.element.textContent().nn
+      val oldText = sut.driver.findElement(sut.element).getText().nn
       val toFill = StringBuilder(oldText).deleteCharAt(index).toString
       if (toFill.isEmpty()) {
-        sut.element.fill("\n")
+        sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = ``", sut.driver.findElement(sut.element))
       } else {
-        sut.element
-          .fill(toFill)
+        sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = `${toFill}`", sut.driver.findElement(sut.element))
       }
-      (sut.element.textContent().nn, sut.traceUuid)
+      (sut.driver.findElement(sut.element).getText().nn, sut.traceUuid)
     }
 
     override def preCondition(state: State): Boolean = {

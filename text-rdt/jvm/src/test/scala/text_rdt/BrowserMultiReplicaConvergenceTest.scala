@@ -9,6 +9,7 @@ import scala.collection.mutable.ListBuffer
 import java.util.UUID
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.By
+import org.openqa.selenium.JavascriptExecutor
 
 case class SutMultiType(
     driver: WebDriver,
@@ -141,12 +142,11 @@ case class BrowserMultiReplicaConvergenceTest(
     override def preCondition(state: State): Boolean = true
 
     override def run(sut: Sut): Result = {
-      val createEditor = sut._1.locateNode(Locator.css("#create-editor")).nn
-      new Actions(sut._1).click(createEditor)
-      val editor =
-        sut._1.locator(s"#editor${sut._2.length} div").nn
+      val createEditor = sut.driver.findElement(By.cssSelector("#create-editor")).nn
+      createEditor.click()
+      val editor = By.cssSelector(s"#editor${sut._2.length} div").nn
       val _ = sut._2.append(editor)
-      (sut._2.map(_.textContent().nn).toList, sut.traceUuid)
+      (sut._2.map(sut.driver.findElement(_).getText().nn).toList, sut.traceUuid)
     }
 
     override def nextState(state: State): State = {
@@ -163,7 +163,7 @@ case class BrowserMultiReplicaConvergenceTest(
 
     override def run(sut: Sut): Result = {
       val _ = sut._2.remove(replicaIndex)
-      (sut._2.map(_.textContent().nn).toList, sut.traceUuid)
+      (sut._2.map(sut.driver.findElement(_).getText().nn).toList, sut.traceUuid)
     }
 
     override def nextState(state: State): State = {
@@ -179,14 +179,12 @@ case class BrowserMultiReplicaConvergenceTest(
       replicaIndex1 < state.size && replicaIndex2 < state.size && replicaIndex1 != replicaIndex2
 
     override def run(sut: Sut): Result = {
-      val syncButton =
-        sut._1
-          .locator(
+      val syncButton = By.cssSelector(
             s"#sync-editor$replicaIndex1-editor$replicaIndex2"
           )
           .nn
-      syncButton.click()
-      (sut._2.map(_.textContent().nn).toList, sut.traceUuid)
+      sut.driver.findElement(syncButton).click()
+      (sut._2.map(sut.driver.findElement(_).getText().nn).toList, sut.traceUuid)
     }
 
     override def nextState(state: State): State = {
@@ -204,15 +202,12 @@ case class BrowserMultiReplicaConvergenceTest(
     type Result = (List[String], UUID)
 
     override def run(sut: Sut): Result = {
-      val oldText =
-        sut._2(replicaIndex).textContent().nn
+      val oldText = sut.driver.findElement(sut._2(replicaIndex)).getText().nn
       val fixedIndex = index % (oldText.size + 1)
 
-      sut
-        .elements(replicaIndex)
-        .fill(StringBuilder(oldText).insert(fixedIndex, character).toString)
+      sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = `${StringBuilder(oldText).insert(fixedIndex, character).toString}`", sut.driver.findElement(sut.elements(replicaIndex)))
 
-      (sut._2.map(_.textContent().nn).toList, sut.traceUuid)
+      (sut._2.map(sut.driver.findElement(_).getText().nn).toList, sut.traceUuid)
     }
 
     override def preCondition(state: State): Boolean =
@@ -230,21 +225,19 @@ case class BrowserMultiReplicaConvergenceTest(
     type Result = (List[String], UUID)
 
     override def run(sut: Sut): Result = {
-      val oldText =
-        sut._2(replicaIndex).textContent().nn
+      val oldText = sut.driver.findElement(sut._2(replicaIndex)).getText().nn
+
       if (oldText.length() > 0) {
         val fixedIndex = index % oldText.length()
 
         val toFill = StringBuilder(oldText).deleteCharAt(fixedIndex).toString
         if (toFill.isEmpty()) {
-          sut.elements(replicaIndex).fill("\n")
+          sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = ``", sut.driver.findElement(sut.elements(replicaIndex)))
         } else {
-          sut
-            .elements(replicaIndex)
-            .fill(toFill)
+          sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = `${toFill}`", sut.driver.findElement(sut.elements(replicaIndex)))
         }
       }
-      (sut._2.map(_.textContent().nn).toList, sut.traceUuid)
+      (sut._2.map(sut.driver.findElement(_).getText().nn).toList, sut.traceUuid)
     }
 
     override def preCondition(state: State): Boolean =
