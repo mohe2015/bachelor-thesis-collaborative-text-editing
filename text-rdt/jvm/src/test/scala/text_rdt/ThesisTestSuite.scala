@@ -14,6 +14,7 @@ import upickle.default._
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext
 import org.openqa.selenium.print.PrintOptions
+import org.openqa.selenium.By
 
 class ThesisTestSuite extends FunSuite {
 
@@ -624,14 +625,14 @@ class ThesisTestSuite extends FunSuite {
           .toString()
       )
       driver
-        .locator("#canvas")
+        .findElement(By.cssSelector("#canvas"))
         .nn
         .screenshot(
           ScreenshotOptions().setPath(
             Paths.get(s"target/pdfs/simple-sequential-inserts-cpu.pdf")
           )
         )
-      driver.navigate(
+      driver.get(
         Paths
           .get(
             "jvm/figure-benchmark-results/text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts-Throughput-count-10000000-factoryConstructor-complex-shouldMeasureMemory-false/cpu.html"
@@ -641,14 +642,14 @@ class ThesisTestSuite extends FunSuite {
           .toString()
       )
       driver
-        .locator("#canvas")
+        .findElement(By.cssSelector("#canvas"))
         .nn
         .screenshot(
           ScreenshotOptions().setPath(
             Paths.get(s"target/pdfs/complex-sequential-inserts-cpu.pdf")
           )
         )
-      driver.navigate(
+      driver.get(
         Paths
           .get(
             "jvm/figure-benchmark-results/text_rdt.MyTerribleBenchmarkSequentialInserts.sequentialInserts-Throughput-count-10000000-factoryConstructor-complex-shouldMeasureMemory-false/alloc.html"
@@ -658,14 +659,14 @@ class ThesisTestSuite extends FunSuite {
           .toString()
       )
       driver
-        .locator("#canvas")
+        .findElement(By.cssSelector("#canvas"))
         .nn
         .screenshot(
           ScreenshotOptions().setPath(
             Paths.get(s"target/pdfs/complex-sequential-inserts-alloc.pdf")
           )
         )
-      driver.navigate(
+      driver.get(
         Paths
           .get(
             "jvm/figure-benchmark-results/text_rdt.MyRealWorldBenchmarkLocal.local-Throughput-count-20000-factoryConstructor-complex-shouldMeasureMemory-false/cpu.html"
@@ -675,14 +676,14 @@ class ThesisTestSuite extends FunSuite {
           .toString()
       )
       driver
-        .locator("#canvas")
+        .findElement(By.cssSelector("#canvas"))
         .nn
         .screenshot(
           ScreenshotOptions().setPath(
             Paths.get(s"target/pdfs/complex-real-world-cpu.pdf")
           )
         )
-      driver.navigate(
+      driver.get(
         Paths
           .get(
             "jvm/figure-benchmark-results/text_rdt.MyRealWorldBenchmarkLocal.local-Throughput-count-259778-factoryConstructor-simpleavl-shouldMeasureMemory-false/cpu.html"
@@ -692,14 +693,14 @@ class ThesisTestSuite extends FunSuite {
           .toString()
       )
       driver
-        .locator("#canvas")
+        .findElement(By.cssSelector("#canvas"))
         .nn
         .screenshot(
           ScreenshotOptions().setPath(
             Paths.get(s"target/pdfs/simpleavl-real-world-cpu.pdf")
           )
         )
-      driver.navigate(
+      driver.get(
         Paths
           .get(
             "jvm/figure-benchmark-results/text_rdt.MyRealWorldBenchmarkLocal.local-Throughput-count-259778-factoryConstructor-simpleavl-shouldMeasureMemory-false/alloc.html"
@@ -709,7 +710,7 @@ class ThesisTestSuite extends FunSuite {
           .toString()
       )
       driver
-        .locator("#canvas")
+        .findElement(By.cssSelector("#canvas"))
         .nn
         .screenshot(
           ScreenshotOptions().setPath(
