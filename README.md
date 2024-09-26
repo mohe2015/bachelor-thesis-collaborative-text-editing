@@ -2,7 +2,12 @@
 
 ## Setup
 ```bash
+nix develop .#text-rdt-sbt-tests-brokey
 npm install
+npm run build -- --base=./ # TODO split this up
+npm run preview &
+sbt "testOnly text_rdt.ComplexAVLBrowserFugueScalaCheckSuite"
+
 ```
 
 ## COTURN for demo

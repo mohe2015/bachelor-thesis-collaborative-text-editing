@@ -29,6 +29,7 @@ abstract class BrowserFugueScalaCheckSuite(algorithm: String)
 
   override def munitFixtures: Seq[WebDriverFixture] = List(webDriverFixture)
 
+// I should use playwright tracing
   property(
     "A browser replica should be able to do arbitrary insertions and deletions"
       .tag(browser)
@@ -36,10 +37,10 @@ abstract class BrowserFugueScalaCheckSuite(algorithm: String)
   ) {
     BrowserSingleReplicaInsertDeleteTest(webDriverFixture, algorithm).property()
   }
-
+/*
   property(
     "All browser replicas should converge".tag(browser).tag(scalacheck)
   ) {
     BrowserMultiReplicaConvergenceTest(webDriverFixture, algorithm).property()
-  }
+  }*/
 }

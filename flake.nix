@@ -289,10 +289,12 @@
 
           packages.text-rdt-sbt-tests-thesis = self.packages.${system}.text-rdt-sbt-tests-of "testOnly text_rdt.ThesisTestSuite";
 
+          packages.text-rdt-sbt-tests-brokey = self.packages.${system}.text-rdt-sbt-tests-of "testOnly text_rdt.ComplexAVLBrowserFugueScalaCheckSuite";
+
           packages.text-rdt-sbt-tests-of = target: pkgs.stdenv.mkDerivation {
             name = "text-rdt-sbt-tests";
             src = ./text-rdt;
-            nativeBuildInputs = [ pkgs.sbt ];
+            nativeBuildInputs = [ pkgs.sbt pkgs.nodejs ];
             configurePhase = ''
               ${configureFonts}
 
@@ -310,9 +312,9 @@
             PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright-driver.browsers}";
 
             buildPhase = ''
-              ${pkgs.nodejs}/bin/npm run build -- --base=./ # TODO split this up
-              ${pkgs.nodejs}/bin/npm run preview &
-              ${pkgs.sbt}/bin/sbt "textrdtJVM/${target}"
+              npm run build -- --base=./ # TODO split this up
+              npm run preview &
+              sbt "textrdtJVM/${target}"
             '';
             installPhase = ''
               cp -r target/pdfs/. $out
