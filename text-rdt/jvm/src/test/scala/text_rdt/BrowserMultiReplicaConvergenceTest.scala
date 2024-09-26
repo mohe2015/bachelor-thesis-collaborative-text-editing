@@ -37,7 +37,7 @@ case class BrowserMultiReplicaConvergenceTest(
     val driver = webDriverFixture.getOrCreateWebDriver()
     val traceUuid = UUID.randomUUID().nn
     try {
-      driver.navigate(s"http://localhost:5173/?$algorithm")
+      driver.get(s"http://localhost:5173/?$algorithm")
       SutMultiType(driver, ListBuffer.empty, traceUuid)
     } catch
       case e => {
@@ -141,8 +141,8 @@ case class BrowserMultiReplicaConvergenceTest(
     override def preCondition(state: State): Boolean = true
 
     override def run(sut: Sut): Result = {
-      val createEditor = sut._1.locator("#create-editor").nn
-      createEditor.click()
+      val createEditor = sut._1.locateNode(Locator.css("#create-editor")).nn
+      new Actions(sut._1).click(createEditor)
       val editor =
         sut._1.locator(s"#editor${sut._2.length} div").nn
       val _ = sut._2.append(editor)

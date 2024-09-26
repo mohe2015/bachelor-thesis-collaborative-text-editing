@@ -28,7 +28,7 @@ case class BrowserSingleReplicaInsertDeleteTest(
     val driver = webDriverFixture.getOrCreateWebDriver()
     val traceUuid = UUID.randomUUID().nn
     try {
-      driver.navigate(s"http://localhost:5173/?$algorithm")
+      driver.get(s"http://localhost:5173/?$algorithm")
       val createEditor = driver.locator("#create-editor").nn
       createEditor.click()
       val editor = driver.locator("#editor0 div").nn

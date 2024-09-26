@@ -17,17 +17,17 @@ class WebDriverFixture
   var webdriver: WebDriver = scala.compiletime.uninitialized
 
   override def beforeAll(): Unit = {
-    println(s"CREATE PLAYWRIGHT FOR ${Thread.currentThread()}")
+    println(s"CREATE Selenium FOR ${Thread.currentThread()}")
     // TODO headless
     webdriver = new ChromeDriver()
   }
 
-  def getOrCreateWebDriver(): BrowsingContext = {
-    new BrowsingContext(webdriver, WindowType.TAB)
+  def getOrCreateWebDriver(): WebDriver = {
+    webdriver
   }
 
-  def giveBack(page: BrowsingContext, uuid: UUID): Unit = {
-    page.close()
+  def giveBack(page: WebDriver, uuid: UUID): Unit = {
+    
   }
   
   override def afterAll(): Unit = {
