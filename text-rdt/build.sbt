@@ -61,7 +61,7 @@ lazy val textrdt = crossProject(JVMPlatform, JSPlatform)
   .jvmConfigure(_.enablePlugins(JmhPlugin))
   .jsConfigure(_.enablePlugins(JmhPlugin))
   .jvmSettings(
-    libraryDependencies += "com.microsoft.playwright" % "playwright" % "1.47.0"
+    libraryDependencies += "org.seleniumhq.selenium" % "selenium-java" % "4.25.0"
   )
   .jsSettings(
     libraryDependencies += "org.scala-js" %%% "scalajs-dom" % "2.8.0",

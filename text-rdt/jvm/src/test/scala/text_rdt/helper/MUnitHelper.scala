@@ -1,34 +1,27 @@
 package text_rdt.helper
 
-import com.microsoft.playwright.{Page, Playwright}
 import munit.Fixture
 
-import com.microsoft.playwright.Browser
 import java.util.UUID
-import com.microsoft.playwright.BrowserType
 import scala.collection.mutable
-import com.microsoft.playwright.Tracing
 import java.nio.file.Paths
-import com.microsoft.playwright.Playwright.CreateOptions
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.bidi.browsingcontext.BrowsingContext
 
 class WebDriverFixture
     extends Fixture[Unit]("webdriver") {
    
-  var thread: Thread = scala.compiletime.uninitialized
-  var playwright: Playwright = scala.compiletime.uninitialized
-  var browser: Browser = scala.compiletime.uninitialized
+  var webdriver: WebDriver = scala.compiletime.uninitialized
 
   override def beforeAll(): Unit = {
     println(s"CREATE PLAYWRIGHT FOR ${Thread.currentThread()}")
-    thread = Thread.currentThread()
-    playwright = Playwright.create().nn
-    browser = playwright.chromium.nn.launch(new BrowserType.LaunchOptions().setHeadless(true).nn).nn
+    // TODO headless
+    webdriver = new ChromeDriver()
   }
 
-  def getOrCreateWebDriver(): Page = {
-    if (!(thread eq Thread.currentThread())) {
-      throw new IllegalStateException()
-    }
+  def getOrCreateWebDriver(): BrowsingContext = {
+    val bc = new BrowsingContext(webdriver);
     val context = browser.newContext().nn
     context.onWebError(error => {
       throw new RuntimeException(error.toString())

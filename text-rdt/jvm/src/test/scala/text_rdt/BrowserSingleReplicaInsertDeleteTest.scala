@@ -1,14 +1,15 @@
 package text_rdt
 
-import com.microsoft.playwright.{Locator, Page}
 import org.scalacheck.commands.Commands
 import org.scalacheck.{Gen, Prop}
 import text_rdt.helper.WebDriverFixture
 import java.util.UUID
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.By
 
 case class SutSingleType(
-    driver: Page,
-    element: Locator,
+    driver: WebDriver,
+    element: By,
     traceUuid: UUID
 ) {}
 

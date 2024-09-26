@@ -1,6 +1,5 @@
 package text_rdt
 
-import com.microsoft.playwright.{Locator, Page}
 import org.scalacheck.commands.Commands
 import org.scalacheck.{Gen, Prop}
 import text_rdt.helper.WebDriverFixture
@@ -8,10 +7,12 @@ import text_rdt.helper.WebDriverFixture
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 import java.util.UUID
+import org.openqa.selenium.WebDriver
+import org.openqa.selenium.By
 
 case class SutMultiType(
-    driver: Page,
-    elements: ListBuffer[Locator],
+    driver: WebDriver,
+    elements: ListBuffer[By],
     traceUuid: UUID
 ) {}
 
