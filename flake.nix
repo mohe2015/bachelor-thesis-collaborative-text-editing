@@ -1,4 +1,4 @@
-# nix shell nixpkgs#sbt nixpkgs#openjdk17 nixpkgs#nodejs
+# nix shell nixpkgs#sbt nixpkgs#openjdk21 nixpkgs#nodejs
 {
   description = "A very basic flake";
 

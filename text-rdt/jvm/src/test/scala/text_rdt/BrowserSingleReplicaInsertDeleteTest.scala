@@ -12,6 +12,7 @@ case class SutSingleType(
     traceUuid: UUID
 ) {}
 
+// is this a concurrency bug
 case class BrowserSingleReplicaInsertDeleteTest(
     webDriverFixture: WebDriverFixture,
     algorithm: String

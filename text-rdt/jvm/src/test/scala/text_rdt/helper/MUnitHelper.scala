@@ -12,7 +12,9 @@ import com.microsoft.playwright.BrowserType
 
 class WebDriverFixture
     extends Fixture[ConcurrentLinkedQueue[Browser]]("webdriver") {
-  lazy val playwright = Playwright.create.nn
+  // you are not allowed to access this concurrently
+
+  val playwrights: mutable.Map[Thread, Playwright] = Playwright.create.nn
 
   private val drivers: ConcurrentLinkedQueue[Browser] =
     ConcurrentLinkedQueue()
@@ -37,7 +39,7 @@ class WebDriverFixture
     context.onWebError(error => {
       throw new RuntimeException(error.toString())
     })
-    context
+    /*context
       .tracing()
       .nn
       .start(
@@ -48,12 +50,12 @@ class WebDriverFixture
           .nn
           .setSources(true)
           .nn
-      );
+      );*/
     context.newPage.nn
   }
 
   def giveBack(webDriver: Page, uuid: UUID): Unit = {
-    webDriver
+    /*webDriver
       .context()
       .nn
       .tracing()
@@ -61,7 +63,7 @@ class WebDriverFixture
       .stop(
         new Tracing.StopOptions()
           .setPath(Paths.get(s"traces/trace-$uuid.zip"))
-      );
+      );*/
     val browser = webDriver.context().nn.browser().nn
     webDriver.context().nn.close()
     assert(drivers.offer(browser))
