@@ -83,10 +83,8 @@ case class BrowserSingleReplicaInsertDeleteTest(
     override def run(sut: Sut): Result = {
       val oldText =
         sut.driver.findElement(sut.element).getText().nn
-      sut.driver.asInstanceOf[JavascriptExecutor].executeScript("hi", sut.driver.findElement(sut.element))
-      sut.element
-        .fill(StringBuilder(oldText).insert(index, character).toString)
-      (sut.element.textContent().nn, sut.traceUuid)
+      sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0] = `${StringBuilder(oldText).insert(index, character).toString}`", sut.driver.findElement(sut.element))
+      (sut.driver.findElement(sut.element).getText().nn, sut.traceUuid)
     }
 
     override def preCondition(state: State): Boolean = index <= state.length()
