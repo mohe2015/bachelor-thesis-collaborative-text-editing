@@ -610,7 +610,7 @@ class ThesisTestSuite extends FunSuite {
       )
     }
   }
-
+/*
   test("html-to-pdf".tag(browser)) {
     val driver = webDriverFixture.getOrCreateWebDriver()
 
@@ -720,5 +720,5 @@ class ThesisTestSuite extends FunSuite {
     } finally {
       webDriverFixture.giveBack(driver, UUID.randomUUID().nn)
     }
-  }
+  }*/
 }

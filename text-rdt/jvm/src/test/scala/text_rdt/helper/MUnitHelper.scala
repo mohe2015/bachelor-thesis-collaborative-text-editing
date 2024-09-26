@@ -10,6 +10,7 @@ import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.bidi.browsingcontext.BrowsingContext
 import org.openqa.selenium.bidi.browsingcontext.CreateContextParameters
 import org.openqa.selenium.WindowType
+import org.openqa.selenium.chrome.ChromeOptions
 
 class WebDriverFixture
     extends Fixture[Unit]("webdriver") {
@@ -18,8 +19,11 @@ class WebDriverFixture
 
   override def beforeAll(): Unit = {
     println(s"CREATE Selenium FOR ${Thread.currentThread()}")
-    // TODO headless
-    webdriver = new ChromeDriver()
+    System.setProperty("webdriver.chrome.logfile", "./chromedriver.log");
+    System.setProperty("webdriver.chrome.verboseLogging", "true");
+    val options = new ChromeOptions();
+    options.addArguments("--headless=new --verbose --log-path=chromedriver.log");
+    webdriver = new ChromeDriver(options)
   }
 
   def getOrCreateWebDriver(): WebDriver = {
