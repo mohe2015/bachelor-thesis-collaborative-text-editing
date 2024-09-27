@@ -205,7 +205,7 @@ case class BrowserMultiReplicaConvergenceTest(
       val oldText = sut.driver.findElement(sut._2(replicaIndex)).getText().nn
       val fixedIndex = index % (oldText.size + 1)
 
-      sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = `${StringBuilder(oldText).insert(fixedIndex, character).toString}`", sut.driver.findElement(sut.elements(replicaIndex)))
+      sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = arguments[1]", sut.driver.findElement(sut.elements(replicaIndex)), StringBuilder(oldText).insert(fixedIndex, character).toString)
 
       (sut._2.map(sut.driver.findElement(_).getText().nn).toList, sut.traceUuid)
     }
@@ -234,7 +234,7 @@ case class BrowserMultiReplicaConvergenceTest(
         if (toFill.isEmpty()) {
           sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = ``", sut.driver.findElement(sut.elements(replicaIndex)))
         } else {
-          sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = `${toFill}`", sut.driver.findElement(sut.elements(replicaIndex)))
+          sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = arguments[1]", sut.driver.findElement(sut.elements(replicaIndex)), toFill)
         }
       }
       (sut._2.map(sut.driver.findElement(_).getText().nn).toList, sut.traceUuid)

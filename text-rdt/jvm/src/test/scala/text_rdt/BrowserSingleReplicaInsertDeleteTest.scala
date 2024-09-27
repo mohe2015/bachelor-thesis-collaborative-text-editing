@@ -82,7 +82,7 @@ case class BrowserSingleReplicaInsertDeleteTest(
     override def run(sut: Sut): Result = {
       val oldText =
         sut.driver.findElement(sut.element).getText().nn
-      sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = `${StringBuilder(oldText).insert(index, character).toString}`", sut.driver.findElement(sut.element))
+      sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = arguments[1]", sut.driver.findElement(sut.element), StringBuilder(oldText).insert(index, character).toString)
       (sut.driver.findElement(sut.element).getText().nn, sut.traceUuid)
     }
 
@@ -103,7 +103,7 @@ case class BrowserSingleReplicaInsertDeleteTest(
       if (toFill.isEmpty()) {
         sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = ``", sut.driver.findElement(sut.element))
       } else {
-        sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = `${toFill}`", sut.driver.findElement(sut.element))
+        sut.driver.asInstanceOf[JavascriptExecutor].executeScript(s"arguments[0].textContent = arguments[1]", sut.driver.findElement(sut.element), toFill)
       }
       (sut.driver.findElement(sut.element).getText().nn, sut.traceUuid)
     }
