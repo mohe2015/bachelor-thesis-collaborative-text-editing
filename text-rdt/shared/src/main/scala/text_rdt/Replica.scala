@@ -16,6 +16,15 @@ final case class Replica[F <: FugueFactory](
     this.state.causalBroadcast.syncFrom(other.causalBroadcast.asInstanceOf[CausalBroadcast[Replica.this.state.factoryContext.MSG]], msg => state.factoryContext.handleRemoteMessage(state.factory)(msg, editor))
   }
 
+  def deliveringRemote(
+      entry: (
+          CausalID,
+          mutable.ArrayBuffer[Replica.this.state.factoryContext.MSG]
+      ),
+  ): Unit = {
+    state.causalBroadcast.deliveringRemote(entry, msg => state.factoryContext.handleRemoteMessage(state.factory)(msg, editor))
+  }
+
   def text(): String = {
     state.text()
   }
