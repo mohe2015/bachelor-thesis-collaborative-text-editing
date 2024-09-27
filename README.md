@@ -2,6 +2,9 @@
 
 ## Setup
 ```bash
+nix shell nixpkgs#sbt nixpkgs#openjdk21 nixpkgs#nodejs
+codium .
+
 cd text-rdt
 nix develop .#text-rdt-sbt-tests-brokey
 #npm install
