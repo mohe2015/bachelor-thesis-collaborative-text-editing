@@ -24,9 +24,11 @@ class WebDriverFixture
   override def beforeAll(): Unit = {
     println(s"CREATE Selenium FOR ${Thread.currentThread()}")
 
-    val serviceBuilder = new ChromeDriverService.Builder().withLogOutput(System.out).withLogLevel(ChromiumDriverLogLevel.ALL);
+    val serviceBuilder = new ChromeDriverService.Builder()
+    //serviceBuilder.withLogOutput(System.out).withLogLevel(ChromiumDriverLogLevel.ALL);
     val options = new ChromeOptions();
-    options.addArguments("--headless=new", "--verbose", "--log-level=0", "--enable-logging=stderr", "--v=1");
+    options.addArguments("--headless=new")
+    //options.addArguments("--verbose", "--log-level=0", "--enable-logging=stderr", "--v=1");
     val chromeDriverService = serviceBuilder.build(); 
 
     webdriver = new ChromeDriver(chromeDriverService, options)

@@ -294,7 +294,7 @@
           packages.text-rdt-sbt-tests-of = target: pkgs.stdenv.mkDerivation {
             name = "text-rdt-sbt-tests";
             src = ./text-rdt;
-            nativeBuildInputs = [ pkgs.sbt pkgs.nodejs ];
+            nativeBuildInputs = [ pkgs.sbt pkgs.nodejs pkgs.chromedriver pkgs.chromium pkgs.firefox ];
             configurePhase = ''
               ${configureFonts}
 
