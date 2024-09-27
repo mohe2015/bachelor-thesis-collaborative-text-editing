@@ -104,47 +104,40 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
     other.syncFrom(this.state)
   }
 
-  def syncFrom(other: ReplicaState[F]): Unit = {
-    val heads1 = this.state.cachedHeads
+  def syncFrom(other: CausalBroadcast[MSG]): Unit = {
+    val heads1 = this.cachedHeads
     val potentiallyNewer2 =
       other.elementsPotentiallyNewer(heads1)
-    this.state.causalState = this.state.causalState.clone()
+    this.causalState = this.state.causalState.clone()
     other.causalState = other.causalState.clone()
     potentiallyNewer2.foreach(entry => {
       deliveringRemote(
-        entry.asInstanceOf[
-          (
-              text_rdt.CausalID,
-              scala.collection.mutable.ArrayBuffer[
-                Replica.this.state.factoryContext.MSG
-              ]
-          )
-        ]
+        entry
       )
     })
-    this.state.tick()
+    this.tick()
     other.tick()
   }
 
   def deliveringRemote(
       entry: (
           CausalID,
-          mutable.ArrayBuffer[state.factoryContext.MSG]
+          mutable.ArrayBuffer[MSG]
       )
   ): Unit = {
     entry._1
       .foreachEntry((rid, counter) => {
-        this.state.causalState
+        this.causalState
           .update(
             rid,
             Math.max(
-              this.state.causalState.getOrElse(rid, CausalID.ZERO),
+              this.causalState.getOrElse(rid, CausalID.ZERO),
               counter
             )
           )
       })
 
-    this.state.addToHistory(entry)
+    this.addToHistory(entry)
 
     entry._2.foreach(e =>
       state.factoryContext.handleRemoteMessage(state.factory)(e, editor)
