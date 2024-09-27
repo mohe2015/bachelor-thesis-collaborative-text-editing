@@ -2,7 +2,9 @@
 
 ## Setup
 ```bash
-npm install
+nix shell nixpkgs#sbt nixpkgs#openjdk21 nixpkgs#nodejs
+codium .
+
 ```
 
 ## COTURN for demo

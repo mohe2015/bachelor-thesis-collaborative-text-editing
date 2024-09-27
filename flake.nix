@@ -1,4 +1,3 @@
-# nix shell nixpkgs#sbt nixpkgs#openjdk17 nixpkgs#nodejs
 {
   description = "A very basic flake";
 
@@ -76,6 +75,12 @@
           '';
         in
         {
+          devShells.default = pkgs.mkShell {
+            buildInputs = [ pkgs.bashInteractive pkgs.sbt pkgs.openjdk21 pkgs.nodejs pkgs.vscodium ];
+
+            JAVA_HOME = pkgs.openjdk21;
+          };
+
           # TOOD IMplement sbt honoring the cores parameter
 
           packages.text-rdt-npm-dependencies = pkgs.buildNpmPackage rec {
