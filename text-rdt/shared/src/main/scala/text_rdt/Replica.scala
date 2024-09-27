@@ -7,7 +7,14 @@ final case class Replica[F <: FugueFactory](
     editor: Editory
 ) {
 
- 
+  def sync(other: Replica[F]): Unit = {
+    this.syncFrom(other.state)
+    other.syncFrom(this.state)
+  }
+
+  def syncFrom(other: ReplicaState[F]): Unit = {
+    this.state.causalBroadcast.syncFrom(other.causalBroadcast.asInstanceOf[CausalBroadcast[Replica.this.state.factoryContext.MSG]], msg => state.factoryContext.handleRemoteMessage(state.factory)(msg, editor))
+  }
 
   def text(): String = {
     state.text()
