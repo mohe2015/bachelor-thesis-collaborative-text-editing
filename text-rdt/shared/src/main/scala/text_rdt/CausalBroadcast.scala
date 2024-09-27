@@ -99,16 +99,16 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
     cachedHeads.addOne(causalState)
   }
 
-   def sync(other: Replica[F]): Unit = {
-    this.syncFrom(other.state)
-    other.syncFrom(this.state)
+   def sync(other: CausalBroadcast[MSG]): Unit = {
+    this.syncFrom(other)
+    other.syncFrom(this)
   }
 
   def syncFrom(other: CausalBroadcast[MSG]): Unit = {
     val heads1 = this.cachedHeads
     val potentiallyNewer2 =
       other.elementsPotentiallyNewer(heads1)
-    this.causalState = this.state.causalState.clone()
+    this.causalState = this.causalState.clone()
     other.causalState = other.causalState.clone()
     potentiallyNewer2.foreach(entry => {
       deliveringRemote(
@@ -139,8 +139,9 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
 
     this.addToHistory(entry)
 
-    entry._2.foreach(e =>
-      state.factoryContext.handleRemoteMessage(state.factory)(e, editor)
-    )
+    ???
+    //entry._2.foreach(e =>
+    //  state.factoryContext.handleRemoteMessage(state.factory)(e, editor)
+    //)
   }
 }
