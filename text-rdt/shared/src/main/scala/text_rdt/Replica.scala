@@ -9,12 +9,12 @@ final case class Replica[F <: FugueFactory](
 
   override def insert(i: Int, x: Char): Unit = {
     editor.localInsert(i, x)
-    //state.insert(i, x)
+    state.insert(i, x)
   }
 
   override def delete(i: Int): Unit = {
     editor.localDelete(i)
-    //state.delete(i)
+    state.delete(i)
   }
 
   def sync(other: Replica[F]): Unit = {
