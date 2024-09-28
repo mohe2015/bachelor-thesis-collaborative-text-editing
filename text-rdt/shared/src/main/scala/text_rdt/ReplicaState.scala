@@ -33,7 +33,7 @@ final case class ReplicaState[F <: FugueFactory](
   def get(id: factoryContext.ID): factoryContext.N = {
     factory.get(id)
   }
-
+/*
   private def insert(i: Int, x: Char): Unit = {
     val message = factory.insert(i, x)
 
@@ -48,5 +48,5 @@ final case class ReplicaState[F <: FugueFactory](
     val msg = factory.delete(treeNode)
 
     causalBroadcast.addOneToHistory(msg)
-  }
+  }*/
 }

@@ -174,7 +174,7 @@ case class InternalMultiReplicaConvergenceTest[F <: FugueFactory]()(
 
       assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
 
-      sut(replicaIndex).state.insert(index % (len + 1), character)
+      sut(replicaIndex).insert(index % (len + 1), character)
 
       assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
 
@@ -204,7 +204,7 @@ case class InternalMultiReplicaConvergenceTest[F <: FugueFactory]()(
       assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
 
       if (len > 0) {
-        sut(replicaIndex).state.delete(index % len)
+        sut(replicaIndex).delete(index % len)
       }
 
       assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())

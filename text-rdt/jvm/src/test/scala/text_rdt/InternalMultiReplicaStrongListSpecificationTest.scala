@@ -176,12 +176,12 @@ case class InternalMultiReplicaStrongListSpecificationTest[F <: FugueFactory]()(
     override def run(sut: Sut): Result = {
       val before = sut.view.mapValues(r => r.state.factoryContext.textWithDeleted(r.state.factory)()).toMap
 
-      val state = sut(replicaIndex).state
-      val len = state.factoryContext.textWithDeleted(state.factory)().filter(_.isLeft).size
+      val replica = sut(replicaIndex)
+      val len = replica.state.factoryContext.textWithDeleted(replica.state.factory)().filter(_.isLeft).size
       
       assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
       
-      state.insert(index % (len + 1), character)
+      replica.insert(index % (len + 1), character)
 
       assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
 
@@ -235,14 +235,14 @@ case class InternalMultiReplicaStrongListSpecificationTest[F <: FugueFactory]()(
     override def run(sut: Sut): Result = {
       val before = sut.view.mapValues(r => r.state.factoryContext.textWithDeleted(r.state.factory)()).toMap
 
-      val state = sut(replicaIndex).state
+      val replica = sut(replicaIndex)
       val len =
-        state.factoryContext.textWithDeleted(state.factory)().filter(_.isLeft).size
+        replica.state.factoryContext.textWithDeleted(replica.state.factory)().filter(_.isLeft).size
 
       assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
 
       if (len > 0) {
-        state.delete(index % len)
+        replica.delete(index % len)
       }
 
       assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())

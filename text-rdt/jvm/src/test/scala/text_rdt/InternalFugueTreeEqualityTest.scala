@@ -172,7 +172,7 @@ case class InternalFugueTreeEqualityTest(
 
             assert(replicas(replica).editor.asInstanceOf[StringEditory].data.toString() == replicas(replica).text())
 
-            replicas(replica).state.insert(index % (len + 1), character)
+            replicas(replica).insert(index % (len + 1), character)
 
             assert(replicas(replica).editor.asInstanceOf[StringEditory].data.toString() == replicas(replica).text())
 
@@ -202,7 +202,7 @@ case class InternalFugueTreeEqualityTest(
             assert(replicas(replica).editor.asInstanceOf[StringEditory].data.toString() == replicas(replica).text())
 
             if (len > 0) {
-              replicas(replica).state.delete(index % len)
+              replicas(replica).delete(index % len)
             }
         
             assert(replicas(replica).editor.asInstanceOf[StringEditory].data.toString() == replicas(replica).text())

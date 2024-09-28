@@ -55,7 +55,7 @@ final case class InternalSingleReplicaInsertDeleteTest[F <: FugueFactory]()(
     override def run(sut: Sut): Result = {
       assert(sut.editor.asInstanceOf[StringEditory].data.toString() == sut.text())
 
-      sut.state.insert(index, character)
+      sut.insert(index, character)
   
       assert(sut.editor.asInstanceOf[StringEditory].data.toString() == sut.text(), s"${sut.editor.asInstanceOf[StringEditory].data.toString()} == ${sut.text()}")
 
@@ -81,7 +81,7 @@ final case class InternalSingleReplicaInsertDeleteTest[F <: FugueFactory]()(
     override def run(sut: Sut): Result = {
       assert(sut.editor.asInstanceOf[StringEditory].data.toString() == sut.text())
 
-      sut.state.delete(index)
+      sut.delete(index)
     
       assert(sut.editor.asInstanceOf[StringEditory].data.toString() == sut.text())
 
