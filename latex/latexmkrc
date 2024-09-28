@@ -1,6 +1,6 @@
 $ENV{'TZ'}='Europe/Berlin';
 $pdf_mode = 4; # lualatex
-set_tex_cmds( '%C-dev --file-line-error --shell-escape -interaction=nonstopmode -halt-on-error %O %S' );
+set_tex_cmds( '%C --file-line-error --shell-escape -interaction=nonstopmode -halt-on-error %O %S' );
 
 add_cus_dep( 'acn', 'acr', 0, 'makeglossaries' );
 add_cus_dep( 'glo', 'gls', 0, 'makeglossaries' );
