@@ -434,6 +434,26 @@ abstract class InternalFugueTestSuite(
     assertEquals(replicaC.text(), "MBu")
   }
 
+  test("regression-28") {
+    val replicaStateA =
+      ReplicaState("A")(using factoryConstructor())
+    val replicaA = Replica(replicaStateA, StringEditory())
+    val replicaStateB =
+      ReplicaState("B")(using factoryConstructor())
+    val replicaB = Replica(replicaStateB, StringEditory())
+    replicaA.insert(0, 'D')
+    replicaA.insert(1, '+')
+    replicaA.insert(2, 's')
+    replicaA.delete(0)
+    replicaA.delete(0)
+    replicaA.sync(replicaB)
+    assertEquals(replicaA.editor.asInstanceOf[StringEditory].data.toString(), "s")
+    assertEquals(replicaB.editor.asInstanceOf[StringEditory].data.toString(), "s")
+    assertEquals(replicaA.text(), replicaB.text())
+    assertEquals(replicaA.text(), "s")
+    assertEquals(replicaB.text(), "s")
+  }
+
   test("2023-weidner-minimizing-interleaving-figure-1") {
     val replicaStateA =
       ReplicaState("A")(using factoryConstructor())

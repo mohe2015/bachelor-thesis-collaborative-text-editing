@@ -146,8 +146,8 @@ case class InternalMultiReplicaConvergenceTest[F <: FugueFactory]()(
 
       replica1.sync(replica2.asInstanceOf[replica1.type])
 
-      assert(replica1.editor.asInstanceOf[StringEditory].data.toString() == replica1.text())
-      assert(replica2.editor.asInstanceOf[StringEditory].data.toString() == replica2.text())
+      assert(replica1.editor.asInstanceOf[StringEditory].data.toString() == replica1.text(), s"${replica1.editor.asInstanceOf[StringEditory].data.toString()} == ${replica1.text()}")
+      assert(replica2.editor.asInstanceOf[StringEditory].data.toString() == replica2.text(), s"${replica2.editor.asInstanceOf[StringEditory].data.toString()} == ${replica2.text()}")
 
       sut.view.mapValues(_.text()).toMap
     }
