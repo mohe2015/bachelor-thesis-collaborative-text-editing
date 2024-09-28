@@ -135,6 +135,6 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
 
     this.addToHistory(entry)
 
-    entry._2.foreach(msg => handleMessage)
+    entry._2.foreach(msg => handleMessage(msg)) // TODO test again whether the compiler can detect this with entry._2.foreach(msg => handleMessage)
   }
 }
