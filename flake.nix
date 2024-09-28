@@ -1,4 +1,3 @@
-# nix shell nixpkgs#sbt nixpkgs#openjdk17 nixpkgs#nodejs
 {
   description = "A very basic flake";
 
@@ -76,6 +75,12 @@
           '';
         in
         {
+          devShells.default = pkgs.mkShell {
+            buildInputs = [ pkgs.bashInteractive pkgs.sbt pkgs.openjdk21 pkgs.nodejs pkgs.vscodium ];
+
+            JAVA_HOME = pkgs.openjdk21;
+          };
+
           # TOOD IMplement sbt honoring the cores parameter
 
           packages.text-rdt-npm-dependencies = pkgs.buildNpmPackage rec {
@@ -220,7 +225,9 @@
                   ./latex
                 ];
             };
-            nativeBuildInputs = [ pkgs.git pkgs.texlive.combined.scheme-full pkgs.python3Packages.pygments ];
+            # https://www.google.com/search?q=site%3Amiktex.org+%22caption.sty%22
+            # texliveInfraOnly
+            nativeBuildInputs = [ pkgs.git (pkgs.texliveBasic.withPackages (ps: with ps; [ latexmk luatex pdfmanagement-testphase tagpdf etoolbox l3experimental tuda-ci urcls koma-script xcolor anyfontsize fontspec xcharter roboto xkeyval adjustbox pgf babel-german microtype unicode-math lualatex-math glossaries-extra glossaries fancyvrb minted upquote caption csquotes biblatex cleveref biber ])) pkgs.python3Packages.pygments ];
             configurePhase = ''
               mkdir -p text-rdt/target
               cp -r ${self.packages.${system}.text-rdt-sbt-tests-thesis} text-rdt/target/pdfs
@@ -251,7 +258,7 @@
               hash = "sha256-bWj4dX1qRQ2zzfF9GfskvMnrNU9pKC738Zllx6JsFww=";
             };
 
-            mvnHash = "sha256-KJEuYLF1jIVD0Z8uT761o/9zhsEWCLHd71YADbYlv7w=";
+            mvnHash = "sha256-bqPmEQfTIoZePk5oRi2nFnXbJ7RpSl99FIuHj+P8MxE=";
 
             nativeBuildInputs = [ pkgs.makeWrapper pkgs.stripJavaArchivesHook ];
 

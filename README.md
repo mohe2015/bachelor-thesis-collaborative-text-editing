@@ -2,7 +2,18 @@
 
 ## Setup
 ```bash
-npm install
+nix shell nixpkgs#sbt nixpkgs#openjdk21 nixpkgs#nodejs
+codium .
+
+cd text-rdt
+nix develop .#text-rdt-sbt-tests-thesis
+#npm install
+npm run build -- --base=./ # TODO split this up
+npm run preview
+
+cd text-rdt
+nix develop .#text-rdt-sbt-tests-thesis
+sbt "testOnly text_rdt.ComplexAVLBrowserFugueScalaCheckSuite"
 ```
 
 ## COTURN for demo
