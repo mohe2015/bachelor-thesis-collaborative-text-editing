@@ -103,7 +103,7 @@ case class InternalMultiReplicaStrongListSpecificationTest[F <: FugueFactory]()(
       val replicaState = ReplicaState(
         replicaIndex.toString
       )(using factoryContext)
-      val replica = Replica(replicaState, NoopEditory())
+      val replica = Replica(replicaState, StringEditory())
       val _ = sut.put(replicaIndex, replica)
 
       val after = sut.view.mapValues(r => r.state.factoryContext.textWithDeleted(r.state.factory)()).toMap
@@ -136,7 +136,13 @@ case class InternalMultiReplicaStrongListSpecificationTest[F <: FugueFactory]()(
       val replica1 = sut(replicaIndex1)
       val replica2 = sut(replicaIndex2)
 
+      assert(replica1.editor.asInstanceOf[StringEditory].data.toString() == replica1.text())
+      assert(replica2.editor.asInstanceOf[StringEditory].data.toString() == replica2.text())
+
       replica1.sync(replica2.asInstanceOf[replica1.type])
+
+      assert(replica1.editor.asInstanceOf[StringEditory].data.toString() == replica1.text())
+      assert(replica2.editor.asInstanceOf[StringEditory].data.toString() == replica2.text())
 
       val after = sut.view.mapValues(r => r.state.factoryContext.textWithDeleted(r.state.factory)()).toMap
       (before, after)
@@ -172,7 +178,12 @@ case class InternalMultiReplicaStrongListSpecificationTest[F <: FugueFactory]()(
 
       val state = sut(replicaIndex).state
       val len = state.factoryContext.textWithDeleted(state.factory)().filter(_.isLeft).size
+      
+      assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
+      
       state.insert(index % (len + 1), character)
+
+      assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
 
       val after = sut.view.mapValues(r => r.state.factoryContext.textWithDeleted(r.state.factory)()).toMap
       (before, after)
@@ -227,9 +238,14 @@ case class InternalMultiReplicaStrongListSpecificationTest[F <: FugueFactory]()(
       val state = sut(replicaIndex).state
       val len =
         state.factoryContext.textWithDeleted(state.factory)().filter(_.isLeft).size
+
+      assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
+
       if (len > 0) {
         state.delete(index % len)
       }
+
+      assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
 
       val after = sut.view.mapValues(r => r.state.factoryContext.textWithDeleted(r.state.factory)()).toMap
       (before, after)

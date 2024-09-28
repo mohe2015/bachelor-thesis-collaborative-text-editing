@@ -14,4 +14,4 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
       - uses: DeterminateSystems/flake-checker-action@main
-      - run: nix build -L .#text-rdt-frontend .#latex .#text-rdt-sbt-tests-all
+      - run: nix build -L .#text-rdt-sbt-tests-all

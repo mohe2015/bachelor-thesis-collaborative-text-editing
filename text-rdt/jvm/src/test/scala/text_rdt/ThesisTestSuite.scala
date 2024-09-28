@@ -98,12 +98,12 @@ class ThesisTestSuite extends FunSuite {
       ReplicaState("A")(using
         SimpleAVLFugueFactory.simpleAVLFugueFactory
       )
-    val replicaA = Replica(replicaStateA, NoopEditory())
+    val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
       ReplicaState("B")(using
         SimpleAVLFugueFactory.simpleAVLFugueFactory
       )
-    val replicaB = Replica(replicaStateB, NoopEditory())
+    val replicaB = Replica(replicaStateB, StringEditory())
     replicaStateA.insert(0, 't')
     replicaStateA.insert(1, 'r')
     replicaStateA.insert(2, 'e')
@@ -131,12 +131,12 @@ class ThesisTestSuite extends FunSuite {
       ReplicaState("A")(using
         SimpleAVLFugueFactory.simpleAVLFugueFactory
       )
-    val replicaA = Replica(replicaStateA, NoopEditory())
+    val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
       ReplicaState("B")(using
         SimpleAVLFugueFactory.simpleAVLFugueFactory
       )
-    val replicaB = Replica(replicaStateB, NoopEditory())
+    val replicaB = Replica(replicaStateB, StringEditory())
     replicaStateA.insert(0, 'a')
     replicaStateA.insert(1, 'l')
     replicaStateA.insert(2, 'i')
@@ -161,17 +161,17 @@ class ThesisTestSuite extends FunSuite {
       ReplicaState("C")(using
         ComplexAVLFugueFactory.complexAVLFugueFactory
       )
-    val replicaC = Replica(replicaStateC, NoopEditory())
+    val replicaC = Replica(replicaStateC, StringEditory())
     val replicaStateA =
       ReplicaState("A")(using
         ComplexAVLFugueFactory.complexAVLFugueFactory
       )
-    val replicaA = Replica(replicaStateA, NoopEditory())
+    val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
       ReplicaState("B")(using
         ComplexAVLFugueFactory.complexAVLFugueFactory
       )
-    val replicaB = Replica(replicaStateB, NoopEditory())
+    val replicaB = Replica(replicaStateB, StringEditory())
     replicaStateC.insert(0, 'S')
     replicaStateC.insert(1, 'h')
     replicaStateC.insert(2, 'o')
@@ -292,12 +292,12 @@ class ThesisTestSuite extends FunSuite {
       ReplicaState("A")(using
         SimpleAVLFugueFactory.simpleAVLFugueFactory
       )
-    val replicaA = Replica(replicaStateA, NoopEditory())
+    val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
       ReplicaState("B")(using
         SimpleAVLFugueFactory.simpleAVLFugueFactory
       )
-    val replicaB = Replica(replicaStateB, NoopEditory())
+    val replicaB = Replica(replicaStateB, StringEditory())
     replicaStateA.insert(0, 'l')
     replicaStateA.insert(1, 'o')
     replicaStateA.insert(2, 'n')
@@ -318,12 +318,12 @@ class ThesisTestSuite extends FunSuite {
       ReplicaState("A")(using
         ComplexAVLFugueFactory.complexAVLFugueFactory
       )
-    val replicaA = Replica(replicaStateA, NoopEditory())
+    val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
       ReplicaState("B")(using
         ComplexAVLFugueFactory.complexAVLFugueFactory
       )
-    val replicaB = Replica(replicaStateB, NoopEditory())
+    val replicaB = Replica(replicaStateB, StringEditory())
     replicaStateA.insert(0, 'S')
     replicaStateA.insert(1, 'h')
     replicaStateA.insert(2, 'o')
@@ -391,12 +391,12 @@ class ThesisTestSuite extends FunSuite {
       ReplicaState("A")(using
         SimpleAVLFugueFactory.simpleAVLFugueFactory
       )
-    val replicaA = Replica(replicaStateA, NoopEditory())
+    val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
       ReplicaState("B")(using
         SimpleAVLFugueFactory.simpleAVLFugueFactory
       )
-    val replicaB = Replica(replicaStateB, NoopEditory())
+    val replicaB = Replica(replicaStateB, StringEditory())
     replicaStateA.insert(0, 'm')
     replicaStateA.insert(1, 'i')
     replicaStateA.insert(2, 'l')
