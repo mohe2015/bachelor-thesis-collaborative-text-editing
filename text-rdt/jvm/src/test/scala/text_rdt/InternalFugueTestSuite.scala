@@ -35,7 +35,7 @@ class ComplexAVLInternalFugueTestSuite
 
 class OTAlgorithmTestSuite extends InternalFugueTestSuite(replicaId => OTAlgorithm(replicaId, Vector.empty))
 
-abstract class InternalFugueTestSuite[A <: CollaborativeTextEditingAlgorithm](
+abstract class InternalFugueTestSuite[A <: CollaborativeTextEditingAlgorithm[A]](
     val factoryConstructor: String => A
 ) extends FunSuite {
 

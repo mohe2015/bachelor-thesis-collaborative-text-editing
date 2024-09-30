@@ -5,14 +5,24 @@ import scala.collection.mutable
 final case class Replica[F <: FugueFactory](
     state: ReplicaState[F],
     var editor: Editory
-) extends CollaborativeTextEditingAlgorithm {
+) extends CollaborativeTextEditingAlgorithm[Replica[F]] {
 
-  override def insert(i: Int, x: Char): Unit = {
+  extension (replica: Replica[F]) {
+    def insert(i: Int, x: Char): Unit = replica.insert(i, x)
+
+    def delete(i: Int): Unit = replica.delete(i)
+
+    def text(): String = replica.text()
+
+    def sync(other: Replica[F]): Unit = replica.sync(other)
+  }
+
+  def insert(i: Int, x: Char): Unit = {
     editor.localInsert(i, x)
     state.insert(i, x)
   }
 
-  override def delete(i: Int): Unit = {
+  def delete(i: Int): Unit = {
     editor.localDelete(i)
     state.delete(i)
   }
