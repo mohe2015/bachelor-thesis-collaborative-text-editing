@@ -172,8 +172,8 @@ abstract class InternalFugueTestSuite[A <: CollaborativeTextEditingAlgorithm](
     replicaA.delete(0)
     replicaA.insert(1, 'e')
     replicaB.sync(replicaA)
-    assertEquals(replicaStateA.text(), "Bec")
-    assertEquals(replicaStateB.text(), "Bec")
+    assertEquals(replicaA.text(), "Bec")
+    assertEquals(replicaB.text(), "Bec")
   }
 
   test("regression-13") {
@@ -185,8 +185,8 @@ abstract class InternalFugueTestSuite[A <: CollaborativeTextEditingAlgorithm](
     replicaA.insert(1, '{')
     replicaB.sync(replicaA)
     assertEquals(
-      replicaStateA.text(),
-      replicaStateB.text()
+      replicaA.text(),
+      replicaB.text()
     )
   }
 
@@ -194,19 +194,19 @@ abstract class InternalFugueTestSuite[A <: CollaborativeTextEditingAlgorithm](
     val replicaA = factoryConstructor("A")
     val replicaB = factoryConstructor("B")
     replicaB.insert(0, 'L')
-    assertEquals(replicaStateB.text(), "L")
+    assertEquals(replicaB.text(), "L")
     replicaB.insert(1, 'L')
-    assertEquals(replicaStateB.text(), "LL")
+    assertEquals(replicaB.text(), "LL")
     replicaB.insert(2, '/')
-    assertEquals(replicaStateB.text(), "LL/")
+    assertEquals(replicaB.text(), "LL/")
     replicaB.insert(3, 'A')
-    assertEquals(replicaStateB.text(), "LL/A")
+    assertEquals(replicaB.text(), "LL/A")
     replicaB.insert(2, 'y')
-    assertEquals(replicaStateB.text(), "LLy/A")
+    assertEquals(replicaB.text(), "LLy/A")
     replicaB.delete(0)
-    assertEquals(replicaStateB.text(), "Ly/A")
+    assertEquals(replicaB.text(), "Ly/A")
     replicaB.insert(4, 'A')
-    assertEquals(replicaStateB.text(), "Ly/AA")
+    assertEquals(replicaB.text(), "Ly/AA")
     replicaB.sync(replicaA)
   }
 
@@ -216,8 +216,8 @@ abstract class InternalFugueTestSuite[A <: CollaborativeTextEditingAlgorithm](
     replicaA.insert(0, 'A')
     replicaB.insert(0, 'B')
     replicaB.sync(replicaA)
-    assertEquals(replicaStateA.text(), "AB")
-    assertEquals(replicaStateB.text(), "AB")
+    assertEquals(replicaA.text(), "AB")
+    assertEquals(replicaB.text(), "AB")
   }
 
   test("regression-16") {
@@ -248,7 +248,7 @@ abstract class InternalFugueTestSuite[A <: CollaborativeTextEditingAlgorithm](
     replicaB.insert(0, 'B')
     replicaB.insert(1, 'b')
     replicaB.syncFrom(replicaA.state)
-    assertEquals(replicaStateB.text(), "BbA")
+    assertEquals(replicaB.text(), "BbA")
   }
 
   test("regression-19") {
@@ -256,17 +256,17 @@ abstract class InternalFugueTestSuite[A <: CollaborativeTextEditingAlgorithm](
     val replicaB = factoryConstructor("B")
     replicaA.insert(0, 'A')
     replicaB.insert(0, 'B')
-    replicaA.syncFrom(replicaB.state)
+    replicaA.syncFrom(replicaB)
   }
 
   test("regression-20") {
     val replicaA = factoryConstructor("A")
     val replicaB = factoryConstructor("B")
     replicaA.insert(0, 'a')
-    replicaB.syncFrom(replicaStateA)
+    replicaB.syncFrom(replicaA)
     replicaA.insert(0, 'A')
     replicaB.insert(0, 'B')
-    replicaA.syncFrom(replicaStateB)
+    replicaA.syncFrom(replicaB)
   }
 
   test("regression-21") {
@@ -285,7 +285,7 @@ abstract class InternalFugueTestSuite[A <: CollaborativeTextEditingAlgorithm](
     replicaA.sync(replicaB)
     replicaB.delete(0)
     replicaA.insert(1, 'c')
-    replicaB.syncFrom(replicaStateA)
+    replicaB.syncFrom(replicaA)
     assertEquals(replicaB.text(), "c")
   }
 
