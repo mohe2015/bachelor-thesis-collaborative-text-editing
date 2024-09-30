@@ -3,14 +3,10 @@ package text_rdt
 import munit.FunSuite
 
 class SimpleInternalFugueTestSuite
-    extends InternalFugueTestSuite(() => {
-      SimpleFugueFactory.simpleFugueFactory
-    }) {}
+    extends InternalFugueTestSuite(SimpleFugueFactory.simpleFugueFactory) {}
 
 class ComplexInternalFugueTestSuite
-    extends InternalFugueTestSuite(() => {
-      ComplexFugueFactory.complexFugueFactory
-    }) {
+    extends InternalFugueTestSuite(ComplexFugueFactory.complexFugueFactory) {
   test("batching-works") {
     val replicaStateA =
       Replica(ReplicaState("A")(using
@@ -24,13 +20,10 @@ class ComplexInternalFugueTestSuite
 }
 
 class SimpleAVLInternalFugueTestSuite
-    extends InternalFugueTestSuite(() => {
-      SimpleAVLFugueFactory.simpleAVLFugueFactory
-    }) {}
+    extends InternalFugueTestSuite(SimpleAVLFugueFactory.simpleAVLFugueFactory) {}
+
 class ComplexAVLInternalFugueTestSuite
-    extends InternalFugueTestSuite(() => {
-      ComplexAVLFugueFactory.complexAVLFugueFactory
-    }) {
+    extends InternalFugueTestSuite(ComplexAVLFugueFactory.complexAVLFugueFactory) {
 
   test("batching-works") {
     val replicaStateA =
@@ -46,12 +39,12 @@ class ComplexAVLInternalFugueTestSuite
 }
 
 abstract class InternalFugueTestSuite(
-    val factoryConstructor: () => FugueFactory
+    val factoryConstructor: FugueFactory
 ) extends FunSuite {
 
   test("regression-1") {
     val replicaStateA =
-      Replica(ReplicaState("A")(using factoryConstructor()), StringEditory())
+      Replica(ReplicaState("A")(using factoryConstructor), StringEditory())
     replicaStateA.insert(0, '/')
     assertEquals(replicaStateA.text(), "/")
     replicaStateA.insert(0, 'e')
@@ -62,7 +55,7 @@ abstract class InternalFugueTestSuite(
 
   test("regression-2") {
     val replicaStateA =
-      Replica(ReplicaState("A")(using factoryConstructor()), StringEditory())
+      Replica(ReplicaState("A")(using factoryConstructor), StringEditory())
     replicaStateA.insert(0, '9')
     replicaStateA.insert(1, 'F')
 
@@ -73,7 +66,7 @@ abstract class InternalFugueTestSuite(
 
   test("regression-3") {
     val replicaStateA =
-      Replica(ReplicaState("A")(using factoryConstructor()), StringEditory())
+      Replica(ReplicaState("A")(using factoryConstructor), StringEditory())
     replicaStateA.insert(0, 'n')
     replicaStateA.insert(1, 'T')
     replicaStateA.insert(1, '3')
@@ -83,7 +76,7 @@ abstract class InternalFugueTestSuite(
 
   test("regression-4") {
     val replicaStateA =
-      Replica(ReplicaState("A")(using factoryConstructor()), StringEditory())
+      Replica(ReplicaState("A")(using factoryConstructor), StringEditory())
     replicaStateA.insert(0, 'v')
     replicaStateA.insert(1, '3')
     replicaStateA.insert(1, 'G')
@@ -94,7 +87,7 @@ abstract class InternalFugueTestSuite(
 
   test("regression-5") {
     val replicaStateA =
-      Replica(ReplicaState("A")(using factoryConstructor()), StringEditory())
+      Replica(ReplicaState("A")(using factoryConstructor), StringEditory())
     replicaStateA.insert(0, 'v')
     assertEquals(replicaStateA.text(), "v")
     replicaStateA.delete(0)
@@ -103,7 +96,7 @@ abstract class InternalFugueTestSuite(
 
   test("regression-6") {
     val replicaStateA =
-      Replica(ReplicaState("A")(using factoryConstructor()), StringEditory())
+      Replica(ReplicaState("A")(using factoryConstructor), StringEditory())
     replicaStateA.insert(0, 'M')
     replicaStateA.insert(1, 'T')
     assertEquals(replicaStateA.text(), "MT")
@@ -113,7 +106,7 @@ abstract class InternalFugueTestSuite(
 
   test("regression-7") {
     val replicaStateA =
-      Replica(ReplicaState("A")(using factoryConstructor()), StringEditory())
+      Replica(ReplicaState("A")(using factoryConstructor), StringEditory())
     replicaStateA.insert(0, 'h')
     replicaStateA.insert(1, 'p')
     assertEquals(replicaStateA.text(), "hp")
@@ -123,7 +116,7 @@ abstract class InternalFugueTestSuite(
 
   test("regression-8") {
     val replicaStateA =
-      Replica(ReplicaState("A")(using factoryConstructor()), StringEditory())
+      Replica(ReplicaState("A")(using factoryConstructor), StringEditory())
     replicaStateA.insert(0, ']')
     replicaStateA.insert(1, '8')
     replicaStateA.insert(2, 'o')
@@ -134,7 +127,7 @@ abstract class InternalFugueTestSuite(
 
   test("regression-9") {
     val replicaStateA =
-      Replica(ReplicaState("A")(using factoryConstructor()), StringEditory())
+      Replica(ReplicaState("A")(using factoryConstructor), StringEditory())
     replicaStateA.insert(0, '0')
     replicaStateA.insert(1, '1')
     replicaStateA.insert(2, '2')
@@ -149,7 +142,7 @@ abstract class InternalFugueTestSuite(
 
   test("regression-10") {
     val replicaStateA =
-      Replica(ReplicaState("A")(using factoryConstructor()), StringEditory())
+      Replica(ReplicaState("A")(using factoryConstructor), StringEditory())
     replicaStateA.insert(0, '/')
     replicaStateA.insert(1, 'h')
     replicaStateA.insert(2, ',')
@@ -159,10 +152,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-11") {
     val replicaStateA =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaA.insert(0, '/')
     assertEquals(replicaA.text(), "/")
@@ -183,10 +176,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-12") {
     val replicaStateA =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaA.insert(0, '$')
     replicaA.insert(1, 'c')
@@ -200,10 +193,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-13") {
     val replicaStateA =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaB.insert(0, 'O')
     replicaB.sync(replicaA)
@@ -218,10 +211,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-14") {
     val replicaStateA =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaB.insert(0, 'L')
     assertEquals(replicaStateB.text(), "L")
@@ -242,10 +235,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-15") {
     val replicaStateA =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaA.insert(0, 'A')
     replicaB.insert(0, 'B')
@@ -256,10 +249,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-16") {
     val replicaStateA =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaA.insert(0, 'A')
     replicaB.insert(0, 'B')
@@ -270,10 +263,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-17") {
     val replicaStateA =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaA.insert(0, 'A')
     replicaB.insert(0, 'B')
@@ -285,10 +278,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-18") {
     val replicaStateA =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaA.insert(0, 'A')
     replicaB.insert(0, 'B')
@@ -299,10 +292,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-19") {
     val replicaStateA =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaB =
-      Replica(ReplicaState("B")(using factoryConstructor()), StringEditory())
+      Replica(ReplicaState("B")(using factoryConstructor), StringEditory())
     replicaA.insert(0, 'A')
     replicaB.insert(0, 'B')
     replicaA.syncFrom(replicaB.state)
@@ -310,10 +303,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-20") {
     val replicaStateA =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaA.insert(0, 'a')
     replicaB.syncFrom(replicaStateA)
@@ -324,10 +317,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-21") {
     val replicaStateA =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaA.insert(0, 'a')
     replicaA.insert(1, 'c')
@@ -337,10 +330,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-22") {
     val replicaStateA =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaA.insert(0, 'a')
     replicaA.sync(replicaB)
@@ -352,7 +345,7 @@ abstract class InternalFugueTestSuite(
 
   test("regression-23") {
     val replicaA =
-      Replica(ReplicaState("A")(using factoryConstructor()), StringEditory())
+      Replica(ReplicaState("A")(using factoryConstructor), StringEditory())
     replicaA.insert(0, 'A')
     assertEquals(replicaA.text(), "A")
     replicaA.insert(1, 'B')
@@ -365,10 +358,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-24") {
     val replicaStateA =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaA.insert(0, 'a')
     replicaA.insert(1, 'b')
@@ -385,10 +378,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-25") {
     val replicaStateA =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaA.insert(0, 'O')
     replicaA.insert(1, 'V')
@@ -403,10 +396,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-26") {
     val replicaStateA =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaA.insert(0, 'm')
     replicaA.insert(1, ' ')
@@ -416,10 +409,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-27") {
     val replicaStateA =
-      ReplicaState("D")(using factoryConstructor())
+      ReplicaState("D")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateC =
-      ReplicaState("C")(using factoryConstructor())
+      ReplicaState("C")(using factoryConstructor)
     val replicaC = Replica(replicaStateC, StringEditory())
     replicaA.insert(0, 'B')
     replicaA.insert(0, '@')
@@ -436,10 +429,10 @@ abstract class InternalFugueTestSuite(
 
   test("regression-28") {
     val replicaStateA =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     replicaA.insert(0, 'D')
     replicaA.insert(1, '+')
@@ -456,10 +449,10 @@ abstract class InternalFugueTestSuite(
 
   test("2023-weidner-minimizing-interleaving-figure-1") {
     val replicaStateA =
-      ReplicaState("A")(using factoryConstructor())
+      ReplicaState("A")(using factoryConstructor)
     val replicaA = Replica(replicaStateA, StringEditory())
     val replicaStateB =
-      ReplicaState("B")(using factoryConstructor())
+      ReplicaState("B")(using factoryConstructor)
     val replicaB = Replica(replicaStateB, StringEditory())
     assertEquals(replicaA.text(), "")
     assertEquals(replicaB.text(), "")
