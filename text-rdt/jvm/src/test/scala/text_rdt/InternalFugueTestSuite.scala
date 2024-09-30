@@ -35,9 +35,9 @@ class ComplexAVLInternalFugueTestSuite
 
 class OTAlgorithmTestSuite extends InternalFugueTestSuite(replicaId => OTAlgorithm(replicaId, Vector.empty))
 
-abstract class InternalFugueTestSuite[A <: CollaborativeTextEditingAlgorithm[A]](
+abstract class InternalFugueTestSuite[A](
     val factoryConstructor: String => A
-) extends FunSuite {
+)(using algorithm: CollaborativeTextEditingAlgorithm[A]) extends FunSuite {
 
   test("regression-1") {
     val replicaStateA = factoryConstructor("A")
