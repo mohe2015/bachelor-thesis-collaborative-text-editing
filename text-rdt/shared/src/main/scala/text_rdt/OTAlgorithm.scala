@@ -85,7 +85,12 @@ object OTAlgorithm {
           val concurrentChanges = algorithm.causalBroadcast.concurrentChanges(causalId)
           println(s"concurrent changes to $causalId ${concurrentChanges}")
 
-          val newOperation = concurrentChanges.flatMap(_._2).reduce(Some(message), transform)
+          val newOperation: Option[OTOperation] = concurrentChanges.flatMap(_._2).foldLeft(Some(message))(transform)
+
+          newOperation.foreach(operation => operation.inner match {
+            case OperationType.Insert(i, x) => text.insert(i, x)
+            case OperationType.Delete(i) => text.deleteCharAt(i)
+          })
         })
       }
     }
