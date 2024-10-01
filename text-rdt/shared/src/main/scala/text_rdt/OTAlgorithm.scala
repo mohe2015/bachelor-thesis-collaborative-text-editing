@@ -6,24 +6,25 @@ case class OTOperation(context: RID, inner: OperationType) {
     
 }
 
-def transform(operationToTransform: OTOperation, operationToTransformAgainst: OTOperation): Option[OperationType] = {
+def transform(operationToTransform: OTOperation, operationToTransformAgainst: Option[OTOperation]): Option[OperationType] = {
   (operationToTransform, operationToTransformAgainst) match {
-    case Tuple2(OTOperation(oContext, OperationType.Insert(oI, oX)), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oContext > bContext)) {
+    case Tuple2(operation, None) => Some(operation.inner)
+    case Tuple2(OTOperation(oContext, OperationType.Insert(oI, oX)), Some(OTOperation(bContext, OperationType.Insert(bI, bX)))) => if (oI < bI || (oI == bI && oContext > bContext)) {
       Some(OperationType.Insert(oI, oX))
     } else {
       Some(OperationType.Insert(oI + 1, oX))
     }
-    case Tuple2(OTOperation(oContext, OperationType.Insert(oI, oX)), OTOperation(bContext, OperationType.Delete(bI))) => if (oI <= bI) {
+    case Tuple2(OTOperation(oContext, OperationType.Insert(oI, oX)), Some(OTOperation(bContext, OperationType.Delete(bI)))) => if (oI <= bI) {
       Some(OperationType.Insert(oI, oX))
     } else {
       Some(OperationType.Insert(oI - 1, oX))
     }
-    case Tuple2(OTOperation(oContext, OperationType.Delete(oI)), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI) {
+    case Tuple2(OTOperation(oContext, OperationType.Delete(oI)), Some(OTOperation(bContext, OperationType.Insert(bI, bX)))) => if (oI < bI) {
       Some(OperationType.Delete(oI))
     } else {
       Some(OperationType.Delete(oI + 1))
     }
-    case Tuple2(OTOperation(oContext, OperationType.Delete(oI)), OTOperation(bContext, OperationType.Delete(bI))) => if (oI < bI) {
+    case Tuple2(OTOperation(oContext, OperationType.Delete(oI)), Some(OTOperation(bContext, OperationType.Delete(bI)))) => if (oI < bI) {
       Some(OperationType.Delete(oI))
     } else if (oI > bI) {
       Some(OperationType.Delete(oI - 1))
@@ -51,7 +52,7 @@ object OTAlgorithm {
 
     extension (algorithm: OTAlgorithm) {
       override def delete(i: Int): Unit = {
-        val message = OTOperation(42, OperationType.Delete(i))
+        val message = OTOperation(algorithm.replicaId, OperationType.Delete(i))
 
         algorithm.causalBroadcast.addOneToHistory(
           message
@@ -61,7 +62,7 @@ object OTAlgorithm {
       }
 
       override def insert(i: Int, x: Char): Unit = {
-        val message = OTOperation(42, OperationType.Insert(i, x))
+        val message = OTOperation(algorithm.replicaId, OperationType.Insert(i, x))
 
         algorithm.causalBroadcast.addOneToHistory(
           message
@@ -83,6 +84,8 @@ object OTAlgorithm {
         algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (causalId, message) => {
           val concurrentChanges = algorithm.causalBroadcast.concurrentChanges(causalId)
           println(s"concurrent changes to $causalId ${concurrentChanges}")
+
+          val newOperation = concurrentChanges.fold(Some(message), transform)
         })
       }
     }
