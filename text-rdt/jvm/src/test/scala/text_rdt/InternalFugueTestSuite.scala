@@ -1,7 +1,6 @@
 package text_rdt
 
 import munit.FunSuite
-import geny.Internal
 
 class SimpleInternalFugueTestSuite
     extends InternalFugueTestSuite(replicaId => Replica(ReplicaState(replicaId)(using SimpleFugueFactory.simpleFugueFactory), StringEditory())) {}

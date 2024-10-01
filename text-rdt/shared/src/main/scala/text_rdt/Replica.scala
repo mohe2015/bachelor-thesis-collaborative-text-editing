@@ -70,7 +70,7 @@ object Replica {
 
       def sync(other: Replica[F]): Unit = replica.sync(other)
 
-      def syncFrom(other: Replica[F]): Unit = replica.syncFrom(other)
+      def syncFrom(other: Replica[F]): Unit = replica.syncFrom(other.state)
     }
   }
 }
