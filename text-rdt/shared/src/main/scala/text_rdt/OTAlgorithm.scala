@@ -11,33 +11,43 @@ case class OTOperation(context: Int, inner: OperationType) {
     case Delete(i: Int)
  }
 
-final case class OTAlgorithm(replicaId: String, val operations: Vector[OTOperation]) extends CollaborativeTextEditingAlgorithm[OTAlgorithm] {
+final case class OTAlgorithm(replicaId: String, val operations: Vector[OTOperation]) {
 
   val causalBroadcast = CausalBroadcast[OTOperation](replicaId)
 
-  extension (algorithm: OTAlgorithm) {
-    override def delete(i: Int): Unit = {
-      val message = OTOperation(42, OperationType.Delete(i))
+}
 
-      causalBroadcast.addOneToHistory(
-        message
-      )
-    }
+object OTAlgorithm {
+  given algorithm: CollaborativeTextEditingAlgorithm[OTAlgorithm] with {
 
-    override def insert(i: Int, x: Char): Unit = {
-      val message = OTOperation(42, OperationType.Insert(i, x))
+    extension (algorithm: OTAlgorithm) {
+      override def delete(i: Int): Unit = {
+        val message = OTOperation(42, OperationType.Delete(i))
 
-      causalBroadcast.addOneToHistory(
-        message
-      )
-    }   
+        algorithm.causalBroadcast.addOneToHistory(
+          message
+        )
+      }
 
-    override def text(): String = {
-      ???
-    }
+      override def insert(i: Int, x: Char): Unit = {
+        val message = OTOperation(42, OperationType.Insert(i, x))
 
-    override def sync(other: OTAlgorithm) = {
-      ???
+        algorithm.causalBroadcast.addOneToHistory(
+          message
+        )
+      }   
+
+      override def text(): String = {
+        ???
+      }
+
+      override def sync(other: OTAlgorithm) = {
+        ???
+      }
+
+      override def syncFrom(other: OTAlgorithm) = {
+        ???
+      }
     }
   }
 }

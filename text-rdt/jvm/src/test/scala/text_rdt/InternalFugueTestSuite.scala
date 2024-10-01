@@ -31,6 +31,22 @@ class ComplexAVLInternalFugueTestSuite
     assertEquals(replicaStateA.state.factory.tree.size, 2)
   }
 
+  // TODO put this into a general fugue subclass
+  test("regression-28") {
+    val replicaA = factoryConstructor("A")
+    val replicaB = factoryConstructor("B")
+    replicaA.insert(0, 'D')
+    replicaA.insert(1, '+')
+    replicaA.insert(2, 's')
+    replicaA.delete(0)
+    replicaA.delete(0)
+    replicaA.sync(replicaB)
+    assertEquals(replicaA.editor.asInstanceOf[StringEditory].data.toString(), "s")
+    assertEquals(replicaB.editor.asInstanceOf[StringEditory].data.toString(), "s")
+    assertEquals(replicaA.text(), replicaB.text())
+    assertEquals(replicaA.text(), "s")
+    assertEquals(replicaB.text(), "s")
+  }
 }
 
 class OTAlgorithmTestSuite extends InternalFugueTestSuite(replicaId => OTAlgorithm(replicaId, Vector.empty))
@@ -247,7 +263,7 @@ abstract class InternalFugueTestSuite[A](
     replicaA.insert(0, 'A')
     replicaB.insert(0, 'B')
     replicaB.insert(1, 'b')
-    replicaB.syncFrom(replicaA.state)
+    replicaB.syncFrom(replicaA)
     assertEquals(replicaB.text(), "BbA")
   }
 
@@ -354,22 +370,6 @@ abstract class InternalFugueTestSuite[A](
     replicaA.sync(replicaC)
     assertEquals(replicaA.text(), "MBu")
     assertEquals(replicaC.text(), "MBu")
-  }
-
-  test("regression-28") {
-    val replicaA = factoryConstructor("A")
-    val replicaB = factoryConstructor("B")
-    replicaA.insert(0, 'D')
-    replicaA.insert(1, '+')
-    replicaA.insert(2, 's')
-    replicaA.delete(0)
-    replicaA.delete(0)
-    replicaA.sync(replicaB)
-    assertEquals(replicaA.editor.asInstanceOf[StringEditory].data.toString(), "s")
-    assertEquals(replicaB.editor.asInstanceOf[StringEditory].data.toString(), "s")
-    assertEquals(replicaA.text(), replicaB.text())
-    assertEquals(replicaA.text(), "s")
-    assertEquals(replicaB.text(), "s")
   }
 
   test("2023-weidner-minimizing-interleaving-figure-1") {

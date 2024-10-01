@@ -10,5 +10,7 @@ trait CollaborativeTextEditingAlgorithm[A] {
     def text(): String
 
     def sync(other: A): Unit
+
+    def syncFrom(other: A): Unit
   }
 }
