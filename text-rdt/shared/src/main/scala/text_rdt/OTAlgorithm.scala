@@ -2,14 +2,27 @@ package text_rdt
 
 // https://www3.ntu.edu.sg/scse/staff/czsun/projects/otfaq/
 
-case class OTOperation(context: Int, inner: OperationType) {
+case class OTOperation(context: RID, inner: OperationType) {
     
 }
 
- enum OperationType() {
-    case Insert(i: Int, x: Char)
-    case Delete(i: Int)
- }
+def transform(operationToTransform: OTOperation, operationToTransformAgainst: OTOperation) = {
+  (operationToTransform, operationToTransformAgainst) match {
+    case Tuple2(OTOperation(oContext, OperationType.Insert(oI, oX)), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oContext > bContext)) {
+      OperationType.Insert(oI, oX)
+    } else {
+      OperationType.Insert(oI + 1, oX)
+    }
+    case Tuple2(OTOperation(oContext, OperationType.Insert(oI, oX)), OTOperation(bContext, OperationType.Delete(bI))) => 
+    case Tuple2(OTOperation(oContext, OperationType.Delete(oI)), OTOperation(bContext, OperationType.Insert(bI, bX))) => 
+    case Tuple2(OTOperation(oContext, OperationType.Delete(oI)), OTOperation(bContext, OperationType.Delete(bI))) => 
+  }
+}
+
+enum OperationType() {
+  case Insert(i: Int, x: Char)
+  case Delete(i: Int)
+}
 
 final case class OTAlgorithm(replicaId: String, val operations: Vector[OTOperation]) {
 
@@ -54,7 +67,8 @@ object OTAlgorithm {
 
       override def syncFrom(other: OTAlgorithm) = {
         algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (causalId, message) => {
-          println(s"concurrent changes to $causalId ${algorithm.causalBroadcast.concurrentChanges(causalId)}")
+          val concurrentChanges = algorithm.causalBroadcast.concurrentChanges(causalId)
+          println(s"concurrent changes to $causalId ${concurrentChanges}")
         })
       }
     }
