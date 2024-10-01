@@ -257,8 +257,8 @@ abstract class InternalFugueTestSuite[A](
   }
 
   test("regression-18") {
-    val replicaA = factoryConstructor("A")
-    val replicaB = factoryConstructor("B")
+    val replicaA = factoryConstructor("B")
+    val replicaB = factoryConstructor("A")
     replicaA.insert(0, 'A')
     replicaB.insert(0, 'B')
     replicaB.insert(1, 'b')
