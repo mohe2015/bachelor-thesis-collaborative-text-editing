@@ -54,6 +54,18 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
       .map((causalId, messages) => (causalId, messages.clone()))
   }
 
+  def concurrentChanges(
+      causalId: CausalID
+  ): Iterable[
+    (CausalID, mutable.ArrayBuffer[MSG])
+  ] = {
+    _history
+      .to(Iterable)
+      .filter(node =>
+        node._1 != causalId && CausalID.partialOrder.lteq(node._1, causalId)
+      )
+      .map((causalId, messages) => (causalId, messages.clone()))
+  }
 
   def addOneToHistory(msg: MSG): Unit = {
     if (_history.nonEmpty && _history.last._1 == causalState) {
@@ -99,7 +111,7 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
     cachedHeads.addOne(causalState)
   }
 
-  def syncFrom(other: CausalBroadcast[MSG], handleMessage: MSG => Unit): Unit = {
+  def syncFrom(other: CausalBroadcast[MSG], handleMessage: (CausalID, MSG) => Unit): Unit = {
     val heads1 = this.cachedHeads
     val potentiallyNewer2 =
       other.elementsPotentiallyNewer(heads1)
@@ -119,7 +131,7 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
           CausalID,
           mutable.ArrayBuffer[MSG]
       ),
-      handleMessage: MSG => Unit
+      handleMessage: (CausalID, MSG) => Unit
   ): Unit = {
     entry._1
       .foreachEntry((rid, counter) => {
@@ -135,6 +147,6 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
 
     this.addToHistory(entry)
 
-    entry._2.foreach(msg => handleMessage(msg)) // TODO test again whether the compiler can detect this with entry._2.foreach(msg => handleMessage)
+    entry._2.foreach(msg => handleMessage(entry._1, msg))
   }
 }

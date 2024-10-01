@@ -53,7 +53,9 @@ object OTAlgorithm {
       }
 
       override def syncFrom(other: OTAlgorithm) = {
-        // TODO deliver shit
+        algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (causalId, message) => {
+          println(s"concurrent changes to $causalId ${algorithm.causalBroadcast.concurrentChanges(causalId)}")
+        })
       }
     }
   }

@@ -23,7 +23,7 @@ final case class Replica[F <: FugueFactory](
   }
 
   def syncFrom(other: ReplicaState[F]): Unit = {
-    this.state.causalBroadcast.syncFrom(other.causalBroadcast.asInstanceOf[CausalBroadcast[Replica.this.state.factoryContext.MSG]], msg => state.factoryContext.handleRemoteMessage(state.factory)(msg, editor))
+    this.state.causalBroadcast.syncFrom(other.causalBroadcast.asInstanceOf[CausalBroadcast[Replica.this.state.factoryContext.MSG]], (causalId, msg) => state.factoryContext.handleRemoteMessage(state.factory)(msg, editor))
   }
 
   def deliveringRemote(
@@ -32,7 +32,7 @@ final case class Replica[F <: FugueFactory](
           mutable.ArrayBuffer[Replica.this.state.factoryContext.MSG]
       ),
   ): Unit = {
-    state.causalBroadcast.deliveringRemote(entry, msg => state.factoryContext.handleRemoteMessage(state.factory)(msg, editor))
+    state.causalBroadcast.deliveringRemote(entry, (causalId, msg) => state.factoryContext.handleRemoteMessage(state.factory)(msg, editor))
   }
 
   def text(): String = {
