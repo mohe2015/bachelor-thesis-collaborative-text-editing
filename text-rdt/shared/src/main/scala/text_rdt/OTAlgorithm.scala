@@ -6,28 +6,28 @@ case class OTOperation(context: RID, inner: OperationType) {
     
 }
 
-def transform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OperationType] = {
+def transform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
   (operationToTransform, operationToTransformAgainst) match {
     case Tuple2(None, other) => None
     case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oContext > bContext)) {
-      Some(OperationType.Insert(oI, oX))
+      Some(OTOperation(oContext, OperationType.Insert(oI, oX)))
     } else {
-      Some(OperationType.Insert(oI + 1, oX))
+      Some(OTOperation(oContext, OperationType.Insert(oI + 1, oX)))
     }
     case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Delete(bI))) => if (oI <= bI) {
-      Some(OperationType.Insert(oI, oX))
+      Some(OTOperation(oContext, OperationType.Insert(oI, oX)))
     } else {
-      Some(OperationType.Insert(oI - 1, oX))
+      Some(OTOperation(oContext, OperationType.Insert(oI - 1, oX)))
     }
     case Tuple2(Some(OTOperation(oContext, OperationType.Delete(oI))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI) {
-      Some(OperationType.Delete(oI))
+      Some(OTOperation(oContext, OperationType.Delete(oI)))
     } else {
-      Some(OperationType.Delete(oI + 1))
+      Some(OTOperation(oContext, OperationType.Delete(oI + 1)))
     }
     case Tuple2(Some(OTOperation(oContext, OperationType.Delete(oI))), OTOperation(bContext, OperationType.Delete(bI))) => if (oI < bI) {
-      Some(OperationType.Delete(oI))
+      Some(OTOperation(oContext, OperationType.Delete(oI)))
     } else if (oI > bI) {
-      Some(OperationType.Delete(oI - 1))
+      Some(OTOperation(oContext, OperationType.Delete(oI - 1)))
     } else {
       None
     }
@@ -85,7 +85,7 @@ object OTAlgorithm {
           val concurrentChanges = algorithm.causalBroadcast.concurrentChanges(causalId)
           println(s"concurrent changes to $causalId ${concurrentChanges}")
 
-          val newOperation = concurrentChanges.fold(Some(message), transform)
+          val newOperation = concurrentChanges.flatMap(_._2).reduce(Some(message), transform)
         })
       }
     }
