@@ -15,6 +15,8 @@ final case class OTAlgorithm(replicaId: String, val operations: Vector[OTOperati
 
   val causalBroadcast = CausalBroadcast[OTOperation](replicaId)
 
+  val text: StringBuilder = StringBuilder()
+
 }
 
 object OTAlgorithm {
@@ -27,6 +29,8 @@ object OTAlgorithm {
         algorithm.causalBroadcast.addOneToHistory(
           message
         )
+
+        text.deleteCharAt(i)
       }
 
       override def insert(i: Int, x: Char): Unit = {
@@ -35,18 +39,21 @@ object OTAlgorithm {
         algorithm.causalBroadcast.addOneToHistory(
           message
         )
+
+        text.insert(i, x)
       }   
 
       override def text(): String = {
-        ???
+        text.toString()
       }
 
       override def sync(other: OTAlgorithm) = {
-        ???
+        algorithm.syncFrom(other)
+        other.syncFrom(algorithm)
       }
 
       override def syncFrom(other: OTAlgorithm) = {
-        ???
+        // TODO deliver shit
       }
     }
   }
