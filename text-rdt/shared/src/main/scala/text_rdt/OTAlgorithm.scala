@@ -9,7 +9,7 @@ case class OTOperation(context: RID, inner: OperationType) {
 def transform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
   (operationToTransform, operationToTransformAgainst) match {
     case Tuple2(None, other) => None
-    case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oContext > bContext)) {
+    case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oContext < bContext)) {
       Some(OTOperation(oContext, OperationType.Insert(oI, oX)))
     } else {
       Some(OTOperation(oContext, OperationType.Insert(oI + 1, oX)))
