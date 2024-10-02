@@ -1,8 +1,10 @@
 package text_rdt
 
-// https://www3.ntu.edu.sg/scse/staff/czsun/projects/otfaq/
+// https://www3.ntu.edu.sg/scse/staff/czsun/projects/otfaq/#_Toc321146152
+// COT would be wayy to complicated, choose something simpler
 
-case class OTOperation(context: RID, inner: OperationType) {
+// https://www3.ntu.edu.sg/scse/staff/czsun/projects/otfaq/#_Toc321146146
+case class OTOperation(replica: RID, inner: OperationType) { // , contextBefore: String, contextAfter: String
     
 }
 
