@@ -76,7 +76,9 @@
         in
         {
           devShells.default = pkgs.mkShell {
-            buildInputs = [ pkgs.bashInteractive pkgs.sbt pkgs.openjdk21 pkgs.nodejs pkgs.vscodium ];
+            buildInputs = [ pkgs.bashInteractive pkgs.sbt pkgs.openjdk21 pkgs.nodejs pkgs.vscodium pkgs.openssl ];
+
+            nativeBuildInputs = [ pkgs.pkg-config ];
 
             JAVA_HOME = pkgs.openjdk21;
           };
