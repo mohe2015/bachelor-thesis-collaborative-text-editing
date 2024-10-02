@@ -62,7 +62,7 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
     _history
       .to(Iterable)
       .filter(node =>
-        node._1 != causalId && CausalID.partialOrder.lteq(node._1, causalId)
+        node._1 != causalId && CausalID.partialOrder.tryCompare(node._1, causalId).isEmpty
       )
       .map((causalId, messages) => (causalId, messages.clone()))
   }

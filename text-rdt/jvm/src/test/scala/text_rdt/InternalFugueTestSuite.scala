@@ -191,7 +191,7 @@ abstract class InternalFugueTestSuite[A](
     assertEquals(replicaB.text(), "Bec")
   }
 
-  test("regression-13") {
+  test("regression-13") { // here?
     val replicaA = factoryConstructor("A")
     val replicaB = factoryConstructor("B")
     replicaB.insert(0, 'O')

@@ -83,7 +83,7 @@ object OTAlgorithm {
       override def syncFrom(other: OTAlgorithm) = {
         algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (causalId, message) => {
           val concurrentChanges = algorithm.causalBroadcast.concurrentChanges(causalId)
-          println(s"concurrent changes to $causalId ${concurrentChanges}")
+          println(s"receiving $message from ${other.replicaId} with changes to transform against: ${concurrentChanges}")
 
           val newOperation: Option[OTOperation] = concurrentChanges.flatMap(_._2).foldLeft(Some(message))(transform)
 
