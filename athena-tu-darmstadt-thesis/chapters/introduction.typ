@@ -1,3 +1,5 @@
+#import "@preview/glossarium:0.4.1": gls, glspl 
+
 = Introduction
 <introduction>
 Nearly all applications require text editing in some form — even if just for text entry into a form element. When we want to make these applications collaborative, those text fields need collaborative text editing. However, such functionality is not yet easily available. In contrast to single user text editing, collaborative text editing creates challenges with merging concurrent edit operations and especially handling conflicting edit operations and performance edge cases. Collaborative text editing algorithms need to handle conflicts in an intent-preserving and converging way.
@@ -6,7 +8,7 @@ Prior collaborative solutions require a central server, such as Microsoft~365 an
 
 Similarly, the client may not be able to reach the server. This may be the case when public infrastructure like cell towers is unavailable, because of natural disasters, sabotage, cyberattacks, failure of infrastructure they depend on such as the power grid or for any other reason. A recent example are the Ahrtal floods.
 
-Decentralized algorithms can adapt to these challenges by functioning in a wide range of network scenarios. For example, p2p networks work without a central server. Furthermore, manets and dtns do not require public communication infrastructure at all but instead can utilize Wi-Fi, Bluetooth and other short-range communication technology.
+Decentralized algorithms can adapt to these challenges by functioning in a wide range of network scenarios. For example, #gls("p2p") networks work without a central server. Furthermore, #glspl("manet") and #glspl("dtn") do not require public communication infrastructure at all but instead can utilize Wi-Fi, Bluetooth and other short-range communication technology.
 
 In a decentralized setting there is no guarantee that peers are frequently online. Therefore, the ability to handle #emph[non-realtime] editing with potentially long periods of offline activity is essential. This combination of offline and decentralized software is often called local-first software #cite(<2019-kleppmann-local-first>);.
 
