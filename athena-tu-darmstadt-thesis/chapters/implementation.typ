@@ -15,7 +15,7 @@ It needs to provide an interface to a tree with left and right children, possibl
 
 In practice, trees usually contain many deep right descendants because of consecutive character insertions @2023-weidner-minimizing-interleaving[Figure 5], so this is a case that should be heavily optimized.
 
-#block[
+#figure[
 ```scala
 val schema = Schema(SchemaSpec(orderedmap.from(StringDictionary(
   ("text", NodeSpec()),

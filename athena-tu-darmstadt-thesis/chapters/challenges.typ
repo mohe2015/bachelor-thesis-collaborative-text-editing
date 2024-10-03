@@ -42,7 +42,7 @@ The basic implementation of Fugue has a linear runtime per character insertion o
 )
 <fig:ot-example>
 
-#block[
+#figure(
 ```text
 Tii(Ins[p1,c1], Ins[p2, c2]) {
   if p1 < p2 or (p1 = p2 and u1 > u2)
@@ -50,9 +50,10 @@ Tii(Ins[p1,c1], Ins[p2, c2]) {
   else
     return Ins[p1+1, c1];
 }
-```
+```,
+caption: [Example for transformation function from Sun @2024-sun-ot-faq[Section 2.15]]
+) <lst:example-transformation-function>
 
-]
 == OT in Comparison to CRDTs
 <chapter:ot>
 This section explains the differences and similarities between ot and crdts and shows that the current crdts runtime complexity is quadratic and current ot algorithms are unsuitable for #emph[non-realtime] editing.

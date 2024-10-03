@@ -32,7 +32,7 @@ Finally, in , we give an overview of the resulting data structure.
 
 #benchmarkResults("simple-sequential-inserts", [Benchmark results for sequential insertions with the \glsfmttext{simple algorithm}])
 
-#block[
+#figure[
 ```scala
 override def atVisibleIndex(i: Int): SimpleTreeNode[V] = {
   factory.nodes().drop(i).iterator.next
@@ -46,7 +46,7 @@ Note: The graphs show the time and memory #emph[per character operation];, thus 
 
 As shown in almost all the time is spent in `atVisibleIndex`. This matches the repeated linear search to find the element at which we need to insert based on its index in the original algorithm as shown in .
 
-#block[
+#figure[
 ```scala
 final case class BatchingTreeNode(
     rid: RID | Null,
@@ -155,7 +155,7 @@ Child insertions need to be efficient even after many children are inserted at t
 
 #benchmarkResults("complexavl-evil-insert-1", [Benchmark results of an edge case for insertion to the left of the root])
 
-#block[
+#figure[
 ```scala
 val firstRightChild = leftOrigin.firstRightChild()
 var side: Side | Null = null
@@ -178,7 +178,7 @@ As the root node has a right child after the first insertion, further nodes need
 
 #benchmarkResults("complexavl-evil-insert-2", [Benchmark results of an edge case for concurrent insertion to the right])
 
-#block[
+#figure[
 ```scala
 val base = if (rightChildrenBuffer.nn.isEmpty || before.isEmpty) {
   parent
@@ -215,7 +215,7 @@ It is important to note that there is no guarantee this covers all edge cases. E
 
 All these data structures also lead to a high per-node memory overhead, so it may be interesting if there are better ways to achieve the same performance goal. Note especially the last edge case where almost 1300 bytes are needed per character operation. Through optimization, probably in an ahead-of-time compiled language and not Scala or another JVM based language, this can probably be reduced at least a bit.
 
-#block[
+#figure[
 ```scala
 final case class BatchingAVLTreeNode[V](
   replicaId: RID | Null,

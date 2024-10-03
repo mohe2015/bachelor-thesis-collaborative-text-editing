@@ -13,7 +13,7 @@ For our final benchmarks the generic parameter which specified the type of the e
 overhead because of the required metadata per object and because a character object is two bytes large, but many
 characters only need a single byte.
 
-#block[
+#figure[
 ```scala
 ManagementFactory
     .getPlatformMBeanServer()
@@ -27,7 +27,7 @@ ManagementFactory
 ```
 
 ]
-#block[
+#figure[
 ```text
      #instances         #bytes  class name (module)
 -------------------------------------------------------
