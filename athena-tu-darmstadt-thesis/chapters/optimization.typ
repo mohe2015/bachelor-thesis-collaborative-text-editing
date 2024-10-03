@@ -1,3 +1,5 @@
+#import "utils.typ": benchmarkResults
+
 = Optimizing Common Edit Operations
 <optimization>
 Based on a theoretical understanding of our base implementation developed from the algorithmic description in the Fugue paper @2023-weidner-minimizing-interleaving[Algorithm~1] we expect quadratic runtime complexity and linear memory usage in relation to the text length. This chapter discusses the implementation of benchmarks to verify the theoretical understanding of the runtime and memory complexity and then proposes optimizations for the implementation based on them.
@@ -9,6 +11,8 @@ In , we start with an optimization that combines consecutively inserted characte
 In , we create a look-up data structure that can quickly convert between text positions and nodes as that is the main performance bottleneck in the base implementation. This results in $O (l o g (n))$ runtime complexity per operation. Then, we combine both approaches to reduce memory usage using the batching optimization. This leads to the common case being well optimized, but there are still cases that can be quadratic for text of some length.
 In we investigate these performance edge cases, and develop optimizations for them to ensure good performance in all cases. This is important so malicious peers or unusual editing behavior can not lead to unusable runtime performance.
 Finally, in , we give an overview of the resulting data structure.
+
+#benchmarkResults("simple-sequential-inserts", [Benchmark results for sequential insertions with the \glsfmttext{simple algorithm}])
 
 #block[
 ```scala
@@ -79,6 +83,8 @@ In the other cases, so \"Insert to the right not at the right edge\" and \"Inser
 <delete-operation>
 If an element is already deleted because of concurrent actions, nothing needs to be done. Note that also the editor then does not need any updates. Deletion generally needs to split a node into up to three parts \(except if the first or last element is deleted) as there needs to be a node for the part before the deleted element, a node for the deleted element and a node for the part after the deleted element. Later optimizations avoid this for sequential forward and backward deletions by the same replica if both nodes have the same simple ID. Instead, the deleted element is moved to the node containing the other already deleted elements if the parent node has no other right children.
 
+#benchmarkResults("simple-complex-sequential-inserts", [Benchmark results for sequential insertions comparing the \glsfmttext{simple algorithm} and the \glsfmttext{batching algorithm}])
+
 ===== Results for sequential insertions
 <results-for-sequential-insertions>
 Benchmarking the sequential insertions produces the results in . The reason the batching algorithm is so fast in comparison to the simple algorithm is that it mainly needs to append to an `ArrayBuffer` for sequential insertions.
@@ -88,12 +94,18 @@ Even though every character insertion only needs to append a character to an `Ar
 The CPU profile in shows that most time is spent in garbage collection. This indicates that allocating elements for the nodes and messages and resizing ArrayBuffers requires extensive CPU time. The profile shows the CPU time, so this affects the realtime less on a multithreaded system than on a single threaded system. Garbage collection makes it harder to optimize the code as the garbage collector creates a non-local performance bottleneck. It may be helpful to look at the allocation profile in .
 There are some things like allocations of temporary values for iterators and views that can be optimized away. In our experience this only leads to limited improvements though. It would be easier to use a programming language that does not use a garbage collector or probably not even a JIT compiler to optimize the algorithm to that depth. Still, Scala, Java and the JVM are well-suited to look at the asymptotic performance because memory allocation or cyclic data structures do not need to be considered in contrast to low level languages like C++ or Rust.
 
+#benchmarkResults("simple-complex-real-world", [Benchmark results for real world editing trace comparing the \glsfmttext{simple algorithm} and the \glsfmttext{batching algorithm}])
+
 ===== Results for real world editing trace
 <results-for-real-world-editing-trace>
 While this results in good performance, it clearly does not cover real world editing behavior. Therefore, we use the dataset from #link("https://github.com/automerge/automerge-perf") which contains 259,778 insertion and deletion operations that produce a text with 104,852 characters. It is the editing trace from the LaTeX~source of #link("https://arxiv.org/abs/1608.03960");.
 
 shows the runtime #emph[per operation] grows linearly and is also extremely slow for only a few tens of thousands of characters. shows that most time is spent in `findElementAtIndex` similar to the simple sequential insertions.
 This is because the batching only helps to improve the performance by some factor that is correlated with the size of consecutive insertions. We therefore looked into an approach that fixes the root cause which is the search of the node in the tree that represents the character at a position in the text.
+
+#benchmarkResults("simple-complex-simpleavl-real-world", [Benchmark results for real world editing trace comparing the \glsfmttext{simple algorithm}, the \glsfmttext{batching algorithm} and the \glsfmttext{simple AVL algorithm}])
+
+#benchmarkResults("simpleavl-real-world", [Benchmark results for real world editing trace with the \glsfmttext{simple AVL algorithm}])
 
 == Optimization Using a Look-Up Datastructure
 <sec:optimization-look-up-datastructure>
@@ -103,9 +115,15 @@ The batching optimization is excluded to be able to isolate the performance chan
 This results in a very low time per character operation as shown in in comparison to the two other approaches with the real world benchmark. As it is not possible to read the values for the simple AVL algorithm there, shows only the simple AVL algorithm with the full text, so much more operations, and a different y-axis scale.
 The CPU profile in shows that there is not a single hot location, but execution is distributed over many methods. The memory overhead is still very high, because a new node in the AVL tree and the Fugue tree needs to be created for every character. shows a memory usage of about 250 bytes per character operation. Note that this also includes the full insertion and deletion history and not only the tree itself.
 
+#benchmarkResults("simpleavl-complexavl-real-world", [Benchmark results for real world editing trace comparing the \glsfmttext{simple AVL algorithm} and the \glsfmttext{batching AVL algorithm}])
+
 == Combined Optimizations
 <combined-optimizations>
 Combining the AVL tree optimization and node batching improves the memory usage and runtime. The results are shown in for the real world benchmark. The runtime per operation is one microsecond, thus one million operations can be handled per second. The memory usage per operation is about 25 bytes per operation. This concludes our optimization of the common execution path.
+
+\evilEdgeCase{evil-children}{edge case with many children}
+
+#benchmarkResults("complexavl-evil-children", [Benchmark results of an edge case with many children])
 
 == Performance Edge Cases
 <edge-cases>
@@ -114,6 +132,10 @@ An optimal algorithm must perform efficiently in #emph[all] cases. Therefore, ef
 ===== Edge case with many children
 <edge-case-with-many-children>
 Child insertions need to be efficient even after many children are inserted at the same side of the same node as shown in with the benchmark results in . Therefore, the children are stored in a `mutable.SortedSet`, so a binary search tree. This results in logarithmic insertion.
+
+\evilEdgeCase{evil-insert-1}{edge case for insertion to the left of the root}
+
+#benchmarkResults("complexavl-evil-insert-1", [Benchmark results of an edge case for insertion to the left of the root])
 
 #block[
 ```scala
@@ -134,6 +156,10 @@ val origin = if (firstRightChild == null) {
 Another case is repeatedly inserting at position $0$ as shown in with the benchmark results in .
 As the root node has a right child after the first insertion, further nodes need to be inserted to the left of that child. To find the node before the child our algorithm retrieves the leftmost descendant of it as shown in . This requires a recursive traversal down the leftmost child, which is a linear operation. Therefore, our algorithm uses a cache for the leftmost descendant of every node in the tree. As all nodes in the path from the node to its leftmost descendant have the same leftmost descendant, one cache is used for this group of nodes. As shown later, it needs to be possible to split the cache up, if a child is inserted somewhere in that path to the left. The cache also uses an AVL tree with the specialty of storing a parent reference in each AVL tree node and the root node storing a reference to the leftmost descendant of all nodes of that AVL tree. Therefore, the leftmost descendant of this group of nodes can be efficiently retrieved and updated, the cache can be efficiently split up by splitting the AVL tree and new nodes can be efficiently inserted.
 
+\evilEdgeCase{evil-insert-2}{edge case for concurrent insertion to the right}
+
+#benchmarkResults("complexavl-evil-insert-2", [Benchmark results of an edge case for concurrent insertion to the right])
+
 #block[
 ```scala
 val base = if (rightChildrenBuffer.nn.isEmpty || before.isEmpty) {
@@ -149,9 +175,17 @@ val base = if (rightChildrenBuffer.nn.isEmpty || before.isEmpty) {
 <edge-case-for-concurrent-insertion-to-the-right>
 In the edge case in with the benchmark results in the `p` nodes were first inserted and then `c` nodes were inserted concurrent to them. This means for every `c` node insertion, the node needs to be inserted at the correct position in the AVL tree to preserve the correct character ordering. For example as this is a concurrent insertion, the first `c` node needs to be inserted after the subtree of the child to the left of it. Therefore, the last node in the subtree of its left child needs to be retrieved, which requires to get the rightmost descendant of that child as shown in . Therefore, this also needs the optimization as explained for the previous edge case.
 
+\evilEdgeCase{evil-split}{edge case for node splitting}
+
+#benchmarkResults("complexavl-evil-split", [Benchmark results of an edge case for node splitting])
+
 ===== Edge case for node splitting
 <subsection:evil-split>
 Splitting a batched node as shown in with the benchmark results in needs to be efficiently handled. The consecutive elements are stored in an `ArrayBuffer` and splitting it would be a linear operation. Therefore, instead of splitting it, nodes reference a subpart of the buffer. This means splitting a node only requires creating and inserting a new node and updating a few references to the buffer start and end, inserting it into the AVL tree and updating the descendant cache. The disadvantage is that the memory for deleted nodes is not reclaimed.
+
+\evilEdgeCase{evil-split-many-right-children}{edge case for node splitting with many right children}
+
+#benchmarkResults("complexavl-evil-split-many-right-children", [Benchmark results of an edge case for node splitting with many right children])
 
 ===== Edge case for node splitting with many right children
 <edge-case-for-node-splitting-with-many-right-children>
