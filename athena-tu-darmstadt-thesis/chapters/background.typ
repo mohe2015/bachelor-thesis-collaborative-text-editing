@@ -1,3 +1,15 @@
+#let twoMinipageFigures(file1, caption1, label1, file2, caption2, label2) = figure(
+  {
+    show figure: set figure(numbering: "(a)", supplement: [])
+    grid(
+      columns: (50%, 50%),
+      align: bottom,
+      [ #figure(image(file1), caption: caption1, kind: "fig1") #label(label1) ],
+      [ #figure(image(file2), caption: caption2, kind: "fig1") #label(label2) ]
+    )
+  }
+)
+
 = Fugue Algorithm
 <chapter:background>
 This chapter explains how the Fugue algorithm works and is heavily based on the Fugue paper #cite(<2023-weidner-minimizing-interleaving>);. Then, the next chapter discusses our implementation of Fugue. Further chapters discuss our improvements to the Fugue algorithm. The Fugue algorithm handles insertions and deletions for a list data structure and avoids interleaving. For text editing every list element is a character.
@@ -13,17 +25,8 @@ visualizes the data structure of the algorithm. It is a tree starting with the r
 )
 <fig:fugue-traversal>
 
-#figure(
-  {
-    show figure: set figure(numbering: "(a)", supplement: [])
-    grid(
-      columns: (50%, 50%),
-      align: bottom,
-      [ #figure(image("../text-rdt/target/pdfs/empty.svg"), caption: [Fugue tree with root node], kind: "fig1") <fig:fugue-root-node> ],
-      [ #figure(image("../text-rdt/target/pdfs/root-right-a.svg"), caption: [Insertion of `"a"` into Fugue tree at index $0$], kind: "fig1") <fig:fugue-right-a> ]
-    )
-  },
-)
+#twoMinipageFigures("../text-rdt/target/pdfs/empty.svg", [Fugue tree with root node], "fig:fugue-root-node",
+"../text-rdt/target/pdfs/root-right-a.svg", [Insertion of `"a"` into Fugue tree at index $0$], "fig:fugue-right-a")
 
 == Initial State
 <initial-state>
@@ -33,9 +36,8 @@ The initial state consists only of the root node as shown in . Thus, the tree re
 <operations>
 The chosen operations are insertion and deletion based on an index into the text relative to the start. The reason for choosing that interface is that text editors conform to it. All indices are zero based, so the element at index $0$ is the first element.
 
-../text-rdt/target/pdfs/root-right-ac.pdf
-
-../text-rdt/target/pdfs/root-right-ac-left-b.pdf
+#twoMinipageFigures("../text-rdt/target/pdfs/root-right-ac.svg", [Insertion of `"c"` into Fugue tree at index $1$], "fig:fugue-right-ac",
+"../text-rdt/target/pdfs/root-right-ac-left-b.svg", [Insertion of `"b"` into Fugue tree at index $1$], "fig:fugue-right-ac-left-b")
 
 ==== Insert operation
 <insert-operation>
@@ -52,9 +54,11 @@ Right children are always deterministically but arbitrarily ordered by their rep
 Therefore, if the node already has right children, the new node can not be added to the right while ensuring it is at the correct position.
 Instead, the algorithm adds it to the left of the right origin to ensure it gets placed at the correct index. The right origin is the next node \(visible or not) in the tree traversal after the left origin. This right origin can not already have left children as otherwise one of them would be the right origin as they come earlier in the tree traversal. Starting with the previous tree, shows an insertion at index $1$.
 
-../text-rdt/target/pdfs/concurrent-insert-b.pdf
+#twoMinipageFigures("../text-rdt/target/pdfs/concurrent-insert-a.svg", [Fugue tree with text insertion at replica A],"fig:fugue-concurrent-insert-a",
+"../text-rdt/target/pdfs/concurrent-insert-b.svg", [Fugue tree with text insertion at replica B], "fig:fugue-concurrent-insert-b")
 
-../text-rdt/target/pdfs/delete.pdf
+#twoMinipageFigures("../text-rdt/target/pdfs/concurrent-insert-both.svg", [Fugue tree with concurrent insertions after synchronization between replica A and replica B], "fig:fugue-concurrent-insert-both",
+"../text-rdt/target/pdfs/delete.svg", [Fugue tree with deletions], "fig:fugue-delete")
 
 ==== Concurrent insert operation
 <concurrent-insert-operation>
