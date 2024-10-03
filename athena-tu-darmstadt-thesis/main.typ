@@ -24,7 +24,7 @@
   abstract: [
     #include "chapters/abstract.typ"
   ],
-  bib: bibliography("../latex/literature.bib"),
+  bib: bibliography("./literature.bib"),
   margin: tud_page_margin_big,
   // outline_table_of_contents_style: "adapted",
   // reduce_heading_space_when_first_on_page: false
