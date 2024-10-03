@@ -1,5 +1,22 @@
 #import "utils.typ": benchmarkResults
 
+#let evilEdgeCase(name, caption) = figure(
+  {
+    set figure(supplement: [])
+    show figure.caption: it => [
+      #context it.counter.display("(a)")
+      #it.body
+    ]
+    grid(
+      columns: (50%, 50%),
+      align: bottom,
+      [ #figure(image("../text-rdt/target/pdfs/" + name + "-before.svg"), caption: "before", kind: "fig"+name) #label(name) ],
+      [ #figure(image("../text-rdt/target/pdfs/" + name + "-after.svg"), caption: "after", kind: "fig"+name) #label(name) ],
+    )
+  },
+  caption: "Example for " + caption
+)
+
 = Optimizing Common Edit Operations
 <optimization>
 Based on a theoretical understanding of our base implementation developed from the algorithmic description in the Fugue paper @2023-weidner-minimizing-interleaving[Algorithm~1] we expect quadratic runtime complexity and linear memory usage in relation to the text length. This chapter discusses the implementation of benchmarks to verify the theoretical understanding of the runtime and memory complexity and then proposes optimizations for the implementation based on them.
@@ -121,7 +138,7 @@ The CPU profile in shows that there is not a single hot location, but execution 
 <combined-optimizations>
 Combining the AVL tree optimization and node batching improves the memory usage and runtime. The results are shown in for the real world benchmark. The runtime per operation is one microsecond, thus one million operations can be handled per second. The memory usage per operation is about 25 bytes per operation. This concludes our optimization of the common execution path.
 
-\evilEdgeCase{evil-children}{edge case with many children}
+#evilEdgeCase("evil-children", [edge case with many children])
 
 #benchmarkResults("complexavl-evil-children", [Benchmark results of an edge case with many children])
 
@@ -133,7 +150,7 @@ An optimal algorithm must perform efficiently in #emph[all] cases. Therefore, ef
 <edge-case-with-many-children>
 Child insertions need to be efficient even after many children are inserted at the same side of the same node as shown in with the benchmark results in . Therefore, the children are stored in a `mutable.SortedSet`, so a binary search tree. This results in logarithmic insertion.
 
-\evilEdgeCase{evil-insert-1}{edge case for insertion to the left of the root}
+#evilEdgeCase("evil-insert-1", [edge case for insertion to the left of the root])
 
 #benchmarkResults("complexavl-evil-insert-1", [Benchmark results of an edge case for insertion to the left of the root])
 
@@ -156,7 +173,7 @@ val origin = if (firstRightChild == null) {
 Another case is repeatedly inserting at position $0$ as shown in with the benchmark results in .
 As the root node has a right child after the first insertion, further nodes need to be inserted to the left of that child. To find the node before the child our algorithm retrieves the leftmost descendant of it as shown in . This requires a recursive traversal down the leftmost child, which is a linear operation. Therefore, our algorithm uses a cache for the leftmost descendant of every node in the tree. As all nodes in the path from the node to its leftmost descendant have the same leftmost descendant, one cache is used for this group of nodes. As shown later, it needs to be possible to split the cache up, if a child is inserted somewhere in that path to the left. The cache also uses an AVL tree with the specialty of storing a parent reference in each AVL tree node and the root node storing a reference to the leftmost descendant of all nodes of that AVL tree. Therefore, the leftmost descendant of this group of nodes can be efficiently retrieved and updated, the cache can be efficiently split up by splitting the AVL tree and new nodes can be efficiently inserted.
 
-\evilEdgeCase{evil-insert-2}{edge case for concurrent insertion to the right}
+#evilEdgeCase("evil-insert-2", [edge case for concurrent insertion to the right])
 
 #benchmarkResults("complexavl-evil-insert-2", [Benchmark results of an edge case for concurrent insertion to the right])
 
@@ -175,7 +192,7 @@ val base = if (rightChildrenBuffer.nn.isEmpty || before.isEmpty) {
 <edge-case-for-concurrent-insertion-to-the-right>
 In the edge case in with the benchmark results in the `p` nodes were first inserted and then `c` nodes were inserted concurrent to them. This means for every `c` node insertion, the node needs to be inserted at the correct position in the AVL tree to preserve the correct character ordering. For example as this is a concurrent insertion, the first `c` node needs to be inserted after the subtree of the child to the left of it. Therefore, the last node in the subtree of its left child needs to be retrieved, which requires to get the rightmost descendant of that child as shown in . Therefore, this also needs the optimization as explained for the previous edge case.
 
-\evilEdgeCase{evil-split}{edge case for node splitting}
+#evilEdgeCase("evil-split", [edge case for node splitting])
 
 #benchmarkResults("complexavl-evil-split", [Benchmark results of an edge case for node splitting])
 
@@ -183,7 +200,7 @@ In the edge case in with the benchmark results in the `p` nodes were first inser
 <subsection:evil-split>
 Splitting a batched node as shown in with the benchmark results in needs to be efficiently handled. The consecutive elements are stored in an `ArrayBuffer` and splitting it would be a linear operation. Therefore, instead of splitting it, nodes reference a subpart of the buffer. This means splitting a node only requires creating and inserting a new node and updating a few references to the buffer start and end, inserting it into the AVL tree and updating the descendant cache. The disadvantage is that the memory for deleted nodes is not reclaimed.
 
-\evilEdgeCase{evil-split-many-right-children}{edge case for node splitting with many right children}
+#evilEdgeCase("evil-split-many-right-children", [edge case for node splitting with many right children])
 
 #benchmarkResults("complexavl-evil-split-many-right-children", [Benchmark results of an edge case for node splitting with many right children])
 
