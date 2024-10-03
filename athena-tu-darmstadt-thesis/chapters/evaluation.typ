@@ -1,3 +1,20 @@
+#let benchmarkResults(name, caption) = figure(
+  {
+    set figure(supplement: [])
+    show figure.caption: it => [
+      #context it.counter.display("(a)")
+      #it.body
+    ]
+    grid(
+      columns: (50%, 50%),
+      align: bottom,
+      [ #figure(image("../text-rdt/jvm/figure-benchmark-results/" + name + ".svg"), caption: "time", kind: "fig"+name) #label(name) ],
+      [ #figure(image("../text-rdt/jvm/figure-benchmark-results/" + name + "-memory.svg"), caption: "memory", kind: "fig"+name) #label(name) ],
+    )
+  },
+  caption: caption
+)
+
 = Evaluation
 <chapter:evaluation>
 We chose to evaluate our approach by benchmarking with JMH#footnote[#link("https://github.com/openjdk/jmh");] as that is the de facto Java benchmarking tool. We ran the benchmarks on four Intel Xeon Gold vCPUs with 8~GB RAM rented from Hetzner Cloud#footnote[#link("https://www.hetzner.com/cloud/");] \(type cx32).
@@ -57,6 +74,10 @@ Total  17763864      627984600
 The memory usage is calculated using the code in , which is equivalent to `jcmd PID GC.class_histogram`. It is measured before and after running the operations and the difference is then visualized in our graphs. The memory usage is returned using JMH `AuxCounters`#footnote[#link("https://github.com/openjdk/jmh/blob/master/jmh-core/src/main/java/org/openjdk/jmh/annotations/AuxCounters.java");] to ensure it is measured for exactly the same case as the CPU benchmarks.
 
 For the 100 times consecutively written real-world benchmark the memory usage is as shown in . The `avl2` types are used for the leftmost and rightmost descendant cache which indicates that optimizing these would improve memory usage considerably, see . The `ComplexAVLTreeNode` is created for every batched node and the `AVLTreeNode` is needed for the AVL lookup tree and also created for every batched node. The byte arrays \(`[B`) in combination with `StringBuilder` are used to store the underlying text. The `ComplexAVLMessage` stores the history of all messages. The `HashMap$Node`, `[Lscala.collection.mutable.HashMap$Node`, `Tuple2` and `SimpleID` are used to associate IDs with the respective nodes. The `RedBlackTree` and `TreeSet` are used for multiple same-side children and for quickly retrieving the correct node when a batching node has been split. The `FixtureOperation` is the underlying test data and therefore does not count towards the memory usage when measuring the memory usage difference before and after running the test.
+
+#benchmarkResults("complexavl-extra-large-local-real-world", [Benchmark results for repeatedly concatenated real world text inserted locally with the \glsfmttext{batching AVL algorithm])
+
+#benchmarkResults("complexavl-extra-large-remote-real-world", [Benchmark results for repeatedly concatenated real world text inserted remotely with the \glsfmttext{batching AVL algorithm])
 
 == Results
 <results>
