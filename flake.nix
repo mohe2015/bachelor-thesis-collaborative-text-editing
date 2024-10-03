@@ -247,48 +247,12 @@
             '';
           };
 
-          packages.verapdf = pkgs.maven.buildMavenPackage rec {
-            pname = "verapdf";
-            version = "1.26.2";
-
-            mvnParameters = "-pl '!installer' -Dverapdf.timestamp=1980-01-01T00:00:02Z -Dproject.build.outputTimestamp=1980-01-01T00:00:02Z";
-
-            src = pkgs.fetchFromGitHub {
-              owner = "veraPDF";
-              repo = "veraPDF-apps";
-              rev = "v1.26.2";
-              hash = "sha256-bWj4dX1qRQ2zzfF9GfskvMnrNU9pKC738Zllx6JsFww=";
-            };
-
-            mvnHash = "sha256-bqPmEQfTIoZePk5oRi2nFnXbJ7RpSl99FIuHj+P8MxE=";
-
-            nativeBuildInputs = [ pkgs.makeWrapper pkgs.stripJavaArchivesHook ];
-
-            installPhase = ''
-              runHook preInstall
-
-              mkdir -p $out/bin $out/share
-              install -Dm644 greenfield-apps/target/greenfield-apps-1.26.0.jar $out/share/verapdf.jar
-              makeWrapper ${pkgs.jre}/bin/java $out/bin/verapdf-gui --add-flags "-jar $out/share/verapdf.jar"
-              makeWrapper ${pkgs.jre}/bin/java $out/bin/verapdf --add-flags "-cp $out/share/verapdf.jar org.verapdf.apps.GreenfieldCliWrapper"
-
-              runHook postInstall
-            '';
-
-            meta = {
-              description = "Command line and GUI industry supported PDF/A and PDF/UA Validation";
-              homepage = "https://github.com/veraPDF/veraPDF-apps";
-              license = [ lib.licenses.gpl3Plus /* or */ lib.licenses.mpl20 ];
-              maintainers = [ lib.maintainers.mohe2015 ];
-            };
-          };
-
           packages.latex-info = (pkgs.runCommand "my-example" { } ''
             ${pkgs.poppler_utils}/bin/pdfinfo ${self.packages.${system}.latex}
             echo -------------------------------------------------------------
             ${pkgs.exiftool}/bin/exiftool ${self.packages.${system}.latex}
             echo -------------------------------------------------------------
-            ${self.packages.${system}.verapdf}/bin/verapdf --flavour 3a --format text ${self.packages.${system}.latex}
+            ${pkgs.verapdf}/bin/verapdf --flavour 3a --format text ${self.packages.${system}.latex}
             echo -------------------------------------------------------------
             ${pkgs.poppler_utils}/bin/pdffonts ${self.packages.${system}.latex} # TODO check no "Type 3"
             cp ${self.packages.${system}.latex} $out

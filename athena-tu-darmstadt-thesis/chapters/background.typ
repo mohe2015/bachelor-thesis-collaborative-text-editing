@@ -6,7 +6,7 @@ This chapter explains how the Fugue algorithm works and is heavily based on the 
 <traversal>
 visualizes the data structure of the algorithm. It is a tree starting with the root node at the top left. The nodes are connected using lines. Lines downwards to the right connect to a right child and lines downwards to the left connect to a left child. A node can have multiple children on each side. For every node except the root node, the first part is the character or whether the character is deleted, followed by a space and the ID of the peer that created that character, a `#` symbol and then a counter for that peer that is increasing for every insertion. For example, `"t A#1"` is the character `"t"` by peer `"A"` with the counter being $1$. The ID of the peer combined with the counter that uniquely identifies an element is called a simple ID. The root node is a special node that behaves like a deleted character. To get the current text of the tree, it is traversed starting from the root node by recursively visiting the left children in order, then the value of the node itself and then the right children in order. For the example in , the traversal starts with the left children of the root node. As there are none, the node itself is visited. As it contains a deleted character, it is ignored. Then the first right child is traversed. Its first left child produces `"small "` by the same rules applied recursively. It itself produces `"t"`. Its right children produces `"rees"`. Therefore, its whole traversal produces `"small trees"`. Then the second right child is traversed in the same way and produces `" grow"`. Combining all that will therefore produce the text `"small trees grow"`.
 
-#figure([#box(width: \textwidth, image("../text-rdt/target/pdfs/traversal-example.pdf"));],
+#figure([#box(image("../text-rdt/target/pdfs/traversal-example.pdf"))],
   caption: [
     Fugue tree traversal
   ]
@@ -55,7 +55,7 @@ The order of `"alice"` and `"bob"` is deterministic based on their replica ID bu
 <delete-operation>
 shows the deletion of a character. The node to delete, which is calculated from the index in the tree traversal of visible nodes, is simply marked as deleted. If it already was deleted by a concurrent user, the operation does nothing.
 
-#figure([#box(width: \textwidth, image("../text-rdt/target/pdfs/shopping.pdf"));],
+#figure([#box(image("../text-rdt/target/pdfs/shopping.pdf"));],
   caption: [
     Fugue tree for shopping example
   ]
@@ -64,6 +64,6 @@ shows the deletion of a character. The node to delete, which is calculated from 
 
 == Intuitive Reason for Avoiding Interleaving
 <intuitive-reason-for-avoiding-interleaving>
-Consecutive insertions as shown in and reverse consecutive insertions as shown in create a single long branch in the Fugue tree. The intuitive reason this avoids interleaving in these cases is that merging concurrent edits never changes anything within concurrently created trees #cite(<2023-weidner-minimizing-interleaving>)[Section 4];.
+Consecutive insertions as shown in and reverse consecutive insertions as shown in create a single long branch in the Fugue tree. The intuitive reason this avoids interleaving in these cases is that merging concurrent edits never changes anything within concurrently created trees @2023-weidner-minimizing-interleaving[Section~4].
 
 Another reason is that Fugue prefers linking nodes to their left origin because of forward insertions and if there are already existing nodes it links to the right origin instead to avoid ambiguity. shows that this also keeps parts that were inserted together in one subtree. Note that consecutive right children are combined here to make the figure more readable.
