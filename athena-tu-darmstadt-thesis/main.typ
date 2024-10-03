@@ -71,6 +71,15 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
   show-all: true
 )
 
+#set heading(numbering: (..nums) => {
+  nums = nums.pos()
+  if nums.len() == 1 {
+    return "A"
+  } else if nums.len() == 2 {
+    return "A." + numbering("1", ..nums.slice(1))
+  }
+})
+
 = Appendix
 <appendix:appendix>
 
