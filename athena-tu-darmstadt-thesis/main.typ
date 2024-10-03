@@ -77,31 +77,32 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 == CPU Profile for Simple Algorithm with Sequential Insertions
 <appendix:simple-sequential-inserts-cpu>
 
-\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../text-rdt/target/pdfs/simple-sequential-inserts-cpu.pdf}
+//#image("./text-rdt/target/pdfs/simple-sequential-inserts-cpu.svg")
 
 == CPU Profile for Batching Algorithm with Sequential Insertions
 <appendix:complex-sequential-inserts-cpu>
 
-\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../text-rdt/target/pdfs/complex-sequential-inserts-cpu.pdf}
+//#image("./text-rdt/target/pdfs/complex-sequential-inserts-cpu.svg")
 
 == Allocation Profile for Batching Algorithm with Sequential Insertions
 <appendix:complex-sequential-inserts-alloc>
 
-\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../text-rdt/target/pdfs/complex-sequential-inserts-alloc.pdf}
+//#image("./text-rdt/target/pdfs/complex-sequential-inserts-alloc.svg")
 
 == CPU Profile for Batching Algorithm with Real World Dataset
 <appendix:complex-real-world-cpu>
 
-\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../text-rdt/target/pdfs/complex-real-world-cpu.pdf}
+//#image("./text-rdt/target/pdfs/complex-real-world-cpu.svg")
 
 == CPU Profile for Simple AVL Algorithm with Real World Dataset
 <appendix:simpleavl-real-world-cpu>
 
-\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../text-rdt/target/pdfs/simpleavl-real-world-cpu.pdf}
+//#image("./text-rdt/target/pdfs/simpleavl-real-world-cpu.svg")
 
 == Allocation Profile for Simple AVL Algorithm with Real World Dataset
 <appendix:simpleavl-real-world-alloc>
-\includegraphics[width=\textwidth,height=\textheight,keepaspectratio]{../text-rdt/target/pdfs/simpleavl-real-world-alloc.pdf}
+
+//#image("./text-rdt/target/pdfs/simpleavl-real-world-alloc.svg")
 
 == Code Showing FugueMax Is Interleaving
 <appendix:code-fuguemax-interleaving>

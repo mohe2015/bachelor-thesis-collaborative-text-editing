@@ -13,7 +13,17 @@ visualizes the data structure of the algorithm. It is a tree starting with the r
 )
 <fig:fugue-traversal>
 
-../text-rdt/target/pdfs/root-right-a.pdf
+#figure(
+  {
+    show figure: set figure(numbering: "(a)", supplement: [])
+    grid(
+      columns: (50%, 50%),
+      align: bottom,
+      [ #figure(image("../text-rdt/target/pdfs/empty.svg"), caption: [Fugue tree with root node], kind: "fig1") <fig:fugue-root-node> ],
+      [ #figure(image("../text-rdt/target/pdfs/root-right-a.svg"), caption: [Insertion of `"a"` into Fugue tree at index $0$], kind: "fig1") <fig:fugue-right-a> ]
+    )
+  },
+)
 
 == Initial State
 <initial-state>
