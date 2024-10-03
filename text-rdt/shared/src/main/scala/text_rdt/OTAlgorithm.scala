@@ -1,14 +1,45 @@
 package text_rdt
 
 // https://www3.ntu.edu.sg/scse/staff/czsun/projects/otfaq/#_Toc321146152
-// COT would be wayy to complicated, choose something simpler
+// COT would be way to complicated, choose something simpler
+// dOPT
+// https://dl.acm.org/doi/pdf/10.1145/289444.289469
 
 // https://www3.ntu.edu.sg/scse/staff/czsun/projects/otfaq/#_Toc321146146
 case class OTOperation(replica: RID, inner: OperationType) { // , contextBefore: String, contextAfter: String
     
 }
 
-def transform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
+def inclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
+  (operationToTransform, operationToTransformAgainst) match {
+    case Tuple2(None, other) => None
+    case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oContext < bContext)) {
+      Some(OTOperation(oContext, OperationType.Insert(oI, oX)))
+    } else {
+      Some(OTOperation(oContext, OperationType.Insert(oI + 1, oX)))
+    }
+    case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Delete(bI))) => if (oI <= bI) {
+      Some(OTOperation(oContext, OperationType.Insert(oI, oX)))
+    } else {
+      Some(OTOperation(oContext, OperationType.Insert(oI - 1, oX)))
+    }
+    case Tuple2(Some(OTOperation(oContext, OperationType.Delete(oI))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI) {
+      Some(OTOperation(oContext, OperationType.Delete(oI)))
+    } else {
+      Some(OTOperation(oContext, OperationType.Delete(oI + 1)))
+    }
+    case Tuple2(Some(OTOperation(oContext, OperationType.Delete(oI))), OTOperation(bContext, OperationType.Delete(bI))) => if (oI < bI) {
+      Some(OTOperation(oContext, OperationType.Delete(oI)))
+    } else if (oI > bI) {
+      Some(OTOperation(oContext, OperationType.Delete(oI - 1)))
+    } else {
+      None
+    }
+  }
+}
+
+// TODO FIXME
+def exclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
   (operationToTransform, operationToTransformAgainst) match {
     case Tuple2(None, other) => None
     case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oContext < bContext)) {
