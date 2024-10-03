@@ -49,7 +49,12 @@
 #include "chapters/future-work.typ"
 #include "chapters/conclusion.typ"
 
-= Glossary
+#heading(numbering: none, outlined: false, "Acknowledgments")
+
+I would like to thank everyone who reviewed drafts of this thesis. I would also like to thank my human and non-human rubber ducks for their help in debugging my code.
+
+#heading(numbering: none, "Acronyms")
+
 #print-glossary((
     (key: "crdt", short: "CRDT", long: "conflict-free replicated data type"),
     (key: "ot", short: "OT", long: "operational transformation"),
