@@ -1,8 +1,8 @@
 = Optimizing Common Edit Operations
 <optimization>
-Based on a theoretical understanding of our base implementation developed from the algorithmic description in the Fugue paper #cite(<2023-weidner-minimizing-interleaving>)[Algorithm~1] we expect quadratic runtime complexity and linear memory usage in relation to the text length. This chapter discusses the implementation of benchmarks to verify the theoretical understanding of the runtime and memory complexity and then proposes optimizations for the implementation based on them.
+Based on a theoretical understanding of our base implementation developed from the algorithmic description in the Fugue paper @2023-weidner-minimizing-interleaving[Algorithm~1] we expect quadratic runtime complexity and linear memory usage in relation to the text length. This chapter discusses the implementation of benchmarks to verify the theoretical understanding of the runtime and memory complexity and then proposes optimizations for the implementation based on them.
 
-The Fugue paper already proposes an optimization, but does not go into detail. It proposes to condense sequentially-inserted tree nodes into a single "waypoint" object instead of using one object per node #cite(<2023-weidner-minimizing-interleaving>)[Section 5] but even with their implementation#footnote[#link("https://github.com/mweidner037/fugue");] available, their exact approach is unclear. To avoid premature optimization we analyze the performance and optimize based on that.
+The Fugue paper already proposes an optimization, but does not go into detail. It proposes to condense sequentially-inserted tree nodes into a single "waypoint" object instead of using one object per node @2023-weidner-minimizing-interleaving[Section 5] but even with their implementation#footnote[#link("https://github.com/mweidner037/fugue");] available, their exact approach is unclear. To avoid premature optimization we analyze the performance and optimize based on that.
 
 The benchmarks also indicate a quadratic runtime complexity for our base implementation.
 In , we start with an optimization that combines consecutively inserted characters as that is how most text is written. This leads to good performance for sequentially written text but still quadratic runtime performance for text with realistic editing behavior like corrections and later additions.
@@ -43,7 +43,7 @@ final case class BatchingTreeNode(
 ]
 == Optimization Using Batching
 <sec:optimization-batching>
-The optimization that many algorithms already utilize and that the Fugue authors also have hinted at #cite(<2023-weidner-minimizing-interleaving>)[Section 5];, is batching sequential insertions by one peer to reduce metadata and memory overhead. In the following section we describe what is needed for that optimization in detail.
+The optimization that many algorithms already utilize and that the Fugue authors also have hinted at @2023-weidner-minimizing-interleaving[Section 5], is batching sequential insertions by one peer to reduce metadata and memory overhead. In the following section we describe what is needed for that optimization in detail.
 
 The previously used simple ID for tree nodes consists of a replica ID and a counter. To combine sequential tree nodes by the same replica, an offset is added to be able to address single characters for insert and delete operations. This ID that consists of a replica ID, counter and offset is called a batching ID and our algorithm the batching algorithm.
 
