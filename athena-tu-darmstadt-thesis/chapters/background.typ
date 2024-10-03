@@ -15,6 +15,8 @@ visualizes the data structure of the algorithm. It is a tree starting with the r
 
 ../text-rdt/target/pdfs/root-right-a.pdf
 
+#pagebreak() // fix layout did not converge bug
+
 == Initial State
 <initial-state>
 The initial state consists only of the root node as shown in . Thus, the tree represents an empty text. The root node for every peer is the same, even though the root node is always created locally at every peer.
