@@ -25,7 +25,7 @@
     #include "chapters/abstract.typ"
   ],
 
-  bib: bibliography("refs.bib", full: true),
+  bib: bibliography("../latex/literature.bib"),
 
   // Set the margins of the content pages.
   // The title page is not affected by this.
@@ -74,8 +74,6 @@
 // test content
 = First Chapter
 A first demo chapter. 
-An example reference is @TUDaGuideline.
-
 
 == Some Basic Elements
 This text contains two#footnote[The number two can also be written as 2.] footnotes#footnote[This is a first footnote. \ It has a second line.].

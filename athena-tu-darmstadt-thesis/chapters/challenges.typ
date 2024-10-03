@@ -33,7 +33,7 @@ A counter example that interleaving can also happen for the #emph[maximally non-
 
 The basic implementation of Fugue has a linear runtime per character insertion or deletion in relation to the text length \(including deleted text) which proved to be too inefficient for larger text given the resulting runtime scales quadratically with the text length. Comparing the results#footnote[#link("https://github.com/mweidner037/fugue/blob/main/results_table.md");] from for benchmark B1.1 with benchmark B1.3 indicates, that even the optimized variant in the Fugue paper has quadratic runtime for sequential backward insertions.
 
-#figure([#box(image("figures/ot.drawio.pdf"));],
+#figure([#box(image("../figures/ot.drawio.svg"));],
   caption: [
     Example for operation transformation with two synchronizing peers based on figure by @2024-sun-ot-faq[Section 1.4 Figure 1]
   ]
