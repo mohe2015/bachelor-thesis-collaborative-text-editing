@@ -1,6 +1,7 @@
 #import "@preview/athena-tu-darmstadt-thesis:0.1.0": *
 
 #show: tudapub.with(
+  reduce_heading_space_when_first_on_page: false, // so it converges
   thesis_type: "bachelor",
   title: [Optimizing Collaborative Plain~Text Editing Algorithms],
   title_german: [for Decentralized Non-Realtime Text Editing],

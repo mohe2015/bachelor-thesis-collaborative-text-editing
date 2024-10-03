@@ -66,8 +66,6 @@ shows the real world text repeated 100 times to match benchmark B4x100 from Jahn
 
 A real world editing trace with #emph[concurrent edits] in an offline context would be useful to analyze performance in that case, but unfortunately we are not aware of such a dataset. As our algorithm has a time complexity of $O (n log (n))$ for $n$ character operations #emph[in all cases] this would only allow more accurate measurements, for example for the expected memory usage per operation.
 
-#pagebreak() // fix layout did not converge bug
-
 == Investigating Prior Benchmarks
 <investigating-prior-benchmarks>
 The prior benchmarks based on Jahns benchmark framework#footnote[#link("https://github.com/dmonad/crdt-benchmarks/");] have several issues. First, they do not give any indication about asymptotic behavior as they are only executed with one relatively small choice for $N$ which parameterizes the repetition of operations or client count. Optimizing asymptotic behavior is much harder in general than achieving acceptable performance for the common choice of $N = 6000$ on modern CPUs with multiple billion instruction cycles per second. Also, they do not use a trusted benchmark framework but use self-written warmup and benchmark code which is likely affecting the accuracy of the benchmark as they run in the context of a JIT compiler similar to the JVM. The JMH framework is designed to have as accurate results as possible.
