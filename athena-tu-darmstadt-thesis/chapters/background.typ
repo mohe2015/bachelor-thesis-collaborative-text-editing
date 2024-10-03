@@ -69,6 +69,9 @@ The order of `"alice"` and `"bob"` is deterministic based on their replica ID bu
 <delete-operation>
 shows the deletion of a character. The node to delete, which is calculated from the index in the tree traversal of visible nodes, is simply marked as deleted. If it already was deleted by a concurrent user, the operation does nothing.
 
+#twoMinipageFigures("../text-rdt/target/pdfs/sequential-inserts.svg", [Fugue tree with sequential insertions], "fig:fugue-sequential-inserts",
+"../text-rdt/target/pdfs/reverse-sequential-inserts.svg", [Fugue tree with reverse sequential insertions], "fig:fugue-reverse-sequential-inserts")
+
 #figure([#box(image("../text-rdt/target/pdfs/shopping.svg"));],
   caption: [
     Fugue tree for shopping example
