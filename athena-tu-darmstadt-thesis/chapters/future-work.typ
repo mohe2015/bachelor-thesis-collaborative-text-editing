@@ -1,3 +1,5 @@
+#import "@preview/glossarium:0.4.1": gls, glspl 
+
 = Future Work
 <chapter:future-work>
 In this chapter we look at what is missing and which aspects could be researched further.
@@ -30,7 +32,7 @@ Rich text is probably the largest missing feature that may also lead to many des
 
 In a collaborative context it needs to be possible to undo arbitrary actions by any user and not only the last action like it is usually the case in traditional editors. Therefore, support for so-called selective undo is needed. For ot algorithms, transformations need to be applied to the correct document context #cite(<2009-sun-ot-context-undo>);. This means the control algorithms need to properly handle this and transformation functions potentially need to uphold specific properties #cite(<2009-sun-ot-context-undo>);.
 
-When part of a text is moved and concurrently part of that text is edited it would make sense that these edits are correctly preserved. As normal copy and paste does not track this state this needs a special operation or needs to store the necessary metadata in the clipboard. Also, this needs support at the crdt level #cite(<2022-anjana-move>);#cite(<2023-kleppmann-json-move>);.
+When part of a text is moved and concurrently part of that text is edited it would make sense that these edits are correctly preserved. As normal copy and paste does not track this state this needs a special operation or needs to store the necessary metadata in the clipboard. Also, this needs support at the #gls("crdt") level #cite(<2022-anjana-move>);#cite(<2023-kleppmann-json-move>);.
 
 Instead of operating on a character level it could make sense to operate on a string level. This would be more efficient and could have better semantics for range deletions, copy and paste or moving text. For ot this seems to often be done but is much more complicated, especially in combination with undo #cite(<2024-sun-ot-faq>);.
 

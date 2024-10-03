@@ -1,3 +1,5 @@
+#import "@preview/glossarium:0.4.1": gls, glspl 
+
 = Implementation of Fugue Algorithm
 <section:implementation>
 This chapter first lists the requirements for an implementation of the Fugue algorithm in . gives insights into our editor implementation in the browser and our p2p functionality and explains how our synchronization works and is optimized. introduces our use of property tests to ensure convergence of our implementation and argues that extensive use of assertions for invariants aids in finding the root cause of test failures. Finally, reveals some small issues in the algorithmic description in the Fugue paper #cite(<2023-weidner-minimizing-interleaving>);.

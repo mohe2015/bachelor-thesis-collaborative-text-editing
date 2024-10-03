@@ -1,3 +1,5 @@
+#import "@preview/glossarium:0.4.1": gls, glspl 
+
 = Conclusion
 <chapter:conclusion>
 This thesis shows that efficient collaborative plain text editing in a decentralized and #emph[non-realtime] setting while preserving user intentions is possible. The optimization to logarithmic runtime per operation in relation to the text length ensures that this is also efficient for extremely large text. This thesis also shows that prior benchmarks do not measure asymptotic complexity and do not cover all algorithmic performance edge cases and proposes to include both in future benchmarks. This is especially an issue in decentralized networks, as there is only limited control over all messages and peers can send you messages with malicious content that triggers these edge cases.
