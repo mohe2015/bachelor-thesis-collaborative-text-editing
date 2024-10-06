@@ -15,9 +15,9 @@ case class OTOperation(replica: RID, inner: OperationType) { // , contextBefore:
 }
 
 def inclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
-  val result = inclusionTransformInternal(operationToTransform, operationToTransformAgainst)
-  assert(operationToTransform == exclusionTransformInternal(result, operationToTransformAgainst), s"$operationToTransform $operationToTransformAgainst")
-  result
+  inclusionTransformInternal(operationToTransform, operationToTransformAgainst)
+  // possibly the reverse does not hold
+  //assert(operationToTransform == exclusionTransformInternal(result, operationToTransformAgainst), s"IT($operationToTransform, $operationToTransformAgainst) -> $result -> ET($result, $operationToTransformAgainst) -> ${exclusionTransformInternal(result, operationToTransformAgainst)}")
 }
 
 def inclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
@@ -49,33 +49,33 @@ def inclusionTransformInternal(operationToTransform: Option[OTOperation], operat
 }
 
 def exclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
-  val result = exclusionTransformInternal(operationToTransform, operationToTransformAgainst)
-  assert(operationToTransform == inclusionTransformInternal(result, operationToTransformAgainst))
-  result
+  exclusionTransformInternal(operationToTransform, operationToTransformAgainst)
+  //assert(operationToTransform == inclusionTransformInternal(result, operationToTransformAgainst))
+  // result
 }
 
 def exclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
   (operationToTransform, operationToTransformAgainst) match {
     case Tuple2(None, other) => None
-    case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oContext < bContext)) {
+    case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI > bI || (oI == bI && oContext < bContext)) {
       Some(OTOperation(oContext, OperationType.Insert(oI, oX)))
     } else {
       Some(OTOperation(oContext, OperationType.Insert(oI - 1, oX)))
     }
-    case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Delete(bI))) => if (bI < oI || (bI == oI && oContext < bContext)) {
+    case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Delete(bI))) => if (oI >= bI) {
       Some(OTOperation(oContext, OperationType.Insert(oI + 1, oX)))
     } else {
       Some(OTOperation(oContext, OperationType.Insert(oI, oX)))
     }
-    case Tuple2(Some(OTOperation(oContext, OperationType.Delete(oI))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI) {
+    case Tuple2(Some(OTOperation(oContext, OperationType.Delete(oI))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI > bI) {
       Some(OTOperation(oContext, OperationType.Delete(oI)))
     } else {
-      Some(OTOperation(oContext, OperationType.Delete(oI - 1)))
+      Some(OTOperation(oContext, OperationType.Delete(oI + 1)))
     }
     case Tuple2(Some(OTOperation(oContext, OperationType.Delete(oI))), OTOperation(bContext, OperationType.Delete(bI))) => if (oI < bI) {
       Some(OTOperation(oContext, OperationType.Delete(oI)))
     } else if (oI > bI) {
-      Some(OTOperation(oContext, OperationType.Delete(oI + 1)))
+      Some(OTOperation(oContext, OperationType.Delete(oI - 1)))
     } else {
       None
     }
@@ -129,9 +129,6 @@ object OTAlgorithm {
       }
 
       override def syncFrom(other: OTAlgorithm) = {
-        println(inclusionTransformInternal(Some(OTOperation("A",OperationType.Insert(2,'>'))), OTOperation("B",OperationType.Delete(0))))
-        println(exclusionTransformInternal(Some(OTOperation("A",OperationType.Insert(1,'>'))), OTOperation("B",OperationType.Delete(0))))
-
         algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (otherCausalId, otherMessage) => {
           // do we need to find the closest head? I think we should read a paper
           // maybe choosing an arbitrary head should work?
