@@ -17,6 +17,7 @@ case class OTOperation(replica: RID, inner: OperationType) { // , contextBefore:
 def inclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
   val result = inclusionTransformInternal(operationToTransform, operationToTransformAgainst)
   assert(operationToTransformAgainst == exclusionTransformInternal(result, operationToTransformAgainst))
+  result
 }
 
 def inclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
@@ -50,6 +51,7 @@ def inclusionTransformInternal(operationToTransform: Option[OTOperation], operat
 def exclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
   val result = exclusionTransformInternal(operationToTransform, operationToTransformAgainst)
   assert(operationToTransformAgainst == inclusionTransformInternal(result, operationToTransformAgainst))
+  result
 }
 
 def exclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
@@ -137,14 +139,14 @@ object OTAlgorithm {
 
           val concurrentChangesOfSelf = algorithm.causalBroadcast.concurrentToAndBefore(otherCausalId, selfHead)
 
-          println(s"receiving ${otherMessage.toString().replace("\n", "\\n")} from ${other.replicaId} with changes to transform against: ${concurrentChanges.toString().replace("\n", "\\n")}")
+          //println(s"receiving ${otherMessage.toString().replace("\n", "\\n")} from ${other.replicaId} with changes to transform against: ${concurrentChanges.toString().replace("\n", "\\n")}")
 
-          val newOperation: Option[OTOperation] = concurrentChanges.flatMap(_._2).foldLeft(Some(otherMessage))(transform)
+          //val newOperation: Option[OTOperation] = concurrentChanges.flatMap(_._2).foldLeft(Some(otherMessage))(transform)
 
-          newOperation.foreach(operation => operation.inner match {
-            case OperationType.Insert(i, x) => text.insert(i, x)
-            case OperationType.Delete(i) => text.deleteCharAt(i)
-          })
+          //newOperation.foreach(operation => operation.inner match {
+         //   case OperationType.Insert(i, x) => text.insert(i, x)
+          //  case OperationType.Delete(i) => text.deleteCharAt(i)
+          //})
         })
       }
     }
