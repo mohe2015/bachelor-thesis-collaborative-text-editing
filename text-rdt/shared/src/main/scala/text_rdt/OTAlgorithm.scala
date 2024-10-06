@@ -127,16 +127,19 @@ object OTAlgorithm {
       }
 
       override def syncFrom(other: OTAlgorithm) = {
-        algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (causalId, message) => {
-          val heads = algorithm.causalBroadcast.cachedHeads
+        algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (otherCausalId, otherMessage) => {
+          // do we need to find the closest head? I think we should read a paper
+          // maybe choosing an arbitrary head should work?
 
-          val concurrentChangesOfOther = other.causalBroadcast.concurrentToAndBefore(heads, causalId)
+          val selfHead = algorithm.causalBroadcast.cachedHeads(0)
 
-          val concurrentChangesOfSelf = algorithm.causalBroadcast.concurrentToAndBefore(causalId, heads)
+          val concurrentChangesOfOther = other.causalBroadcast.concurrentToAndBefore(selfHead, otherCausalId)
 
-          println(s"receiving ${message.toString().replace("\n", "\\n")} from ${other.replicaId} with changes to transform against: ${concurrentChanges.toString().replace("\n", "\\n")}")
+          val concurrentChangesOfSelf = algorithm.causalBroadcast.concurrentToAndBefore(otherCausalId, selfHead)
 
-          val newOperation: Option[OTOperation] = concurrentChanges.flatMap(_._2).foldLeft(Some(message))(transform)
+          println(s"receiving ${otherMessage.toString().replace("\n", "\\n")} from ${other.replicaId} with changes to transform against: ${concurrentChanges.toString().replace("\n", "\\n")}")
+
+          val newOperation: Option[OTOperation] = concurrentChanges.flatMap(_._2).foldLeft(Some(otherMessage))(transform)
 
           newOperation.foreach(operation => operation.inner match {
             case OperationType.Insert(i, x) => text.insert(i, x)
