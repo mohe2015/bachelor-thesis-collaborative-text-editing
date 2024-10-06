@@ -2,10 +2,6 @@ package text_rdt
 
 import scala.collection.mutable
 
-object CausalBroadcast {
-  final val ONE: Integer = 1
-}
-
 final case class CausalBroadcast[MSG](replicaId: RID) {
 
   // you can override this function if you want
@@ -18,9 +14,9 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
 
   var causalState: mutable.HashMap[RID, Integer] =
     new mutable.HashMap(2, mutable.HashMap.defaultLoadFactor)
-  val _ = causalState.put(replicaId, CausalBroadcast.ONE)
+  val _ = causalState.put(replicaId, 1)
 
-   val cachedHeads: mutable.ArrayBuffer[CausalID] = mutable.ArrayBuffer.empty
+  val cachedHeads: mutable.ArrayBuffer[CausalID] = mutable.ArrayBuffer.empty
 
   private val _history: mutable.ArrayBuffer[
     (CausalID, mutable.ArrayBuffer[MSG])
@@ -55,14 +51,15 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
   }
 
   def concurrentChanges(
-      causalId: CausalID
+    other: CausalBroadcast[MSG],
+    concurrentTo: CausalID,
   ): Iterable[
     (CausalID, mutable.ArrayBuffer[MSG])
   ] = {
     _history
       .to(Iterable)
       .filter(node =>
-        node._1 != causalId && CausalID.partialOrder.tryCompare(node._1, causalId).isEmpty
+        node._1 != concurrentTo && CausalID.partialOrder.tryCompare(node._1, concurrentTo).isEmpty
       )
       .map((causalId, messages) => (causalId, messages.clone()))
   }

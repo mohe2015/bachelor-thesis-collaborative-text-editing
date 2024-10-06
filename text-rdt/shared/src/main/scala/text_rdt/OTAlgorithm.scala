@@ -6,11 +6,20 @@ package text_rdt
 // https://dl.acm.org/doi/pdf/10.1145/289444.289469
 
 // https://www3.ntu.edu.sg/scse/staff/czsun/projects/otfaq/#_Toc321146146
+
+// https://arxiv.org/pdf/1905.01302
+// 3.1.3 Server-based versus Distributed OT
+
 case class OTOperation(replica: RID, inner: OperationType) { // , contextBefore: String, contextAfter: String
     
 }
 
 def inclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
+  val result = inclusionTransformInternal(operationToTransform, operationToTransformAgainst)
+  assert(operationToTransformAgainst == exclusionTransformInternal(result, operationToTransformAgainst))
+}
+
+def inclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
   (operationToTransform, operationToTransformAgainst) match {
     case Tuple2(None, other) => None
     case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oContext < bContext)) {
@@ -38,8 +47,12 @@ def inclusionTransform(operationToTransform: Option[OTOperation], operationToTra
   }
 }
 
-// TODO FIXME
 def exclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
+  val result = exclusionTransformInternal(operationToTransform, operationToTransformAgainst)
+  assert(operationToTransformAgainst == inclusionTransformInternal(result, operationToTransformAgainst))
+}
+
+def exclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
   (operationToTransform, operationToTransformAgainst) match {
     case Tuple2(None, other) => None
     case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oContext < bContext)) {
@@ -115,7 +128,12 @@ object OTAlgorithm {
 
       override def syncFrom(other: OTAlgorithm) = {
         algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (causalId, message) => {
-          val concurrentChanges = algorithm.causalBroadcast.concurrentChanges(causalId)
+          val heads = algorithm.causalBroadcast.cachedHeads
+
+          val concurrentChangesOfOther = other.causalBroadcast.concurrentToAndBefore(heads, causalId)
+
+          val concurrentChangesOfSelf = algorithm.causalBroadcast.concurrentToAndBefore(causalId, heads)
+
           println(s"receiving ${message.toString().replace("\n", "\\n")} from ${other.replicaId} with changes to transform against: ${concurrentChanges.toString().replace("\n", "\\n")}")
 
           val newOperation: Option[OTOperation] = concurrentChanges.flatMap(_._2).foldLeft(Some(message))(transform)
