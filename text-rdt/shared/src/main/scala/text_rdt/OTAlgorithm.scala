@@ -141,12 +141,14 @@ object OTAlgorithm {
 
           //println(s"receiving ${otherMessage.toString().replace("\n", "\\n")} from ${other.replicaId} with changes to transform against: ${concurrentChanges.toString().replace("\n", "\\n")}")
 
-          //val newOperation: Option[OTOperation] = concurrentChanges.flatMap(_._2).foldLeft(Some(otherMessage))(transform)
+          var newOperation: Option[OTOperation] = concurrentChangesOfOther.flatMap(_._2).foldLeft(Some(otherMessage))(exclusionTransform)
 
-          //newOperation.foreach(operation => operation.inner match {
-         //   case OperationType.Insert(i, x) => text.insert(i, x)
-          //  case OperationType.Delete(i) => text.deleteCharAt(i)
-          //})
+          newOperation = concurrentChangesOfSelf.flatMap(_._2).foldLeft(newOperation)(inclusionTransform)
+
+          newOperation.foreach(operation => operation.inner match {
+            case OperationType.Insert(i, x) => text.insert(i, x)
+            case OperationType.Delete(i) => text.deleteCharAt(i)
+          })
         })
       }
     }
