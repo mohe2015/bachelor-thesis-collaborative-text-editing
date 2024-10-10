@@ -1,5 +1,7 @@
 package text_rdt
 
+import scala.collection.mutable
+
 // https://www3.ntu.edu.sg/scse/staff/czsun/projects/otfaq/#_Toc321146152
 // COT would be way to complicated, choose something simpler
 // dOPT
@@ -11,7 +13,7 @@ package text_rdt
 // 3.1.3 Server-based versus Distributed OT
 
 // I think the causal context can be used as context
-case class OTOperation(replica: RID, inner: OperationType, contextBefore: String, contextAfter: String) { // , contextBefore: String, contextAfter: String
+case class OTOperation(replica: RID, inner: OperationType, contextBefore: mutable.HashMap[text_rdt.RID, Integer], var contextAfter: mutable.HashMap[text_rdt.RID, Integer]) { // , contextBefore: String, contextAfter: String
     
 }
 
@@ -49,7 +51,7 @@ def inclusionTransformInternal(operationToTransform: Option[OTOperation], operat
     }
   }
   // TODO unclear, maybe merge the statevectors?
-  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.contextAfter, ""))
+  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.contextAfter, mutable.HashMap()))
 }
 
 def exclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
@@ -106,21 +108,25 @@ object OTAlgorithm {
 
     extension (algorithm: OTAlgorithm) {
       override def delete(i: Int): Unit = {
-        val message = OTOperation(algorithm.replicaId, OperationType.Delete(i))
+        val message = OTOperation(algorithm.replicaId, OperationType.Delete(i), algorithm.causalBroadcast.causalState.clone(), mutable.HashMap())
 
         algorithm.causalBroadcast.addOneToHistory(
           message
         )
+
+        message.contextAfter = algorithm.causalBroadcast.causalState.clone()
 
         text.deleteCharAt(i)
       }
 
       override def insert(i: Int, x: Char): Unit = {
-        val message = OTOperation(algorithm.replicaId, OperationType.Insert(i, x))
+        val message = OTOperation(algorithm.replicaId, OperationType.Insert(i, x), algorithm.causalBroadcast.causalState.clone(), mutable.HashMap())
 
         algorithm.causalBroadcast.addOneToHistory(
           message
         )
+
+        message.contextAfter = algorithm.causalBroadcast.causalState.clone()
 
         text.insert(i, x)
       }   
