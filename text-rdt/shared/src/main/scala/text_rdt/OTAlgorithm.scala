@@ -153,17 +153,17 @@ object OTAlgorithm {
         algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (otherCausalId, otherMessage) => {
           // do we need to find the closest head? I think we should read a paper
           // maybe choosing an arbitrary head should work?
-          println(s"receiving $otherMessage from ${other.replicaId} at ${algorithm.replicaId}")
+          println(s"receiving $otherMessage with causal info ${otherCausalId} from ${other.replicaId} at ${algorithm.replicaId}")
 
           val selfHead = algorithm.causalBroadcast.cachedHeads(0)
 
           val concurrentChangesOfOther = other.causalBroadcast.concurrentToAndBefore(selfHead, otherCausalId)
 
-          println(s"concurrent changes of other $concurrentChangesOfOther")
+          println(s"concurrent other changes to $selfHead and before $otherCausalId: $concurrentChangesOfOther")
 
           val concurrentChangesOfSelf = algorithm.causalBroadcast.concurrentToAndBefore(otherCausalId, selfHead)
 
-          println(s"concurrent changes of self $concurrentChangesOfOther")
+          println(s"concurrent self changes to $otherCausalId $selfHead $concurrentChangesOfOther")
 
           //println(s"receiving ${otherMessage.toString().replace("\n", "\\n")} from ${other.replicaId} with changes to transform against: ${concurrentChanges.toString().replace("\n", "\\n")}")
 
