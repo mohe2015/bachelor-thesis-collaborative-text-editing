@@ -51,9 +51,9 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
       .map((causalId, messages) => (causalId, messages.clone()))
   }
 
-  def concurrentToAndBefore(
+  def concurrentToAndNotAfter(
     concurrentTo: CausalID,
-    before: CausalID,
+    notAfter: CausalID,
   ): Iterable[
     (CausalID, mutable.ArrayBuffer[MSG])
   ] = {
@@ -61,7 +61,7 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
       .to(Iterable)
       .filter(node =>
         node._1 != concurrentTo && CausalID.partialOrder.tryCompare(node._1, concurrentTo).isEmpty
-        && CausalID.partialOrder.lt(node._1, before)
+        && !CausalID.partialOrder.gt(node._1, notAfter)
       )
       .map((causalId, messages) => (causalId, messages.clone()))
   }

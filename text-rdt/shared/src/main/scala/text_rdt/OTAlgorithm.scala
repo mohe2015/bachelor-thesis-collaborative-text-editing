@@ -157,13 +157,13 @@ object OTAlgorithm {
 
           val selfHead = algorithm.causalBroadcast.cachedHeads(0)
 
-          val concurrentChangesOfOther = other.causalBroadcast.concurrentToAndBefore(selfHead, otherCausalId)
+          val concurrentChangesOfOther = other.causalBroadcast.concurrentToAndNotAfter(selfHead, otherCausalId)
 
           println(s"concurrent other changes to $selfHead and before $otherCausalId: $concurrentChangesOfOther")
 
-          val concurrentChangesOfSelf = algorithm.causalBroadcast.concurrentToAndBefore(otherCausalId, selfHead)
+          val concurrentChangesOfSelf = algorithm.causalBroadcast.concurrentToAndNotAfter(otherCausalId, selfHead)
 
-          println(s"concurrent self changes to $otherCausalId $selfHead $concurrentChangesOfOther")
+          println(s"concurrent self changes to $otherCausalId and before $selfHead: $concurrentChangesOfOther")
 
           //println(s"receiving ${otherMessage.toString().replace("\n", "\\n")} from ${other.replicaId} with changes to transform against: ${concurrentChanges.toString().replace("\n", "\\n")}")
 
