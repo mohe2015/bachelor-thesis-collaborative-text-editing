@@ -10,7 +10,8 @@ package text_rdt
 // https://arxiv.org/pdf/1905.01302
 // 3.1.3 Server-based versus Distributed OT
 
-case class OTOperation(replica: RID, inner: OperationType) { // , contextBefore: String, contextAfter: String
+// I think the causal context can be used as context
+case class OTOperation(replica: RID, inner: OperationType, contextBefore: String, contextAfter: String) { // , contextBefore: String, contextAfter: String
     
 }
 
@@ -21,27 +22,28 @@ def inclusionTransform(operationToTransform: Option[OTOperation], operationToTra
 }
 
 def inclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
-  (operationToTransform, operationToTransformAgainst) match {
+  assert(operationToTransform.isEmpty || operationToTransform.get.contextBefore == operationToTransformAgainst.contextBefore)
+  val result = (operationToTransform.map(v => (v.replica, v.inner)), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
     case Tuple2(None, other) => None
-    case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oContext < bContext)) {
-      Some(OTOperation(oContext, OperationType.Insert(oI, oX)))
+    case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica < bReplica)) {
+      Some(OTOperation(oReplica, OperationType.Insert(oI, oX)))
     } else {
-      Some(OTOperation(oContext, OperationType.Insert(oI + 1, oX)))
+      Some(OTOperation(oReplica, OperationType.Insert(oI + 1, oX)))
     }
-    case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Delete(bI))) => if (oI <= bI) {
-      Some(OTOperation(oContext, OperationType.Insert(oI, oX)))
+    case Tuple2(Some(OTOperation(oReplica, OperationType.Insert(oI, oX))), OTOperation(bReplica, OperationType.Delete(bI))) => if (oI <= bI) {
+      Some(OTOperation(oReplica, OperationType.Insert(oI, oX)))
     } else {
-      Some(OTOperation(oContext, OperationType.Insert(oI - 1, oX)))
+      Some(OTOperation(oReplica, OperationType.Insert(oI - 1, oX)))
     }
-    case Tuple2(Some(OTOperation(oContext, OperationType.Delete(oI))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI < bI) {
-      Some(OTOperation(oContext, OperationType.Delete(oI)))
+    case Tuple2(Some(OTOperation(oReplica, OperationType.Delete(oI))), OTOperation(bReplica, OperationType.Insert(bI, bX))) => if (oI < bI) {
+      Some(OTOperation(oReplica, OperationType.Delete(oI)))
     } else {
-      Some(OTOperation(oContext, OperationType.Delete(oI + 1)))
+      Some(OTOperation(oReplica, OperationType.Delete(oI + 1)))
     }
-    case Tuple2(Some(OTOperation(oContext, OperationType.Delete(oI))), OTOperation(bContext, OperationType.Delete(bI))) => if (oI < bI) {
-      Some(OTOperation(oContext, OperationType.Delete(oI)))
+    case Tuple2(Some(OTOperation(oReplica, OperationType.Delete(oI))), OTOperation(bReplica, OperationType.Delete(bI))) => if (oI < bI) {
+      Some(OTOperation(oReplica, OperationType.Delete(oI)))
     } else if (oI > bI) {
-      Some(OTOperation(oContext, OperationType.Delete(oI - 1)))
+      Some(OTOperation(oReplica, OperationType.Delete(oI - 1)))
     } else {
       None
     }
@@ -57,25 +59,25 @@ def exclusionTransform(operationToTransform: Option[OTOperation], operationToTra
 def exclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
   (operationToTransform, operationToTransformAgainst) match {
     case Tuple2(None, other) => None
-    case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI > bI || (oI == bI && oContext < bContext)) {
-      Some(OTOperation(oContext, OperationType.Insert(oI, oX)))
+    case Tuple2(Some(OTOperation(oReplica, OperationType.Insert(oI, oX))), OTOperation(bReplica, OperationType.Insert(bI, bX))) => if (oI > bI || (oI == bI && oReplica < bReplica)) {
+      Some(OTOperation(oReplica, OperationType.Insert(oI, oX)))
     } else {
-      Some(OTOperation(oContext, OperationType.Insert(oI - 1, oX)))
+      Some(OTOperation(oReplica, OperationType.Insert(oI - 1, oX)))
     }
-    case Tuple2(Some(OTOperation(oContext, OperationType.Insert(oI, oX))), OTOperation(bContext, OperationType.Delete(bI))) => if (oI >= bI) {
-      Some(OTOperation(oContext, OperationType.Insert(oI + 1, oX)))
+    case Tuple2(Some(OTOperation(oReplica, OperationType.Insert(oI, oX))), OTOperation(bReplica, OperationType.Delete(bI))) => if (oI >= bI) {
+      Some(OTOperation(oReplica, OperationType.Insert(oI + 1, oX)))
     } else {
-      Some(OTOperation(oContext, OperationType.Insert(oI, oX)))
+      Some(OTOperation(oReplica, OperationType.Insert(oI, oX)))
     }
-    case Tuple2(Some(OTOperation(oContext, OperationType.Delete(oI))), OTOperation(bContext, OperationType.Insert(bI, bX))) => if (oI > bI) {
-      Some(OTOperation(oContext, OperationType.Delete(oI)))
+    case Tuple2(Some(OTOperation(oReplica, OperationType.Delete(oI))), OTOperation(bReplica, OperationType.Insert(bI, bX))) => if (oI > bI) {
+      Some(OTOperation(oReplica, OperationType.Delete(oI)))
     } else {
-      Some(OTOperation(oContext, OperationType.Delete(oI + 1)))
+      Some(OTOperation(oReplica, OperationType.Delete(oI + 1)))
     }
-    case Tuple2(Some(OTOperation(oContext, OperationType.Delete(oI))), OTOperation(bContext, OperationType.Delete(bI))) => if (oI < bI) {
-      Some(OTOperation(oContext, OperationType.Delete(oI)))
+    case Tuple2(Some(OTOperation(oReplica, OperationType.Delete(oI))), OTOperation(bReplica, OperationType.Delete(bI))) => if (oI < bI) {
+      Some(OTOperation(oReplica, OperationType.Delete(oI)))
     } else if (oI > bI) {
-      Some(OTOperation(oContext, OperationType.Delete(oI - 1)))
+      Some(OTOperation(oReplica, OperationType.Delete(oI - 1)))
     } else {
       None
     }
