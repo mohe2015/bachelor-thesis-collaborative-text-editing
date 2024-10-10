@@ -12,11 +12,10 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
     buffer.addOne(messageToAppend)
   }
 
-  var needsTick: Boolean = false
+  var needsTick: Boolean = true
 
   var causalState: mutable.HashMap[RID, Integer] =
     new mutable.HashMap(2, mutable.HashMap.defaultLoadFactor)
-  val _ = causalState.put(replicaId, 1)
 
   val cachedHeads: mutable.ArrayBuffer[CausalID] = mutable.ArrayBuffer.empty
 
