@@ -12,6 +12,8 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
     buffer.addOne(messageToAppend)
   }
 
+  var needsTick: Boolean = false
+
   var causalState: mutable.HashMap[RID, Integer] =
     new mutable.HashMap(2, mutable.HashMap.defaultLoadFactor)
   val _ = causalState.put(replicaId, 1)
@@ -66,6 +68,10 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
   }
 
   def addOneToHistory(msg: MSG): Unit = {
+    if (needsTick) {
+      needsTick = false
+      tick()
+    }
     if (_history.nonEmpty && _history.last._1 == causalState) {
       appendMessage(_history.last._2, msg)
     } else {
@@ -120,8 +126,8 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
         entry, handleMessage
       )
     })
-    this.tick()
-    other.tick()
+    this.needsTick = true
+    other.needsTick = true
   }
 
   def deliveringRemote(
