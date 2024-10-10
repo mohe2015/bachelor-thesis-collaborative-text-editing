@@ -10,6 +10,8 @@ implicit val fooReadWrite: ReadWriter[mutable.HashMap[RID, Integer]] =
     .bimap[mutable.HashMap[RID, Integer]](Map.from(_), mutable.HashMap.from(_))
 
 object CausalID {
+  assert(!CausalID.partialOrder.lt(mutable.HashMap("A" -> 1, "B" -> 1), mutable.HashMap("B" -> 2)))
+
   final val ZERO: Integer = 0
 
   given partialOrder: PartialOrdering[CausalID] with {

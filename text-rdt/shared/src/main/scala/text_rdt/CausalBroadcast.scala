@@ -2,10 +2,6 @@ package text_rdt
 
 import scala.collection.mutable
 
-object CausalBroadcast {
-  final val ONE: Integer = 1
-}
-
 final case class CausalBroadcast[MSG](replicaId: RID) {
 
   // you can override this function if you want
@@ -16,11 +12,12 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
     buffer.addOne(messageToAppend)
   }
 
+  var needsTick: Boolean = true
+
   var causalState: mutable.HashMap[RID, Integer] =
     new mutable.HashMap(2, mutable.HashMap.defaultLoadFactor)
-  val _ = causalState.put(replicaId, CausalBroadcast.ONE)
 
-   val cachedHeads: mutable.ArrayBuffer[CausalID] = mutable.ArrayBuffer.empty
+  val cachedHeads: mutable.ArrayBuffer[CausalID] = mutable.ArrayBuffer.empty
 
   private val _history: mutable.ArrayBuffer[
     (CausalID, mutable.ArrayBuffer[MSG])
@@ -54,8 +51,41 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
       .map((causalId, messages) => (causalId, messages.clone()))
   }
 
+  def concurrentToAndNotAfter(
+    concurrentTo: CausalID,
+    notAfter: CausalID,
+  ): Iterable[
+    (CausalID, mutable.ArrayBuffer[MSG])
+  ] = {
+    _history
+      .to(Iterable)
+      .filter(node =>
+        node._1 != concurrentTo && CausalID.partialOrder.tryCompare(node._1, concurrentTo).isEmpty
+        && !CausalID.partialOrder.gt(node._1, notAfter)
+      )
+      .map((causalId, messages) => (causalId, messages.clone()))
+  }
+
+  def concurrentToAndBefore(
+    concurrentTo: CausalID,
+    before: CausalID,
+  ): Iterable[
+    (CausalID, mutable.ArrayBuffer[MSG])
+  ] = {
+    _history
+      .to(Iterable)
+      .filter(node =>
+        node._1 != concurrentTo && CausalID.partialOrder.tryCompare(node._1, concurrentTo).isEmpty
+        && CausalID.partialOrder.lt(node._1, before)
+      )
+      .map((causalId, messages) => (causalId, messages.clone()))
+  }
 
   def addOneToHistory(msg: MSG): Unit = {
+    if (needsTick) {
+      needsTick = false
+      tick()
+    }
     if (_history.nonEmpty && _history.last._1 == causalState) {
       appendMessage(_history.last._2, msg)
     } else {
@@ -99,7 +129,7 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
     cachedHeads.addOne(causalState)
   }
 
-  def syncFrom(other: CausalBroadcast[MSG], handleMessage: MSG => Unit): Unit = {
+  def syncFrom(other: CausalBroadcast[MSG], handleMessage: (CausalID, MSG) => Unit): Unit = {
     val heads1 = this.cachedHeads
     val potentiallyNewer2 =
       other.elementsPotentiallyNewer(heads1)
@@ -110,8 +140,8 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
         entry, handleMessage
       )
     })
-    this.tick()
-    other.tick()
+    this.needsTick = true
+    other.needsTick = true
   }
 
   def deliveringRemote(
@@ -119,7 +149,7 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
           CausalID,
           mutable.ArrayBuffer[MSG]
       ),
-      handleMessage: MSG => Unit
+      handleMessage: (CausalID, MSG) => Unit
   ): Unit = {
     entry._1
       .foreachEntry((rid, counter) => {
@@ -135,6 +165,6 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
 
     this.addToHistory(entry)
 
-    entry._2.foreach(msg => handleMessage(msg)) // TODO test again whether the compiler can detect this with entry._2.foreach(msg => handleMessage)
+    entry._2.foreach(msg => handleMessage(entry._1, msg))
   }
 }
