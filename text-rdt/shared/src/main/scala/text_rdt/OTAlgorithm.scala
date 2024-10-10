@@ -26,28 +26,30 @@ def inclusionTransformInternal(operationToTransform: Option[OTOperation], operat
   val result = (operationToTransform.map(v => (v.replica, v.inner)), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
     case Tuple2(None, other) => None
     case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica < bReplica)) {
-      Some(OTOperation(oReplica, OperationType.Insert(oI, oX)))
+      Some((oReplica, OperationType.Insert(oI, oX)))
     } else {
-      Some(OTOperation(oReplica, OperationType.Insert(oI + 1, oX)))
+      Some((oReplica, OperationType.Insert(oI + 1, oX)))
     }
-    case Tuple2(Some(OTOperation(oReplica, OperationType.Insert(oI, oX))), OTOperation(bReplica, OperationType.Delete(bI))) => if (oI <= bI) {
-      Some(OTOperation(oReplica, OperationType.Insert(oI, oX)))
+    case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Delete(bI))) => if (oI <= bI) {
+      Some((oReplica, OperationType.Insert(oI, oX)))
     } else {
-      Some(OTOperation(oReplica, OperationType.Insert(oI - 1, oX)))
+      Some((oReplica, OperationType.Insert(oI - 1, oX)))
     }
-    case Tuple2(Some(OTOperation(oReplica, OperationType.Delete(oI))), OTOperation(bReplica, OperationType.Insert(bI, bX))) => if (oI < bI) {
-      Some(OTOperation(oReplica, OperationType.Delete(oI)))
+    case Tuple2(Some((oReplica, OperationType.Delete(oI))), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI) {
+      Some((oReplica, OperationType.Delete(oI)))
     } else {
-      Some(OTOperation(oReplica, OperationType.Delete(oI + 1)))
+      Some((oReplica, OperationType.Delete(oI + 1)))
     }
-    case Tuple2(Some(OTOperation(oReplica, OperationType.Delete(oI))), OTOperation(bReplica, OperationType.Delete(bI))) => if (oI < bI) {
-      Some(OTOperation(oReplica, OperationType.Delete(oI)))
+    case Tuple2(Some((oReplica, OperationType.Delete(oI))), (bReplica, OperationType.Delete(bI))) => if (oI < bI) {
+      Some((oReplica, OperationType.Delete(oI)))
     } else if (oI > bI) {
-      Some(OTOperation(oReplica, OperationType.Delete(oI - 1)))
+      Some((oReplica, OperationType.Delete(oI - 1)))
     } else {
       None
     }
   }
+  // TODO unclear, maybe merge the statevectors?
+  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.contextAfter, ""))
 }
 
 def exclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
@@ -57,31 +59,33 @@ def exclusionTransform(operationToTransform: Option[OTOperation], operationToTra
 }
 
 def exclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
-  (operationToTransform, operationToTransformAgainst) match {
+    assert(operationToTransform.isEmpty || operationToTransform.get.contextBefore == operationToTransformAgainst.contextAfter)
+  val result = (operationToTransform.map(v => (v.replica, v.inner)), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
     case Tuple2(None, other) => None
-    case Tuple2(Some(OTOperation(oReplica, OperationType.Insert(oI, oX))), OTOperation(bReplica, OperationType.Insert(bI, bX))) => if (oI > bI || (oI == bI && oReplica < bReplica)) {
-      Some(OTOperation(oReplica, OperationType.Insert(oI, oX)))
+    case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Insert(bI, bX))) => if (oI > bI || (oI == bI && oReplica < bReplica)) {
+      Some((oReplica, OperationType.Insert(oI, oX)))
     } else {
-      Some(OTOperation(oReplica, OperationType.Insert(oI - 1, oX)))
+      Some((oReplica, OperationType.Insert(oI - 1, oX)))
     }
-    case Tuple2(Some(OTOperation(oReplica, OperationType.Insert(oI, oX))), OTOperation(bReplica, OperationType.Delete(bI))) => if (oI >= bI) {
-      Some(OTOperation(oReplica, OperationType.Insert(oI + 1, oX)))
+    case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Delete(bI))) => if (oI >= bI) {
+      Some((oReplica, OperationType.Insert(oI + 1, oX)))
     } else {
-      Some(OTOperation(oReplica, OperationType.Insert(oI, oX)))
+      Some((oReplica, OperationType.Insert(oI, oX)))
     }
-    case Tuple2(Some(OTOperation(oReplica, OperationType.Delete(oI))), OTOperation(bReplica, OperationType.Insert(bI, bX))) => if (oI > bI) {
-      Some(OTOperation(oReplica, OperationType.Delete(oI)))
+    case Tuple2(Some((oReplica, OperationType.Delete(oI))), (bReplica, OperationType.Insert(bI, bX))) => if (oI > bI) {
+      Some((oReplica, OperationType.Delete(oI)))
     } else {
-      Some(OTOperation(oReplica, OperationType.Delete(oI + 1)))
+      Some((oReplica, OperationType.Delete(oI + 1)))
     }
-    case Tuple2(Some(OTOperation(oReplica, OperationType.Delete(oI))), OTOperation(bReplica, OperationType.Delete(bI))) => if (oI < bI) {
-      Some(OTOperation(oReplica, OperationType.Delete(oI)))
+    case Tuple2(Some((oReplica, OperationType.Delete(oI))), (bReplica, OperationType.Delete(bI))) => if (oI < bI) {
+      Some((oReplica, OperationType.Delete(oI)))
     } else if (oI > bI) {
-      Some(OTOperation(oReplica, OperationType.Delete(oI - 1)))
+      Some((oReplica, OperationType.Delete(oI - 1)))
     } else {
       None
     }
   }
+  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.contextBefore, operationToTransformAgainst.contextAfter))
 }
 
 enum OperationType() {
