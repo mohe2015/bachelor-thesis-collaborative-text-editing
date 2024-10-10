@@ -18,9 +18,12 @@ case class OTOperation(replica: RID, inner: OperationType, contextBefore: mutabl
 }
 
 def inclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
-  inclusionTransformInternal(operationToTransform, operationToTransformAgainst)
+    println(s"inclusion transforming $operationToTransform against $operationToTransformAgainst")
+  val result = inclusionTransformInternal(operationToTransform, operationToTransformAgainst)
+  println(s"inclusion transformed $operationToTransform against $operationToTransformAgainst to $result")
   // possibly the reverse does not hold
   //assert(operationToTransform == exclusionTransformInternal(result, operationToTransformAgainst), s"IT($operationToTransform, $operationToTransformAgainst) -> $result -> ET($result, $operationToTransformAgainst) -> ${exclusionTransformInternal(result, operationToTransformAgainst)}")
+  result
 }
 
 def inclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
@@ -55,9 +58,11 @@ def inclusionTransformInternal(operationToTransform: Option[OTOperation], operat
 }
 
 def exclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
-  exclusionTransformInternal(operationToTransform, operationToTransformAgainst)
+  println(s"exclusion transforming $operationToTransform against $operationToTransformAgainst")
+  val result = exclusionTransformInternal(operationToTransform, operationToTransformAgainst)
+  println(s"exclusion transformed $operationToTransform against $operationToTransformAgainst to $result")
   //assert(operationToTransform == inclusionTransformInternal(result, operationToTransformAgainst))
-  // result
+  result
 }
 
 def exclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
@@ -116,6 +121,8 @@ object OTAlgorithm {
 
         message.contextAfter = algorithm.causalBroadcast.causalState.clone()
 
+        println(s"produced message $message at ${algorithm.replicaId}")
+
         text.deleteCharAt(i)
       }
 
@@ -127,6 +134,8 @@ object OTAlgorithm {
         )
 
         message.contextAfter = algorithm.causalBroadcast.causalState.clone()
+
+        println(s"produced message $message at ${algorithm.replicaId}")
 
         text.insert(i, x)
       }   
@@ -144,12 +153,17 @@ object OTAlgorithm {
         algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (otherCausalId, otherMessage) => {
           // do we need to find the closest head? I think we should read a paper
           // maybe choosing an arbitrary head should work?
+          println(s"receiving $otherMessage from ${other.replicaId} at ${algorithm.replicaId}")
 
           val selfHead = algorithm.causalBroadcast.cachedHeads(0)
 
           val concurrentChangesOfOther = other.causalBroadcast.concurrentToAndBefore(selfHead, otherCausalId)
 
+          println(s"concurrent changes of other $concurrentChangesOfOther")
+
           val concurrentChangesOfSelf = algorithm.causalBroadcast.concurrentToAndBefore(otherCausalId, selfHead)
+
+          println(s"concurrent changes of self $concurrentChangesOfOther")
 
           //println(s"receiving ${otherMessage.toString().replace("\n", "\\n")} from ${other.replicaId} with changes to transform against: ${concurrentChanges.toString().replace("\n", "\\n")}")
 
