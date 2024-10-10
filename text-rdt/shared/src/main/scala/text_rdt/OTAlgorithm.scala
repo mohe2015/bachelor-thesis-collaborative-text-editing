@@ -54,7 +54,7 @@ def inclusionTransformInternal(operationToTransform: Option[OTOperation], operat
     }
   }
   // TODO unclear, maybe merge the statevectors?
-  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.contextAfter, mutable.HashMap()))
+  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.contextAfter, operationToTransformAgainst.contextBefore))
 }
 
 def exclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
