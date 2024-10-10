@@ -157,11 +157,12 @@ object OTAlgorithm {
 
           val selfHead = algorithm.causalBroadcast.cachedHeads(0)
 
+          // maybe check that these are by other users?
           val concurrentChangesOfOther = other.causalBroadcast.concurrentToAndNotAfter(selfHead, otherCausalId)
 
-          println(s"concurrent other changes to $selfHead and before $otherCausalId: $concurrentChangesOfOther")
+          println(s"concurrent other changes to $selfHead and not after $otherCausalId: $concurrentChangesOfOther")
 
-          val concurrentChangesOfSelf = algorithm.causalBroadcast.concurrentToAndNotAfter(otherCausalId, selfHead)
+          val concurrentChangesOfSelf = algorithm.causalBroadcast.concurrentToAndBefore(otherCausalId, selfHead)
 
           println(s"concurrent self changes to $otherCausalId and before $selfHead: $concurrentChangesOfOther")
 

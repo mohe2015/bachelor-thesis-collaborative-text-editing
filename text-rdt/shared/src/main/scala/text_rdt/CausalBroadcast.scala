@@ -66,6 +66,21 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
       .map((causalId, messages) => (causalId, messages.clone()))
   }
 
+  def concurrentToAndBefore(
+    concurrentTo: CausalID,
+    before: CausalID,
+  ): Iterable[
+    (CausalID, mutable.ArrayBuffer[MSG])
+  ] = {
+    _history
+      .to(Iterable)
+      .filter(node =>
+        node._1 != concurrentTo && CausalID.partialOrder.tryCompare(node._1, concurrentTo).isEmpty
+        && CausalID.partialOrder.lt(node._1, before)
+      )
+      .map((causalId, messages) => (causalId, messages.clone()))
+  }
+
   def addOneToHistory(msg: MSG): Unit = {
     if (needsTick) {
       needsTick = false
