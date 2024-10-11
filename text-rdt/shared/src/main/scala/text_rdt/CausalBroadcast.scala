@@ -2,7 +2,7 @@ package text_rdt
 
 import scala.collection.mutable
 
-final case class CausalBroadcast[MSG](replicaId: RID) {
+final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) {
 
   // you can override this function if you want
   def appendMessage(
@@ -86,9 +86,12 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
       needsTick = false
       tick()
     }
-    if (_history.nonEmpty && _history.last._1 == causalState) {
+    if (batching && _history.nonEmpty && _history.last._1 == causalState) {
       appendMessage(_history.last._2, msg)
     } else {
+      if (!batching) {
+        tick()
+      }
       cachedHeads
         .filterInPlace(cachedHead =>
           !CausalID.partialOrder

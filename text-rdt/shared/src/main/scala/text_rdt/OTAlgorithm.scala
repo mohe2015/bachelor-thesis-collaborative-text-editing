@@ -102,12 +102,13 @@ enum OperationType() {
 
 final case class OTAlgorithm(replicaId: String, val operations: Vector[OTOperation]) {
 
-  val causalBroadcast = CausalBroadcast[OTOperation](replicaId)
+  val causalBroadcast = CausalBroadcast[OTOperation](replicaId, false)
 
   val text: StringBuilder = StringBuilder()
 
 }
 
+// TODO FIXME maybe disable message batching for this?
 object OTAlgorithm {
   given algorithm: CollaborativeTextEditingAlgorithm[OTAlgorithm] with {
 
