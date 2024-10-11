@@ -140,13 +140,17 @@ case class InternalMultiReplicaConvergenceTest[A](
       val replica1 = sut(replicaIndex1)
       val replica2 = sut(replicaIndex2)
 
-      assert(replica1.editor.asInstanceOf[StringEditory].data.toString() == replica1.text())
-      assert(replica2.editor.asInstanceOf[StringEditory].data.toString() == replica2.text())
+      if (sut.isInstanceOf[Replica[?]]) {
+        assert(replica1.asInstanceOf[Replica[?]].editor.asInstanceOf[StringEditory].data.toString() == replica1.text())
+        assert(replica2.asInstanceOf[Replica[?]].editor.asInstanceOf[StringEditory].data.toString() == replica2.text())
+      }
 
       replica1.sync(replica2.asInstanceOf[replica1.type])
 
-      assert(replica1.editor.asInstanceOf[StringEditory].data.toString() == replica1.text(), s"${replica1.editor.asInstanceOf[StringEditory].data.toString()} == ${replica1.text()}")
-      assert(replica2.editor.asInstanceOf[StringEditory].data.toString() == replica2.text(), s"${replica2.editor.asInstanceOf[StringEditory].data.toString()} == ${replica2.text()}")
+      if (sut.isInstanceOf[Replica[?]]) {
+        assert(replica1.asInstanceOf[Replica[?]].editor.asInstanceOf[StringEditory].data.toString() == replica1.text(), s"${replica1.asInstanceOf[Replica[?]].editor.asInstanceOf[StringEditory].data.toString()} == ${replica1.text()}")
+        assert(replica2.asInstanceOf[Replica[?]].editor.asInstanceOf[StringEditory].data.toString() == replica2.text(), s"${replica2.asInstanceOf[Replica[?]].editor.asInstanceOf[StringEditory].data.toString()} == ${replica2.text()}")
+      }
 
       sut.view.mapValues(_.text()).toMap
     }
@@ -171,11 +175,15 @@ case class InternalMultiReplicaConvergenceTest[A](
       val len =
         sut(replicaIndex).text().length()
 
-      assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
+      if (sut.isInstanceOf[Replica[?]]) {
+        assert(sut(replicaIndex).asInstanceOf[Replica[?]].editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
+      }
 
       sut(replicaIndex).insert(index % (len + 1), character)
 
-      assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
+      if (sut.isInstanceOf[Replica[?]]) {
+        assert(sut(replicaIndex).asInstanceOf[Replica[?]].editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
+      }
 
       sut.view.mapValues(_.text()).toMap
     }
@@ -200,13 +208,17 @@ case class InternalMultiReplicaConvergenceTest[A](
       val len =
         sut(replicaIndex).text().length()
 
-      assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
+      if (sut.isInstanceOf[Replica[?]]) {
+        assert(sut(replicaIndex).asInstanceOf[Replica[?]].editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
+      }
 
       if (len > 0) {
         sut(replicaIndex).delete(index % len)
       }
 
-      assert(sut(replicaIndex).editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
+      if (sut.isInstanceOf[Replica[?]]) {
+        assert(sut(replicaIndex).asInstanceOf[Replica[?]].editor.asInstanceOf[StringEditory].data.toString() == sut(replicaIndex).text())
+      }
 
       sut.view.mapValues(_.text()).toMap
     }
