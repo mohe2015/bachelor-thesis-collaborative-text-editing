@@ -7,14 +7,14 @@ import scala.collection.mutable
 
 case class Convergence(revision: Int) {}
 
-case class InternalMultiReplicaConvergenceTest[F <: FugueFactory]()(
-    using val factoryContext: F
-) extends Commands {
+case class InternalMultiReplicaConvergenceTest[A](
+    val factoryConstructor: String => A
+)(using algorithm: CollaborativeTextEditingAlgorithm[A]) extends Commands {
 
   // the second parameter is just a unique id so uniquely identify equal convergences??
   type State = (Map[Int, Convergence], Int)
 
-  type Sut = mutable.Map[Int, Replica[?]]
+  type Sut = mutable.Map[Int, A]
 
   override def newSut(state: State): Sut = {
     assert(state._1.isEmpty)
@@ -113,10 +113,9 @@ case class InternalMultiReplicaConvergenceTest[F <: FugueFactory]()(
     override def preCondition(state: State): Boolean = true
 
     override def run(sut: Sut): Result = {
-      val replicaState = ReplicaState(
+      val replica = factoryConstructor(
         id.toString
-      )(using factoryContext)
-      val replica = Replica(replicaState, StringEditory())
+      )
       val _ = sut.put(id, replica)
       sut.view.mapValues(_.text()).toMap
     }
