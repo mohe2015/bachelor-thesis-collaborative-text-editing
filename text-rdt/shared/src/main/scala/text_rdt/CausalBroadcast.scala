@@ -82,6 +82,10 @@ final case class CausalBroadcast[MSG](replicaId: RID) {
   }
 
   def addOneToHistory(msg: MSG): Unit = {
+    if (needsTick) {
+      needsTick = false
+      tick()
+    }
     if (_history.nonEmpty && _history.last._1 == causalState) {
       appendMessage(_history.last._2, msg)
     } else {
