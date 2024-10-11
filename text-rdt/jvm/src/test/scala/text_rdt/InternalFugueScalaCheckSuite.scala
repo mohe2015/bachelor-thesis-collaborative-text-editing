@@ -4,6 +4,8 @@ import munit.ScalaCheckSuite
 import org.scalacheck.Test
 import text_rdt.helper.scalacheck
 
+class OTAlgorithmScalaCheckSuite extends InternalFugueScalaCheckSuite(replicaId => OTAlgorithm(replicaId, Vector.empty))
+
 class SimpleInternalFugueScalaCheckSuite
     extends InternalFugueScalaCheckSuite(replicaId => Replica(ReplicaState(replicaId)(using SimpleFugueFactory.simpleFugueFactory), StringEditory())) {}
 
