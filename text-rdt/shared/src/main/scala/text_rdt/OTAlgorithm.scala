@@ -113,6 +113,11 @@ object OTAlgorithm {
 
     extension (algorithm: OTAlgorithm) {
       override def delete(i: Int): Unit = {
+        if (algorithm.causalBroadcast.needsTick) {
+          algorithm.causalBroadcast.needsTick = false
+          algorithm.causalBroadcast.tick()
+        }
+        
         val message = OTOperation(algorithm.replicaId, OperationType.Delete(i), algorithm.causalBroadcast.causalState.clone(), mutable.HashMap())
 
         algorithm.causalBroadcast.addOneToHistory(
@@ -127,6 +132,11 @@ object OTAlgorithm {
       }
 
       override def insert(i: Int, x: Char): Unit = {
+        if (algorithm.causalBroadcast.needsTick) {
+          algorithm.causalBroadcast.needsTick = false
+          algorithm.causalBroadcast.tick()
+        }
+        
         val message = OTOperation(algorithm.replicaId, OperationType.Insert(i, x), algorithm.causalBroadcast.causalState.clone(), mutable.HashMap())
 
         algorithm.causalBroadcast.addOneToHistory(
