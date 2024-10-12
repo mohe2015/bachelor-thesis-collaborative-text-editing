@@ -77,20 +77,20 @@ def exclusionTransformInternal(operationToTransform: Option[OTOperation], operat
     } else {
       Some((oReplica, OperationType.Insert(oI - 1, oX)))
     }
-    case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Delete(bI))) => if (oI >= bI) {
-      Some((oReplica, OperationType.Insert(oI + 1, oX)))
-    } else {
+    case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Delete(bI))) => if (oI <= bI) {
       Some((oReplica, OperationType.Insert(oI, oX)))
+    } else {
+      Some((oReplica, OperationType.Insert(oI + 1, oX)))
     }
-    case Tuple2(Some((oReplica, OperationType.Delete(oI))), (bReplica, OperationType.Insert(bI, bX))) => if (oI > bI) {
+    case Tuple2(Some((oReplica, OperationType.Delete(oI))), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI) {
       Some((oReplica, OperationType.Delete(oI)))
     } else {
-      Some((oReplica, OperationType.Delete(oI + 1)))
+      Some((oReplica, OperationType.Delete(oI - 1)))
     }
     case Tuple2(Some((oReplica, OperationType.Delete(oI))), (bReplica, OperationType.Delete(bI))) => if (oI < bI) {
       Some((oReplica, OperationType.Delete(oI)))
     } else if (oI > bI) {
-      Some((oReplica, OperationType.Delete(oI - 1)))
+      Some((oReplica, OperationType.Delete(oI + 1)))
     } else {
       None
     }
