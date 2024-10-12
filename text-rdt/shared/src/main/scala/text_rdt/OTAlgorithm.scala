@@ -163,7 +163,7 @@ object OTAlgorithm {
           val selfHead = algorithm.causalBroadcast.cachedHeads(0)
 
           // maybe check that these are by other users?
-          val concurrentChangesOfOther = other.causalBroadcast.concurrentToAndBefore(selfHead, otherCausalId).flatMap(_._2) 
+          val concurrentChangesOfOther = other.causalBroadcast.concurrentToAndBefore(selfHead, otherCausalId)
 
           println(s"concurrent other changes to $selfHead and before $otherCausalId: $concurrentChangesOfOther")
 
@@ -173,12 +173,12 @@ object OTAlgorithm {
 
           //println(s"receiving ${otherMessage.toString().replace("\n", "\\n")} from ${other.replicaId} with changes to transform against: ${concurrentChanges.toString().replace("\n", "\\n")}")
 
-          var newOperation: Option[OTOperation] = concurrentChangesOfOther.foldLeft(Some(otherMessage))(exclusionTransform)
+          var newOperation: Option[OTOperation] = concurrentChangesOfOther.flatMap(_._2).foldLeft(Some(otherMessage))(exclusionTransform)
 
           newOperation = concurrentChangesOfSelf.flatMap(_._2).foldLeft(newOperation)(inclusionTransform)
 
           // this is probably wrong, causal id probably needs to be from concurrentChangesOfOther
-          newOperation = concurrentChangesOfOther.flatMap(v => transform(other, otherCausalId, v)).foldLeft(newOperation)(inclusionTransform)
+          newOperation = concurrentChangesOfOther.flatMap(v => v._2.flatMap(vv => transform(other, v._1, vv))).foldLeft(newOperation)(inclusionTransform)
 
           newOperation
       }
