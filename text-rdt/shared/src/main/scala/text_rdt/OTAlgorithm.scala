@@ -13,8 +13,9 @@ import scala.collection.mutable.ArrayBuffer
 // https://arxiv.org/pdf/1905.01302
 // 3.1.3 Server-based versus Distributed OT
 
-// I think the causal context can be used as context
-case class OTOperation(replica: RID, inner: OperationType, contextBefore: mutable.HashMap[text_rdt.RID, Integer], var contextAfter: mutable.HashMap[text_rdt.RID, Integer]) { // , contextBefore: String, contextAfter: String
+// The context needs to represent a context vector. This means for every replicating site it stores which operations O_0 to O_i have been executed. https://dl.acm.org/doi/pdf/10.1145/1180875.1180918
+// 2.7.How to represent operation context in OT design? 
+case class OTOperation(replica: RID, inner: OperationType, context: mutable.HashMap[text_rdt.RID, Int]) {
     
 }
 
@@ -27,8 +28,9 @@ def inclusionTransform(operationToTransform: Option[OTOperation], operationToTra
   result
 }
 
+// 2.17.    What are the pre-/post-conditions for transformation functions?
 def inclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
-  assert(operationToTransform.isEmpty || operationToTransform.get.contextBefore == operationToTransformAgainst.contextBefore, s"${operationToTransform.get.contextBefore} == ${operationToTransformAgainst.contextBefore}")
+  assert(operationToTransform.isEmpty || operationToTransform.get.context == operationToTransformAgainst.context, s"${operationToTransform.get.context} == ${operationToTransformAgainst.context}")
   val result = (operationToTransform.map(v => (v.replica, v.inner)), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
     case Tuple2(None, other) => None
     case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica < bReplica)) {
@@ -54,8 +56,7 @@ def inclusionTransformInternal(operationToTransform: Option[OTOperation], operat
       None
     }
   }
-  // TODO unclear, maybe merge the statevectors?
-  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.contextAfter, operationToTransformAgainst.contextAfter))
+  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.context.updated(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1)))
 }
 
 def exclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
@@ -66,8 +67,9 @@ def exclusionTransform(operationToTransform: Option[OTOperation], operationToTra
   result
 }
 
+// 2.17.    What are the pre-/post-conditions for transformation functions?    
 def exclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
-  assert(operationToTransform.isEmpty || operationToTransform.get.contextBefore == operationToTransformAgainst.contextAfter)
+  assert(operationToTransform.isEmpty || operationToTransform.get.context == operationToTransformAgainst.context.updated(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1))
   val result = (operationToTransform.map(v => (v.replica, v.inner)), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
     case Tuple2(None, other) => None
     case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica >= bReplica)) {
@@ -93,7 +95,7 @@ def exclusionTransformInternal(operationToTransform: Option[OTOperation], operat
       None
     }
   }
-  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.contextBefore, operationToTransformAgainst.contextAfter))
+  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.context))
 }
 
 enum OperationType() {
@@ -120,13 +122,11 @@ object OTAlgorithm {
           algorithm.causalBroadcast.tick()
         }
         
-        val message = OTOperation(algorithm.replicaId, OperationType.Delete(i), algorithm.causalBroadcast.causalState.clone(), mutable.HashMap())
+        val message = OTOperation(algorithm.replicaId, OperationType.Delete(i), algorithm.causalBroadcast.causalState.clone())
 
         algorithm.causalBroadcast.addOneToHistory(
           message
         )
-
-        message.contextAfter = algorithm.causalBroadcast.causalState.clone()
 
         println(s"produced message $message at ${algorithm.replicaId}")
 
@@ -139,13 +139,11 @@ object OTAlgorithm {
           algorithm.causalBroadcast.tick()
         }
         
-        val message = OTOperation(algorithm.replicaId, OperationType.Insert(i, x), algorithm.causalBroadcast.causalState.clone(), mutable.HashMap())
+        val message = OTOperation(algorithm.replicaId, OperationType.Insert(i, x), algorithm.causalBroadcast.causalState.clone())
 
         algorithm.causalBroadcast.addOneToHistory(
           message
         )
-
-        message.contextAfter = algorithm.causalBroadcast.causalState.clone()
 
         println(s"produced message $message at ${algorithm.replicaId}")
 

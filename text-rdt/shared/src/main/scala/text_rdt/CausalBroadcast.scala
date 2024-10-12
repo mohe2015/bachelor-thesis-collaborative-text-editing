@@ -14,7 +14,7 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
 
   var needsTick: Boolean = batching
 
-  var causalState: mutable.HashMap[RID, Integer] =
+  var causalState: mutable.HashMap[RID, Int] =
     new mutable.HashMap(2, mutable.HashMap.defaultLoadFactor)
 
   val cachedHeads: mutable.ArrayBuffer[CausalID] = mutable.ArrayBuffer.empty
@@ -122,7 +122,7 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
     causalState
       .update(
         replicaId,
-        causalState.getOrElse(replicaId, CausalID.ZERO) + 1
+        causalState.getOrElse(replicaId, 0) + 1
       )
     cachedHeads
       .filterInPlace(cachedHead =>
@@ -160,7 +160,7 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
           .update(
             rid,
             Math.max(
-              this.causalState.getOrElse(rid, CausalID.ZERO),
+              this.causalState.getOrElse(rid, 0),
               counter
             )
           )
