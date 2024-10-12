@@ -72,7 +72,7 @@ def exclusionTransformInternal(operationToTransform: Option[OTOperation], operat
   assert(operationToTransform.isEmpty || operationToTransform.get.context == operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1), s"${operationToTransform.get.context} == ${operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1)}")
   val result = (operationToTransform.map(v => (v.replica, v.inner)), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
     case Tuple2(None, other) => None
-    case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica >= bReplica)) {
+    case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica < bReplica)) {
       Some((oReplica, OperationType.Insert(oI, oX)))
     } else {
       Some((oReplica, OperationType.Insert(oI - 1, oX)))
@@ -183,10 +183,14 @@ object OTAlgorithm {
 
           newOperation = concurrentChangesOfSelf.flatMap(_._2).foldLeft(newOperation)(inclusionTransform)
 
+          newOperation = previous.foldLeft(newOperation)(inclusionTransform)
+
           println(s"executing $newOperation at ${algorithm.replicaId}")
 
-          println("adding this operation to previous operations")
-          previous += otherMessage
+          if (newOperation.nonEmpty) {
+            println(s"adding $newOperation operation to previous operations")
+            previous += newOperation.get
+          }
 
           newOperation.foreach(operation => operation.inner match {
             case OperationType.Insert(i, x) => text.insert(i, x)
