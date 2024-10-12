@@ -159,6 +159,10 @@ object OTAlgorithm {
         other.syncFrom(algorithm)
       }
 
+      def transform(): Option[OTOperation] = {
+
+      }
+
       override def syncFrom(other: OTAlgorithm) = {
         val previous = mutable.ArrayBuffer[OTOperation]()
         algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (otherCausalId, otherMessage) => {
@@ -189,7 +193,7 @@ object OTAlgorithm {
 
           if (newOperation.nonEmpty) {
             println(s"adding $newOperation operation to previous operations")
-            previous += newOperation.get
+            //previous += newOperation.get
           }
 
           newOperation.foreach(operation => operation.inner match {
