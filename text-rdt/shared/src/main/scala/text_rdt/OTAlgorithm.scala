@@ -69,7 +69,7 @@ def exclusionTransform(operationToTransform: Option[OTOperation], operationToTra
 
 // 2.17.    What are the pre-/post-conditions for transformation functions?    
 def exclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
-  assert(operationToTransform.isEmpty || operationToTransform.get.context == operationToTransformAgainst.context.updated(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1))
+  assert(operationToTransform.isEmpty || operationToTransform.get.context == operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1), s"${operationToTransform.get.context} == ${operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1)}")
   val result = (operationToTransform.map(v => (v.replica, v.inner)), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
     case Tuple2(None, other) => None
     case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica >= bReplica)) {
@@ -186,7 +186,7 @@ object OTAlgorithm {
           println(s"executing $newOperation at ${algorithm.replicaId}")
 
           println("adding this operation to previous operations")
-          previous += otherMessage
+          //previous += otherMessage
 
           newOperation.foreach(operation => operation.inner match {
             case OperationType.Insert(i, x) => text.insert(i, x)
