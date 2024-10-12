@@ -183,6 +183,8 @@ object OTAlgorithm {
 
           newOperation = concurrentChangesOfSelf.flatMap(_._2).foldLeft(newOperation)(inclusionTransform)
 
+          println(s"executing $newOperation at ${algorithm.replicaId}")
+
           newOperation.foreach(operation => operation.inner match {
             case OperationType.Insert(i, x) => text.insert(i, x)
             case OperationType.Delete(i) => text.deleteCharAt(i)
