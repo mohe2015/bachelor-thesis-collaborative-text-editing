@@ -187,10 +187,8 @@ object OTAlgorithm {
 
           println(s"executing $newOperation at ${algorithm.replicaId}")
 
-          if (newOperation.nonEmpty) {
-            println("adding this operation to previous operations")
-            previous += newOperation.get
-          }
+          println("adding this operation to previous operations")
+          previous += otherMessage
 
           newOperation.foreach(operation => operation.inner match {
             case OperationType.Insert(i, x) => text.insert(i, x)
