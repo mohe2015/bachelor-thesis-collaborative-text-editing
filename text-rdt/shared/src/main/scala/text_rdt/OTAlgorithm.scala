@@ -70,7 +70,7 @@ def exclusionTransformInternal(operationToTransform: Option[OTOperation], operat
   assert(operationToTransform.isEmpty || operationToTransform.get.contextBefore == operationToTransformAgainst.contextAfter)
   val result = (operationToTransform.map(v => (v.replica, v.inner)), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
     case Tuple2(None, other) => None
-    case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Insert(bI, bX))) => if (oI > bI || (oI == bI && oReplica < bReplica)) {
+    case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica >= bReplica)) {
       Some((oReplica, OperationType.Insert(oI, oX)))
     } else {
       Some((oReplica, OperationType.Insert(oI - 1, oX)))
