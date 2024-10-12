@@ -67,6 +67,7 @@ def exclusionTransform(operationToTransform: Option[OTOperation], operationToTra
   result
 }
 
+// https://en.wikipedia.org/wiki/Operational_transformation
 // 2.17.    What are the pre-/post-conditions for transformation functions?    
 def exclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
   assert(operationToTransform.isEmpty || operationToTransform.get.context == operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1), s"${operationToTransform.get.context} == ${operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1)}")
@@ -160,6 +161,7 @@ object OTAlgorithm {
       }
 
       def transform(other: OTAlgorithm, otherCausalId: CausalID, otherMessage: OTOperation): Option[OTOperation] = {
+          println("transform start")
           val selfHead = algorithm.causalBroadcast.cachedHeads(0)
 
           // maybe check that these are by other users?
@@ -180,6 +182,7 @@ object OTAlgorithm {
           // this is probably wrong, causal id probably needs to be from concurrentChangesOfOther
           newOperation = concurrentChangesOfOther.flatMap(v => v._2.flatMap(vv => transform(other, v._1, vv))).foldLeft(newOperation)(inclusionTransform)
 
+          println("transform end")
           newOperation
       }
 
