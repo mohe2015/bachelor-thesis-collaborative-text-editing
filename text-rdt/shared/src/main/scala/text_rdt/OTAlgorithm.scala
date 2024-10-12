@@ -169,13 +169,13 @@ object OTAlgorithm {
           val selfHead = algorithm.causalBroadcast.cachedHeads(0)
 
           // maybe check that these are by other users?
-          val concurrentChangesOfOther = previous ++ other.causalBroadcast.concurrentToAndBefore(selfHead, otherCausalId).flatMap(_._2) 
+          val concurrentChangesOfOther = other.causalBroadcast.concurrentToAndBefore(selfHead, otherCausalId).flatMap(_._2) 
 
-          println(s"concurrent other changes to $selfHead and not after $otherCausalId: $concurrentChangesOfOther")
+          println(s"concurrent other changes to $selfHead and before $otherCausalId: $concurrentChangesOfOther")
 
           val concurrentChangesOfSelf = algorithm.causalBroadcast.concurrentToAndNotAfter(otherCausalId, selfHead)
 
-          println(s"concurrent self changes to $otherCausalId and before $selfHead: $concurrentChangesOfSelf")
+          println(s"concurrent self changes to $otherCausalId and not after $selfHead: $concurrentChangesOfSelf")
 
           //println(s"receiving ${otherMessage.toString().replace("\n", "\\n")} from ${other.replicaId} with changes to transform against: ${concurrentChanges.toString().replace("\n", "\\n")}")
 
@@ -186,7 +186,7 @@ object OTAlgorithm {
           println(s"executing $newOperation at ${algorithm.replicaId}")
 
           println("adding this operation to previous operations")
-          //previous += otherMessage
+          previous += otherMessage
 
           newOperation.foreach(operation => operation.inner match {
             case OperationType.Insert(i, x) => text.insert(i, x)

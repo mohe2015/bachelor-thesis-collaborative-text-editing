@@ -72,6 +72,7 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
   ): Iterable[
     (CausalID, mutable.ArrayBuffer[MSG])
   ] = {
+    println(_history)
     _history
       .to(Iterable)
       .filter(node =>
