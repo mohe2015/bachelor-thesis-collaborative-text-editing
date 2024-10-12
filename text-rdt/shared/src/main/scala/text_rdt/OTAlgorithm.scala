@@ -56,7 +56,7 @@ def inclusionTransformInternal(operationToTransform: Option[OTOperation], operat
       None
     }
   }
-  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.context.updated(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1)))
+  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1)))
 }
 
 def exclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
