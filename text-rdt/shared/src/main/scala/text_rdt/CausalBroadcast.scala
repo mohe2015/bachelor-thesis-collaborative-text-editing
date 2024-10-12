@@ -91,6 +91,7 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
       appendMessage(_history.last._2, msg)
     } else {
       if (!batching) {
+        println("tick")
         tick()
       }
       cachedHeads
@@ -99,6 +100,7 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
             .lteq(cachedHead, causalState)
         )
       cachedHeads.addOne(causalState)
+      println(s"causalstate $causalState")
       _history.addOne((causalState, mutable.ArrayBuffer(msg)))
     }
   }
@@ -120,6 +122,7 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
   }
 
   def tick(): Unit = {
+    causalState = causalState.clone()
     causalState
       .update(
         replicaId,
