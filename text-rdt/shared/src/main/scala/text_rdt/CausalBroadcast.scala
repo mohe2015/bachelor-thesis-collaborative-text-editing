@@ -72,7 +72,6 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
   ): Iterable[
     (CausalID, mutable.ArrayBuffer[MSG])
   ] = {
-    println(_history)
     _history
       .to(Iterable)
       .filter(node =>
@@ -91,7 +90,6 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
       appendMessage(_history.last._2, msg)
     } else {
       if (!batching) {
-        println("tick")
         tick()
       }
       cachedHeads
@@ -100,8 +98,8 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
             .lteq(cachedHead, causalState)
         )
       cachedHeads.addOne(causalState)
-      println(s"causalstate $causalState")
       _history.addOne((causalState, mutable.ArrayBuffer(msg)))
+      println(s"history at $replicaId: $_history")
     }
   }
 
@@ -147,8 +145,10 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
         entry, handleMessage
       )
     })
-    this.needsTick = true
-    other.needsTick = true
+    if (batching) {
+      this.needsTick = true
+      other.needsTick = true
+    }
   }
 
   def deliveringRemote(
