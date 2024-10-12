@@ -12,7 +12,7 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
     buffer.addOne(messageToAppend)
   }
 
-  var needsTick: Boolean = true
+  var needsTick: Boolean = batching
 
   var causalState: mutable.HashMap[RID, Integer] =
     new mutable.HashMap(2, mutable.HashMap.defaultLoadFactor)
