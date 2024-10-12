@@ -1,6 +1,7 @@
 package text_rdt
 
 import scala.collection.mutable
+import scala.collection.mutable.ArrayBuffer
 
 // https://www3.ntu.edu.sg/scse/staff/czsun/projects/otfaq/#_Toc321146152
 // COT would be way to complicated, choose something simpler
@@ -54,7 +55,7 @@ def inclusionTransformInternal(operationToTransform: Option[OTOperation], operat
     }
   }
   // TODO unclear, maybe merge the statevectors?
-  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.contextAfter, operationToTransformAgainst.contextBefore))
+  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.contextAfter, operationToTransformAgainst.contextAfter))
 }
 
 def exclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
@@ -66,7 +67,7 @@ def exclusionTransform(operationToTransform: Option[OTOperation], operationToTra
 }
 
 def exclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
-    assert(operationToTransform.isEmpty || operationToTransform.get.contextBefore == operationToTransformAgainst.contextAfter)
+  assert(operationToTransform.isEmpty || operationToTransform.get.contextBefore == operationToTransformAgainst.contextAfter)
   val result = (operationToTransform.map(v => (v.replica, v.inner)), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
     case Tuple2(None, other) => None
     case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Insert(bI, bX))) => if (oI > bI || (oI == bI && oReplica < bReplica)) {
@@ -161,6 +162,7 @@ object OTAlgorithm {
       }
 
       override def syncFrom(other: OTAlgorithm) = {
+        val previous = mutable.ArrayBuffer[OTOperation]()
         algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (otherCausalId, otherMessage) => {
           // do we need to find the closest head? I think we should read a paper
           // maybe choosing an arbitrary head should work?
@@ -169,7 +171,7 @@ object OTAlgorithm {
           val selfHead = algorithm.causalBroadcast.cachedHeads(0)
 
           // maybe check that these are by other users?
-          val concurrentChangesOfOther = other.causalBroadcast.concurrentToAndBefore(selfHead, otherCausalId)
+          val concurrentChangesOfOther = previous ++ other.causalBroadcast.concurrentToAndBefore(selfHead, otherCausalId).flatMap(_._2) 
 
           println(s"concurrent other changes to $selfHead and not after $otherCausalId: $concurrentChangesOfOther")
 
@@ -179,11 +181,16 @@ object OTAlgorithm {
 
           //println(s"receiving ${otherMessage.toString().replace("\n", "\\n")} from ${other.replicaId} with changes to transform against: ${concurrentChanges.toString().replace("\n", "\\n")}")
 
-          var newOperation: Option[OTOperation] = concurrentChangesOfOther.flatMap(_._2).foldLeft(Some(otherMessage))(exclusionTransform)
+          var newOperation: Option[OTOperation] = concurrentChangesOfOther.foldLeft(Some(otherMessage))(exclusionTransform)
 
           newOperation = concurrentChangesOfSelf.flatMap(_._2).foldLeft(newOperation)(inclusionTransform)
 
           println(s"executing $newOperation at ${algorithm.replicaId}")
+
+          if (newOperation.nonEmpty) {
+            println("adding this operation to previous operations")
+            previous += newOperation.get
+          }
 
           newOperation.foreach(operation => operation.inner match {
             case OperationType.Insert(i, x) => text.insert(i, x)
