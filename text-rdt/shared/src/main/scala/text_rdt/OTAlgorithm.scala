@@ -159,17 +159,7 @@ object OTAlgorithm {
         other.syncFrom(algorithm)
       }
 
-      def transform(): Option[OTOperation] = {
-
-      }
-
-      override def syncFrom(other: OTAlgorithm) = {
-        val previous = mutable.ArrayBuffer[OTOperation]()
-        algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (otherCausalId, otherMessage) => {
-          // do we need to find the closest head? I think we should read a paper
-          // maybe choosing an arbitrary head should work?
-          println(s"receiving $otherMessage with causal info ${otherCausalId} from ${other.replicaId} at ${algorithm.replicaId}")
-
+      def transform(other: OTAlgorithm, otherCausalId: CausalID, otherMessage: OTOperation): Option[OTOperation] = {
           val selfHead = algorithm.causalBroadcast.cachedHeads(0)
 
           // maybe check that these are by other users?
@@ -187,14 +177,21 @@ object OTAlgorithm {
 
           newOperation = concurrentChangesOfSelf.flatMap(_._2).foldLeft(newOperation)(inclusionTransform)
 
-          newOperation = previous.foldLeft(newOperation)(inclusionTransform)
+          // this is probably wrong, causal id probably needs to be from concurrentChangesOfOther
+          newOperation = concurrentChangesOfOther.flatMap(v => transform(other, otherCausalId, v)).foldLeft(newOperation)(inclusionTransform)
+
+          newOperation
+      }
+
+      override def syncFrom(other: OTAlgorithm) = {
+        algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (otherCausalId, otherMessage) => {
+          // do we need to find the closest head? I think we should read a paper
+          // maybe choosing an arbitrary head should work?
+          println(s"receiving $otherMessage with causal info ${otherCausalId} from ${other.replicaId} at ${algorithm.replicaId}")
+
+          val newOperation = transform(other, otherCausalId, otherMessage)
 
           println(s"executing $newOperation at ${algorithm.replicaId}")
-
-          if (newOperation.nonEmpty) {
-            println(s"adding $newOperation operation to previous operations")
-            //previous += newOperation.get
-          }
 
           newOperation.foreach(operation => operation.inner match {
             case OperationType.Insert(i, x) => text.insert(i, x)
