@@ -106,6 +106,8 @@ enum OperationType() {
 
 final case class OTAlgorithm(replicaId: String, val operations: Vector[OTOperation]) {
 
+  val operationsPerSite: mutable.HashMap[RID, mutable.ArrayBuffer[OTOperation]] = mutable.HashMap()
+
   val causalBroadcast = CausalBroadcast[OTOperation](replicaId, false)
 
   val text: StringBuilder = StringBuilder()
@@ -129,6 +131,8 @@ object OTAlgorithm {
           message
         )
 
+        algorithm.operationsPerSite.getOrElseUpdate(algorithm.replicaId, mutable.ArrayBuffer()).addOne(message)
+
         println(s"produced message $message at ${algorithm.replicaId}")
 
         text.deleteCharAt(i)
@@ -145,6 +149,8 @@ object OTAlgorithm {
         algorithm.causalBroadcast.addOneToHistory(
           message
         )
+
+        algorithm.operationsPerSite.getOrElseUpdate(algorithm.replicaId, mutable.ArrayBuffer()).addOne(message)
 
         println(s"produced message $message at ${algorithm.replicaId}")
 
@@ -186,17 +192,28 @@ object OTAlgorithm {
           newOperation
       }*/
 
-      /*
-      def cotTransform(operation: OTOperation, contextDifference: ArrayBuffer[OTOperation]) = {
+      def getDifference(larger: CausalID, smaller: CausalID) = {
+        mutable.ArrayBuffer.from(larger.flatMap((key, value) => {
+          val s = smaller.getOrElse(key, 0)
+
+          algorithm.operationsPerSite(key).slice(s, value)
+        }))
+      }
+      
+      def cotTransform(operation: OTOperation, contextDifference: ArrayBuffer[OTOperation]): Unit = {
 
       }
 
-      def cotDo(operation: OTOperation, documentState: CausalID) = {
-        transform(operation, documentState - operation.context)
-      }*/
+      def cotDo(operation: OTOperation, documentState: CausalID): Unit = {
+        assert(CausalID.partialOrder.lteq(operation.context, documentState))
+
+        cotTransform(operation, getDifference(documentState, operation.context))
+      }
 
       override def syncFrom(other: OTAlgorithm) = {
         algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (otherCausalId, otherMessage) => {
+          algorithm.operationsPerSite.getOrElseUpdate(other.replicaId, mutable.ArrayBuffer()).addOne(otherMessage)
+
           // do we need to find the closest head? I think we should read a paper
           // maybe choosing an arbitrary head should work?
           println(s"receiving $otherMessage with causal info ${otherCausalId} from ${other.replicaId} at ${algorithm.replicaId}")
