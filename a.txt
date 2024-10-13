@@ -1,0 +1,18 @@
+produced message OTOperation(A,Insert(0,4),HashMap(),HashMap(A -> 1)) at A
+produced message OTOperation(A,Delete(0),HashMap(A -> 1),HashMap(A -> 2)) at A
+produced message OTOperation(B,Insert(0,@),HashMap(),HashMap(B -> 1)) at B
+receiving OTOperation(B,Insert(0,@),HashMap(),HashMap(B -> 1)) with causal info HashMap(B -> 1) from B at A
+concurrent other changes to HashMap(A -> 2) and not after HashMap(B -> 1): List()
+concurrent self changes to HashMap(B -> 1) and before HashMap(A -> 2): List((HashMap(A -> 2),ArrayBuffer(OTOperation(A,Insert(0,4),HashMap(),HashMap(A -> 1)))), (HashMap(A -> 2),ArrayBuffer(OTOperation(A,Delete(0),HashMap(A -> 1),HashMap(A -> 2)))))
+inclusion transforming Some(OTOperation(B,Insert(0,@),HashMap(),HashMap(B -> 1))) against OTOperation(A,Insert(0,4),HashMap(),HashMap(A -> 1))
+inclusion transformed Some(OTOperation(B,Insert(0,@),HashMap(),HashMap(B -> 1))) against OTOperation(A,Insert(0,4),HashMap(),HashMap(A -> 1)) to Some(OTOperation(B,Insert(1,@),HashMap(A -> 1),HashMap(A -> 1)))
+inclusion transforming Some(OTOperation(B,Insert(1,@),HashMap(A -> 1),HashMap(A -> 1))) against OTOperation(A,Delete(0),HashMap(A -> 1),HashMap(A -> 2))
+inclusion transformed Some(OTOperation(B,Insert(1,@),HashMap(A -> 1),HashMap(A -> 1))) against OTOperation(A,Delete(0),HashMap(A -> 1),HashMap(A -> 2)) to Some(OTOperation(B,Insert(0,@),HashMap(A -> 2),HashMap(A -> 2)))
+executing Some(OTOperation(B,Insert(0,@),HashMap(A -> 2),HashMap(A -> 2))) at A
+receiving OTOperation(A,Insert(0,4),HashMap(),HashMap(A -> 1)) with causal info HashMap(A -> 2) from A at B
+concurrent other changes to HashMap(B -> 1) and not after HashMap(A -> 2): List()
+concurrent self changes to HashMap(A -> 2) and before HashMap(B -> 1): List((HashMap(B -> 1),ArrayBuffer(OTOperation(B,Insert(0,@),HashMap(),HashMap(B -> 1)))))
+inclusion transforming Some(OTOperation(A,Insert(0,4),HashMap(),HashMap(A -> 1))) against OTOperation(B,Insert(0,@),HashMap(),HashMap(B -> 1))
+inclusion transformed Some(OTOperation(A,Insert(0,4),HashMap(),HashMap(A -> 1))) against OTOperation(B,Insert(0,@),HashMap(),HashMap(B -> 1)) to Some(OTOperation(A,Insert(0,4),HashMap(B -> 1),HashMap(B -> 1)))
+executing Some(OTOperation(A,Insert(0,4),HashMap(B -> 1),HashMap(B -> 1))) at B
+receiving OTOperation(A,Delete(0),HashMap(A -> 1),HashMap(A -> 2)) with causal info HashMap(A -> 2) from A at B

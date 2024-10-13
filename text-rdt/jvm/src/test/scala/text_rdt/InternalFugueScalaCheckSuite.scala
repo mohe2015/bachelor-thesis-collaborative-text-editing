@@ -3,18 +3,70 @@ package text_rdt
 import munit.ScalaCheckSuite
 import org.scalacheck.Test
 import text_rdt.helper.scalacheck
+import org.scalacheck.Prop._
+import scala.collection.immutable.HashMap
+import org.scalacheck.Gen
+import scala.collection.mutable
+
+class OTAlgorithmScalaCheckSuite extends InternalFugueScalaCheckSuite(replicaId => OTAlgorithm(replicaId, Vector.empty)) {
+
+  // https://github.com/typelevel/scalacheck/blob/main/doc/UserGuide.md
+  def genInsertOperation(replica: String, documentState: String) = for {
+    n <- Gen.choose(0, documentState.size)
+    c <- Gen.alphaChar
+  } yield OTOperation(replica, OperationType.Insert(n, c), mutable.HashMap())
+
+  def genDeleteOperation(replica: String, documentState: String) = if (documentState.isEmpty()) {
+    for {
+      replica <- Gen.stringOf(Gen.alphaChar)
+    } yield OTOperation(replica, OperationType.Identity, mutable.HashMap())
+  } else {
+    for {
+      n <- Gen.choose(0, documentState.size - 1)
+    } yield OTOperation(replica, OperationType.Delete(n), mutable.HashMap())
+  }
+
+  def genOperation(replica: String, documentState: String) = Gen.oneOf(genInsertOperation(replica, documentState), genDeleteOperation(replica, documentState))
+
+  override def scalaCheckTestParameters: Test.Parameters =
+    super.scalaCheckTestParameters
+      .withMinSuccessfulTests(500_000)
+      .withWorkers(16)
+      .withMaxSize(
+        50
+      )
+      .withMaxDiscardRatio(0.00001)
+
+  property("CP1") {
+    forAll { (documentState: String) =>
+      forAll(genOperation("A", documentState), genOperation("B", documentState)) {
+        (opA, opB) => {
+          val opAprime = inclusionTransform(opA, opB)
+          val opBprime = inclusionTransform(opB, opA)
+          val left = StringBuilder(documentState)
+          val right = StringBuilder(documentState)
+          OTAlgorithm.execute(left, opA)
+          OTAlgorithm.execute(left, opBprime)
+          OTAlgorithm.execute(right, opB)
+          OTAlgorithm.execute(right, opAprime)
+          assertEquals(left, right, (documentState, opA, opB))
+        }
+      }
+    }
+  }
+}
 
 class SimpleInternalFugueScalaCheckSuite
-    extends InternalFugueScalaCheckSuite(using SimpleFugueFactory.simpleFugueFactory) {}
+    extends InternalFugueScalaCheckSuite(replicaId => Replica(ReplicaState(replicaId)(using SimpleFugueFactory.simpleFugueFactory), StringEditory())) {}
 
 class ComplexInternalFugueScalaCheckSuite
-    extends InternalFugueScalaCheckSuite(using ComplexFugueFactory.complexFugueFactory) {}
+    extends InternalFugueScalaCheckSuite(replicaId => Replica(ReplicaState(replicaId)(using ComplexFugueFactory.complexFugueFactory), StringEditory())) {}
 
 class SimpleAVLInternalFugueScalaCheckSuite
-    extends InternalFugueScalaCheckSuite(using SimpleAVLFugueFactory.simpleAVLFugueFactory) {}
+    extends InternalFugueScalaCheckSuite(replicaId => Replica(ReplicaState(replicaId)(using SimpleAVLFugueFactory.simpleAVLFugueFactory), StringEditory())) {}
 
 class ComplexAVLInternalFugueScalaCheckSuite
-    extends InternalFugueScalaCheckSuite(using ComplexAVLFugueFactory.complexAVLFugueFactory) {
+    extends InternalFugueScalaCheckSuite(replicaId => Replica(ReplicaState(replicaId)(using ComplexAVLFugueFactory.complexAVLFugueFactory), StringEditory())) {
 
   override protected def scalaCheckInitialSeed: String =
     "EW9fMG9YY_yS7U_xrPdYhnQaD0XdHdBj2miRsRsemXC="
@@ -30,9 +82,9 @@ class ComplexAVLInternalFugueScalaCheckSuite
 
 }
 
-abstract class InternalFugueScalaCheckSuite(
-    using val factoryConstructor: FugueFactory
-) extends ScalaCheckSuite {
+abstract class InternalFugueScalaCheckSuite[A](
+    val factoryConstructor: String => A
+)(using algorithm: CollaborativeTextEditingAlgorithm[A]) extends ScalaCheckSuite {
 
   override def scalaCheckTestParameters: Test.Parameters =
     super.scalaCheckTestParameters
@@ -48,11 +100,11 @@ abstract class InternalFugueScalaCheckSuite(
       scalacheck
     )
   ) {
-    InternalSingleReplicaInsertDeleteTest()(using factoryConstructor).property()
+    InternalSingleReplicaInsertDeleteTest(factoryConstructor).property()
   }
 
   property("All replicas should converge".tag(scalacheck)) {
-    InternalMultiReplicaConvergenceTest()(using factoryConstructor).property()
+    InternalMultiReplicaConvergenceTest(factoryConstructor).property()
   }
 
   /*property("All replicas should follow the strong list specification".tag(scalacheck)) {

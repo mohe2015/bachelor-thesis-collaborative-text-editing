@@ -1,3 +1,8 @@
+athena-tu-darmstadt-thesis/main.pdf
+athena-tu-darmstadt-thesis/logos/*.pdf
+athena-tu-darmstadt-thesis/logos/*.svg
+athena-tu-darmstadt-thesis/fonts/roboto
+athena-tu-darmstadt-thesis/fonts/xcharter
 output*.json
 presentation/main.pdf
 presentation/tuda-beamer-2023-theme.pdf
@@ -92,7 +97,6 @@ acs-*.bib
 # endnotes
 *.ent
 
-# fixme
 *.lox
 
 # feynmf/feynmp
