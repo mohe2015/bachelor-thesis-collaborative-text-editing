@@ -61,6 +61,7 @@ object CausalID {
   given totalOrder: Ordering[CausalID] with {
     def compare(x: CausalID, y: CausalID): Int = {
       partialOrder.tryCompare(x, y) match {
+        case Some(value) => value
         case None =>
           @tailrec
           def smaller(remaining: List[RID]): Int = remaining match {
@@ -72,7 +73,6 @@ object CausalID {
           }
           val keys = (x.keysIterator ++ y.keysIterator).toList.sorted
           smaller(keys)
-        case Some(value) => value
       }
     }
   }
