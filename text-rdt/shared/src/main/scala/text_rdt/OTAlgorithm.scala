@@ -19,7 +19,7 @@ case class OTOperation(replica: RID, inner: OperationType, context: CausalID) {
     
 }
 
-def inclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
+def inclusionTransform(operationToTransform: OTOperation, operationToTransformAgainst: OTOperation): OTOperation = {
     println(s"inclusion transforming $operationToTransform against $operationToTransformAgainst")
   val result = inclusionTransformInternal(operationToTransform, operationToTransformAgainst)
   println(s"inclusion transformed $operationToTransform against $operationToTransformAgainst to $result")
@@ -29,37 +29,38 @@ def inclusionTransform(operationToTransform: Option[OTOperation], operationToTra
 }
 
 // 2.17.    What are the pre-/post-conditions for transformation functions?
-def inclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
-  assert(operationToTransform.isEmpty || operationToTransform.get.context == operationToTransformAgainst.context, s"${operationToTransform.get.context} == ${operationToTransformAgainst.context}")
-  val result = (operationToTransform.map(v => (v.replica, v.inner)), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
-    case Tuple2(None, other) => None
-    case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica < bReplica)) {
-      Some((oReplica, OperationType.Insert(oI, oX)))
+def inclusionTransformInternal(operationToTransform: OTOperation, operationToTransformAgainst: OTOperation): OTOperation = {
+  assert(operationToTransform.context == operationToTransformAgainst.context, s"${operationToTransform.context} == ${operationToTransformAgainst.context}")
+  val result = ((operationToTransform.replica, operationToTransform.inner), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
+    case Tuple2((oReplica, OperationType.Identity), other) => (oReplica, OperationType.Identity)
+    case Tuple2(other, (bReplica, OperationType.Identity)) => other
+    case Tuple2((oReplica, OperationType.Insert(oI, oX)), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica < bReplica)) {
+      (oReplica, OperationType.Insert(oI, oX))
     } else {
-      Some((oReplica, OperationType.Insert(oI + 1, oX)))
+      (oReplica, OperationType.Insert(oI + 1, oX))
     }
-    case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Delete(bI))) => if (oI <= bI) {
-      Some((oReplica, OperationType.Insert(oI, oX)))
+    case Tuple2((oReplica, OperationType.Insert(oI, oX)), (bReplica, OperationType.Delete(bI))) => if (oI <= bI) {
+      (oReplica, OperationType.Insert(oI, oX))
     } else {
-      Some((oReplica, OperationType.Insert(oI - 1, oX)))
+      (oReplica, OperationType.Insert(oI - 1, oX))
     }
-    case Tuple2(Some((oReplica, OperationType.Delete(oI))), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI) {
-      Some((oReplica, OperationType.Delete(oI)))
+    case Tuple2((oReplica, OperationType.Delete(oI)), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI) {
+      (oReplica, OperationType.Delete(oI))
     } else {
-      Some((oReplica, OperationType.Delete(oI + 1)))
+      (oReplica, OperationType.Delete(oI + 1))
     }
-    case Tuple2(Some((oReplica, OperationType.Delete(oI))), (bReplica, OperationType.Delete(bI))) => if (oI < bI) {
-      Some((oReplica, OperationType.Delete(oI)))
+    case Tuple2((oReplica, OperationType.Delete(oI)), (bReplica, OperationType.Delete(bI))) => if (oI < bI) {
+      (oReplica, OperationType.Delete(oI))
     } else if (oI > bI) {
-      Some((oReplica, OperationType.Delete(oI - 1)))
+      (oReplica, OperationType.Delete(oI - 1))
     } else {
-      None
+      (oReplica, OperationType.Identity)
     }
   }
-  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1)))
+  OTOperation(result._1, result._2, operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1))
 }
 
-def exclusionTransform(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
+def exclusionTransform(operationToTransform: OTOperation, operationToTransformAgainst: OTOperation): OTOperation = {
   println(s"exclusion transforming $operationToTransform against $operationToTransformAgainst")
   val result = exclusionTransformInternal(operationToTransform, operationToTransformAgainst)
   println(s"exclusion transformed $operationToTransform against $operationToTransformAgainst to $result")
@@ -69,39 +70,41 @@ def exclusionTransform(operationToTransform: Option[OTOperation], operationToTra
 
 // https://en.wikipedia.org/wiki/Operational_transformation
 // 2.17.    What are the pre-/post-conditions for transformation functions?    
-def exclusionTransformInternal(operationToTransform: Option[OTOperation], operationToTransformAgainst: OTOperation): Option[OTOperation] = {
-  assert(operationToTransform.isEmpty || operationToTransform.get.context == operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1), s"${operationToTransform.get.context} == ${operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1)}")
-  val result = (operationToTransform.map(v => (v.replica, v.inner)), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
-    case Tuple2(None, other) => None
-    case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica < bReplica)) {
-      Some((oReplica, OperationType.Insert(oI, oX)))
+def exclusionTransformInternal(operationToTransform: OTOperation, operationToTransformAgainst: OTOperation): OTOperation = {
+  assert(operationToTransform.context == operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1), s"${operationToTransform.context} == ${operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1)}")
+  val result = ((operationToTransform.replica, operationToTransform.inner), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
+    case Tuple2((oReplica, OperationType.Identity), other) => (oReplica, OperationType.Identity)
+    case Tuple2(other, (bReplica, OperationType.Identity)) => other
+    case Tuple2((oReplica, OperationType.Insert(oI, oX)), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica < bReplica)) {
+      (oReplica, OperationType.Insert(oI, oX))
     } else {
-      Some((oReplica, OperationType.Insert(oI - 1, oX)))
+      (oReplica, OperationType.Insert(oI - 1, oX))
     }
-    case Tuple2(Some((oReplica, OperationType.Insert(oI, oX))), (bReplica, OperationType.Delete(bI))) => if (oI <= bI) {
-      Some((oReplica, OperationType.Insert(oI, oX)))
+    case Tuple2((oReplica, OperationType.Insert(oI, oX)), (bReplica, OperationType.Delete(bI))) => if (oI <= bI) {
+      (oReplica, OperationType.Insert(oI, oX))
     } else {
-      Some((oReplica, OperationType.Insert(oI + 1, oX)))
+      (oReplica, OperationType.Insert(oI + 1, oX))
     }
-    case Tuple2(Some((oReplica, OperationType.Delete(oI))), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI) {
-      Some((oReplica, OperationType.Delete(oI)))
+    case Tuple2((oReplica, OperationType.Delete(oI)), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI) {
+      (oReplica, OperationType.Delete(oI))
     } else {
-      Some((oReplica, OperationType.Delete(oI - 1)))
+      (oReplica, OperationType.Delete(oI - 1))
     }
-    case Tuple2(Some((oReplica, OperationType.Delete(oI))), (bReplica, OperationType.Delete(bI))) => if (oI < bI) {
-      Some((oReplica, OperationType.Delete(oI)))
+    case Tuple2((oReplica, OperationType.Delete(oI)), (bReplica, OperationType.Delete(bI))) => if (oI < bI) {
+      (oReplica, OperationType.Delete(oI))
     } else if (oI > bI) {
-      Some((oReplica, OperationType.Delete(oI + 1)))
+      (oReplica, OperationType.Delete(oI + 1))
     } else {
-      None
+      (oReplica, OperationType.Identity)
     }
   }
-  result.map((replicaId, operationType) => OTOperation(replicaId, operationType, operationToTransformAgainst.context))
+  OTOperation(result._1, result._2, operationToTransformAgainst.context)
 }
 
 enum OperationType() {
   case Insert(i: Int, x: Char)
   case Delete(i: Int)
+  case Identity
 }
 
 final case class OTAlgorithm(replicaId: String, val operations: Vector[OTOperation]) {
