@@ -196,14 +196,18 @@ object OTAlgorithm {
       }*/
 
       def getDifference(larger: CausalID, smaller: CausalID) = {
-        mutable.ArrayBuffer.from(larger.flatMap((key, value) => {
+        println(s"enter getDifference $larger $smaller")
+        val returnValue = mutable.ArrayBuffer.from(larger.flatMap((key, value) => {
           val s = smaller.getOrElse(key, 0)
 
           algorithm.operationsPerSite(key).slice(s, value)
         }))
+        println(s"exit getDifference $returnValue")
+        returnValue
       }
       
       def cotTransform(operationParam: OTOperation, contextDifference: ArrayBuffer[OTOperation]): OTOperation = {
+        println(s"enter cotTransform $operationParam $contextDifference")
         var operation = operationParam
         while (contextDifference.nonEmpty) {
           var operationX = contextDifference.remove(0)
@@ -218,10 +222,12 @@ object OTAlgorithm {
               operation.context.getOrElse(operationX.replica, 0) + 1
             )*/
         }
+        println(s"exit cotTransform $operation")
         operation
       }
 
       def cotDo(operation: OTOperation, documentState: CausalID): Unit = {
+        println(s"enter cotDo $operation $documentState")
         assert(CausalID.partialOrder.lteq(operation.context, documentState))
 
         val transformedOperation = cotTransform(operation, getDifference(documentState, operation.context))
