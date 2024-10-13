@@ -99,7 +99,7 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
         )
       cachedHeads.addOne(causalState)
       _history.addOne((causalState, mutable.ArrayBuffer(msg)))
-      println(s"history at $replicaId: $_history")
+      //println(s"history at $replicaId: $_history")
     }
   }
 

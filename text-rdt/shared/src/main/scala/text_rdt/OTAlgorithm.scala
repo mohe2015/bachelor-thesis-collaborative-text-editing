@@ -20,9 +20,9 @@ case class OTOperation(replica: RID, inner: OperationType, context: CausalID) {
 }
 
 def inclusionTransform(operationToTransform: OTOperation, operationToTransformAgainst: OTOperation): OTOperation = {
-    println(s"inclusion transforming $operationToTransform against $operationToTransformAgainst")
+  //println(s"inclusion transforming $operationToTransform against $operationToTransformAgainst")
   val result = inclusionTransformInternal(operationToTransform, operationToTransformAgainst)
-  println(s"inclusion transformed $operationToTransform against $operationToTransformAgainst to $result")
+  //println(s"inclusion transformed $operationToTransform against $operationToTransformAgainst to $result")
   // possibly the reverse does not hold
   //assert(operationToTransform == exclusionTransformInternal(result, operationToTransformAgainst), s"IT($operationToTransform, $operationToTransformAgainst) -> $result -> ET($result, $operationToTransformAgainst) -> ${exclusionTransformInternal(result, operationToTransformAgainst)}")
   result
@@ -61,9 +61,9 @@ def inclusionTransformInternal(operationToTransform: OTOperation, operationToTra
 }
 
 def exclusionTransform(operationToTransform: OTOperation, operationToTransformAgainst: OTOperation): OTOperation = {
-  println(s"exclusion transforming $operationToTransform against $operationToTransformAgainst")
+  //println(s"exclusion transforming $operationToTransform against $operationToTransformAgainst")
   val result = exclusionTransformInternal(operationToTransform, operationToTransformAgainst)
-  println(s"exclusion transformed $operationToTransform against $operationToTransformAgainst to $result")
+  //println(s"exclusion transformed $operationToTransform against $operationToTransformAgainst to $result")
   //assert(operationToTransform == inclusionTransformInternal(result, operationToTransformAgainst))
   result
 }
@@ -136,7 +136,7 @@ object OTAlgorithm {
 
         algorithm.operationsPerSite.getOrElseUpdate(algorithm.replicaId, mutable.ArrayBuffer()).addOne(message)
 
-        println(s"produced message $message at ${algorithm.replicaId}")
+        //println(s"produced message $message at ${algorithm.replicaId}")
 
         text.deleteCharAt(i)
       }
@@ -155,7 +155,7 @@ object OTAlgorithm {
 
         algorithm.operationsPerSite.getOrElseUpdate(algorithm.replicaId, mutable.ArrayBuffer()).addOne(message)
 
-        println(s"produced message $message at ${algorithm.replicaId}")
+        //println(s"produced message $message at ${algorithm.replicaId}")
 
         text.insert(i, x)
       }   
@@ -169,34 +169,8 @@ object OTAlgorithm {
         other.syncFrom(algorithm)
       }
 
-      /*
-      def transform(other: OTAlgorithm, otherCausalId: CausalID, otherMessage: OTOperation): Option[OTOperation] = {
-          println("transform start")
-          val selfHead = algorithm.causalBroadcast.cachedHeads(0)
-
-          // maybe check that these are by other users?
-          val concurrentChangesOfOther = other.causalBroadcast.concurrentToAndBefore(selfHead, otherCausalId)
-
-          println(s"concurrent other changes to $selfHead and before $otherCausalId: $concurrentChangesOfOther")
-
-          val concurrentChangesOfSelf = algorithm.causalBroadcast.concurrentToAndNotAfter(otherCausalId, selfHead)
-
-          println(s"concurrent self changes to $otherCausalId and not after $selfHead: $concurrentChangesOfSelf")
-
-          //println(s"receiving ${otherMessage.toString().replace("\n", "\\n")} from ${other.replicaId} with changes to transform against: ${concurrentChanges.toString().replace("\n", "\\n")}")
-
-          var newOperation: Option[OTOperation] = concurrentChangesOfOther.flatMap(_._2).foldLeft(Some(otherMessage))(exclusionTransform)
-
-          newOperation = concurrentChangesOfSelf.flatMap(_._2).foldLeft(newOperation)(inclusionTransform)
-
-          newOperation = concurrentChangesOfOther.flatMap(v => v._2.flatMap(vv => transform(other, v._1, vv))).foldLeft(newOperation)(inclusionTransform)
-
-          println("transform end")
-          newOperation
-      }*/
-
       def getDifference(larger: CausalID, smaller: CausalID) = {
-        println(s"enter getDifference $larger $smaller")
+        //println(s"enter getDifference $larger $smaller")
 
         // TODO FIXME this ordering here is wrong
         val returnValue = mutable.ArrayBuffer.from(larger.flatMap((key, value) => {
@@ -208,12 +182,12 @@ object OTAlgorithm {
             mutable.ArrayBuffer()
           }
         }))
-        println(s"exit getDifference $returnValue")
+        //println(s"exit getDifference $returnValue")
         returnValue
       }
       
       def cotTransform(operationParam: OTOperation, contextDifference: ArrayBuffer[OTOperation]): OTOperation = {
-        println(s"enter cotTransform $operationParam $contextDifference")
+        //println(s"enter cotTransform $operationParam $contextDifference")
         var operation = operationParam
         while (contextDifference.nonEmpty) {
           var operationX = contextDifference.remove(0)
@@ -228,17 +202,17 @@ object OTAlgorithm {
               operation.context.getOrElse(operationX.replica, 0) + 1
             )*/
         }
-        println(s"exit cotTransform $operation")
+        //println(s"exit cotTransform $operation")
         operation
       }
 
       def cotDo(operation: OTOperation, documentState: CausalID): Unit = {
-        println(s"enter cotDo $operation $documentState")
+        //println(s"enter cotDo $operation $documentState")
         assert(CausalID.partialOrder.lteq(operation.context, documentState))
 
         val transformedOperation = cotTransform(operation, getDifference(documentState, operation.context))
 
-        println(s"executing $transformedOperation at ${algorithm.replicaId}")
+        //println(s"executing $transformedOperation at ${algorithm.replicaId}")
 
         transformedOperation.inner match {
           case OperationType.Identity => 
@@ -253,7 +227,7 @@ object OTAlgorithm {
 
           // do we need to find the closest head? I think we should read a paper
           // maybe choosing an arbitrary head should work?
-          println(s"receiving $otherMessage with causal info ${otherCausalId} from ${other.replicaId} at ${algorithm.replicaId}")
+          //println(s"receiving $otherMessage with causal info ${otherCausalId} from ${other.replicaId} at ${algorithm.replicaId}")
 
           cotDo(otherMessage, algorithm.causalBroadcast.causalState)
 
