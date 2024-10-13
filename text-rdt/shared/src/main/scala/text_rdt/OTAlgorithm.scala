@@ -197,10 +197,16 @@ object OTAlgorithm {
 
       def getDifference(larger: CausalID, smaller: CausalID) = {
         println(s"enter getDifference $larger $smaller")
+
+        // TODO FIXME this ordering here is wrong
         val returnValue = mutable.ArrayBuffer.from(larger.flatMap((key, value) => {
           val s = smaller.getOrElse(key, 0)
 
-          algorithm.operationsPerSite(key).slice(s, value)
+          if (s != value) {
+            algorithm.operationsPerSite(key).slice(s, value)
+          } else {
+            mutable.ArrayBuffer()
+          }
         }))
         println(s"exit getDifference $returnValue")
         returnValue
