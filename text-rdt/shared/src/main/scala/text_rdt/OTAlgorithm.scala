@@ -170,7 +170,7 @@ object OTAlgorithm {
       }
 
       def getDifference(larger: CausalID, smaller: CausalID) = {
-        //println(s"enter getDifference $larger $smaller")
+        println(s"enter getDifference $larger $smaller")
 
         // TODO FIXME this ordering here is wrong
         val returnValue = mutable.ArrayBuffer.from(larger.flatMap((key, value) => {
@@ -182,8 +182,8 @@ object OTAlgorithm {
             mutable.ArrayBuffer()
           }
         }))
-        //println(s"exit getDifference $returnValue")
-        returnValue
+        println(s"exit getDifference $returnValue")
+        returnValue.sortInPlaceBy(op => op.context)(using CausalID.totalOrder)
       }
       
       def cotTransform(operationParam: OTOperation, contextDifference: ArrayBuffer[OTOperation]): OTOperation = {

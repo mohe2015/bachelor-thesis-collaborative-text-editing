@@ -2,6 +2,7 @@ package text_rdt
 
 import scala.collection.mutable
 import upickle.default._
+import scala.annotation.tailrec
 
 type CausalID = mutable.HashMap[RID, Int]
 
@@ -53,6 +54,25 @@ object CausalID {
         Some(-1)
       } else {
         Some(0)
+      }
+    }
+  }
+
+  given totalOrder: Ordering[CausalID] with {
+    def compare(x: CausalID, y: CausalID): Int = {
+      partialOrder.tryCompare(x, y) match {
+        case None =>
+          @tailrec
+          def smaller(remaining: List[RID]): Int = remaining match {
+            case key :: t =>
+              val result = x.getOrElse(key, 0).compare(y.getOrElse(key, 0))
+              if result == 0 then smaller(t) else result
+            case Nil =>
+              0
+          }
+          val keys = (x.keysIterator ++ y.keysIterator).toList.sorted
+          smaller(keys)
+        case Some(value) => value
       }
     }
   }
