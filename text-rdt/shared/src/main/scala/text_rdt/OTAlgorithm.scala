@@ -200,8 +200,20 @@ object OTAlgorithm {
         }))
       }
       
-      def cotTransform(operation: OTOperation, contextDifference: ArrayBuffer[OTOperation]): Unit = {
-
+      def cotTransform(operationParam: OTOperation, contextDifference: ArrayBuffer[OTOperation]): OTOperation = {
+        var operation = operationParam
+        while (contextDifference.nonEmpty) {
+          var operationX = contextDifference.remove(0)
+          assert(CausalID.partialOrder.lteq(operationX.context, operation.context))
+          operationX = cotTransform(operationX, getDifference(operation.context, operationX.context))
+          operation = inclusionTransform(operation, operationX)
+          operation.context
+            .update(
+              operationX.replica,
+              operation.context.getOrElse(operationX.replica, 0) + 1
+            )
+        }
+        operation
       }
 
       def cotDo(operation: OTOperation, documentState: CausalID): Unit = {
