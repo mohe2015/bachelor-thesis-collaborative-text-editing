@@ -212,11 +212,11 @@ object OTAlgorithm {
           operation = inclusionTransform(operation, operationX)
 
           // does inclusiontransform already do this?
-          operation.context
+          /*operation.context
             .update(
               operationX.replica,
               operation.context.getOrElse(operationX.replica, 0) + 1
-            )
+            )*/
         }
         operation
       }
@@ -242,6 +242,8 @@ object OTAlgorithm {
           // do we need to find the closest head? I think we should read a paper
           // maybe choosing an arbitrary head should work?
           println(s"receiving $otherMessage with causal info ${otherCausalId} from ${other.replicaId} at ${algorithm.replicaId}")
+
+          cotDo(otherMessage, algorithm.causalBroadcast.causalState)
 
           //val newOperation = transform(other, otherCausalId, otherMessage)
 
