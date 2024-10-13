@@ -170,9 +170,8 @@ object OTAlgorithm {
       }
 
       def getDifference(larger: CausalID, smaller: CausalID) = {
-        println(s"enter getDifference $larger $smaller")
+        //println(s"enter getDifference $larger $smaller")
 
-        // TODO FIXME this ordering here is wrong
         val returnValue = mutable.ArrayBuffer.from(larger.flatMap((key, value) => {
           val s = smaller.getOrElse(key, 0)
 
@@ -182,7 +181,7 @@ object OTAlgorithm {
             mutable.ArrayBuffer()
           }
         }))
-        println(s"exit getDifference $returnValue")
+        //println(s"exit getDifference $returnValue")
         returnValue.sortInPlaceBy(op => op.context)(using CausalID.totalOrder)
       }
       
@@ -223,22 +222,12 @@ object OTAlgorithm {
 
       override def syncFrom(other: OTAlgorithm) = {
         algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (otherCausalId, otherMessage) => {
-          algorithm.operationsPerSite.getOrElseUpdate(other.replicaId, mutable.ArrayBuffer()).addOne(otherMessage)
+          // important: the message must not be from the peer it was sent from
+          algorithm.operationsPerSite.getOrElseUpdate(otherMessage.replica, mutable.ArrayBuffer()).addOne(otherMessage)
 
-          // do we need to find the closest head? I think we should read a paper
-          // maybe choosing an arbitrary head should work?
           //println(s"receiving $otherMessage with causal info ${otherCausalId} from ${other.replicaId} at ${algorithm.replicaId}")
 
           cotDo(otherMessage, algorithm.causalBroadcast.causalState)
-
-          //val newOperation = transform(other, otherCausalId, otherMessage)
-
-          //println(s"executing $newOperation at ${algorithm.replicaId}")
-
-          //newOperation.foreach(operation => operation.inner match {
-          //  case OperationType.Insert(i, x) => text.insert(i, x)
-          //  case OperationType.Delete(i) => text.deleteCharAt(i)
-          //})
         })
       }
     }
