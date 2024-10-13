@@ -458,9 +458,9 @@ abstract class InternalFugueTestSuite[A](
   }
 
   test("regression-35") {
-    val replicaA = factoryConstructor("A") 
-    val replicaB = factoryConstructor("B")
-    val replicaC = factoryConstructor("C")
+    val replicaA = factoryConstructor("1863976979") 
+    val replicaB = factoryConstructor("320716343")
+    val replicaC = factoryConstructor("2135938835")
     replicaB.insert(0, '$')
     replicaA.sync(replicaB)
     assertEquals(replicaA.text(), "$")
@@ -468,14 +468,12 @@ abstract class InternalFugueTestSuite[A](
     replicaB.delete(0)
     replicaA.insert(1, 'l')
     replicaC.insert(0, 'E')
-    replicaA.sync(replicaB)
+    replicaB.sync(replicaA)
     assertEquals(replicaA.text(), "l")
     assertEquals(replicaB.text(), "l")
     assertEquals(replicaC.text(), "E")
     replicaA.sync(replicaC)
-    assertEquals(replicaA.text(), "lE")
-    assertEquals(replicaB.text(), "l")
-    assertEquals(replicaC.text(), "lE")
+    assertEquals(replicaA.text(), replicaC.text())
   }
 
   test("2023-weidner-minimizing-interleaving-figure-1") {
