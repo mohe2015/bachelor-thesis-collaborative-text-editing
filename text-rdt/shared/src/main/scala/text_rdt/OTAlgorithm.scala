@@ -15,7 +15,7 @@ import scala.collection.mutable.ArrayBuffer
 
 // The context needs to represent a context vector. This means for every replicating site it stores which operations O_0 to O_i have been executed. https://dl.acm.org/doi/pdf/10.1145/1180875.1180918
 // 2.7.How to represent operation context in OT design? 
-case class OTOperation(replica: RID, inner: OperationType, context: mutable.HashMap[text_rdt.RID, Int]) {
+case class OTOperation(replica: RID, inner: OperationType, context: CausalID) {
     
 }
 
@@ -160,6 +160,7 @@ object OTAlgorithm {
         other.syncFrom(algorithm)
       }
 
+      /*
       def transform(other: OTAlgorithm, otherCausalId: CausalID, otherMessage: OTOperation): Option[OTOperation] = {
           println("transform start")
           val selfHead = algorithm.causalBroadcast.cachedHeads(0)
@@ -179,12 +180,20 @@ object OTAlgorithm {
 
           newOperation = concurrentChangesOfSelf.flatMap(_._2).foldLeft(newOperation)(inclusionTransform)
 
-          // this is probably wrong, causal id probably needs to be from concurrentChangesOfOther
           newOperation = concurrentChangesOfOther.flatMap(v => v._2.flatMap(vv => transform(other, v._1, vv))).foldLeft(newOperation)(inclusionTransform)
 
           println("transform end")
           newOperation
+      }*/
+
+      /*
+      def cotTransform(operation: OTOperation, contextDifference: ArrayBuffer[OTOperation]) = {
+
       }
+
+      def cotDo(operation: OTOperation, documentState: CausalID) = {
+        transform(operation, documentState - operation.context)
+      }*/
 
       override def syncFrom(other: OTAlgorithm) = {
         algorithm.causalBroadcast.syncFrom(other.causalBroadcast, (otherCausalId, otherMessage) => {
@@ -192,14 +201,14 @@ object OTAlgorithm {
           // maybe choosing an arbitrary head should work?
           println(s"receiving $otherMessage with causal info ${otherCausalId} from ${other.replicaId} at ${algorithm.replicaId}")
 
-          val newOperation = transform(other, otherCausalId, otherMessage)
+          //val newOperation = transform(other, otherCausalId, otherMessage)
 
-          println(s"executing $newOperation at ${algorithm.replicaId}")
+          //println(s"executing $newOperation at ${algorithm.replicaId}")
 
-          newOperation.foreach(operation => operation.inner match {
-            case OperationType.Insert(i, x) => text.insert(i, x)
-            case OperationType.Delete(i) => text.deleteCharAt(i)
-          })
+          //newOperation.foreach(operation => operation.inner match {
+          //  case OperationType.Insert(i, x) => text.insert(i, x)
+          //  case OperationType.Delete(i) => text.deleteCharAt(i)
+          //})
         })
       }
     }
