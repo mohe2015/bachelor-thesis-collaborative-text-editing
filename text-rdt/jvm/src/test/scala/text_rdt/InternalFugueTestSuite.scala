@@ -410,8 +410,8 @@ abstract class InternalFugueTestSuite[A](
     replicaA.insert(0, 'c')
     replicaA.insert(1, '0')
     replicaA.sync(replicaB)
-    assertEquals(replicaA.text(), "c1")
-    assertEquals(replicaB.text(), "c1")
+    assertEquals(replicaA.text(), "c0")
+    assertEquals(replicaB.text(), "c0")
   }
 
   test("2023-weidner-minimizing-interleaving-figure-1") {

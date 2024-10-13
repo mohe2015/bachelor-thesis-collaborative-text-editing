@@ -158,6 +158,11 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
       ),
       handleMessage: (CausalID, MSG) => Unit
   ): Unit = {
+    this.addToHistory(entry)
+
+    entry._2.foreach(msg => handleMessage(entry._1, msg))
+
+    // TODO FIXME maybe make this configurable
     entry._1
       .foreachEntry((rid, counter) => {
         this.causalState
@@ -169,9 +174,5 @@ final case class CausalBroadcast[MSG](replicaId: RID, batching: Boolean = true) 
             )
           )
       })
-
-    this.addToHistory(entry)
-
-    entry._2.foreach(msg => handleMessage(entry._1, msg))
   }
 }
