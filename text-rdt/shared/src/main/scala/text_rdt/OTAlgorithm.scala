@@ -210,6 +210,8 @@ object OTAlgorithm {
           assert(CausalID.partialOrder.lteq(operationX.context, operation.context))
           operationX = cotTransform(operationX, getDifference(operation.context, operationX.context))
           operation = inclusionTransform(operation, operationX)
+
+          // does inclusiontransform already do this?
           operation.context
             .update(
               operationX.replica,
@@ -222,7 +224,15 @@ object OTAlgorithm {
       def cotDo(operation: OTOperation, documentState: CausalID): Unit = {
         assert(CausalID.partialOrder.lteq(operation.context, documentState))
 
-        cotTransform(operation, getDifference(documentState, operation.context))
+        val transformedOperation = cotTransform(operation, getDifference(documentState, operation.context))
+
+        println(s"executing $transformedOperation at ${algorithm.replicaId}")
+
+        transformedOperation.inner match {
+          case OperationType.Identity => 
+          case OperationType.Insert(i, x) => text.insert(i, x)
+          case OperationType.Delete(i) => text.deleteCharAt(i)
+        }
       }
 
       override def syncFrom(other: OTAlgorithm) = {
