@@ -3,10 +3,6 @@ package text_rdt
 import munit.ScalaCheckSuite
 import org.scalacheck.Test
 import text_rdt.helper.scalacheck
-import org.scalacheck.Prop._
-import scala.collection.immutable.HashMap
-import org.scalacheck.Gen
-import scala.collection.mutable
 
 class OTAlgorithmScalaCheckSuite extends InternalFugueScalaCheckSuite(replicaId => OTAlgorithm(replicaId, Vector.empty))
 
@@ -121,29 +117,5 @@ class InternalFugueTreeEqualityCheckSuite extends ScalaCheckSuite {
         }
       )
     ).property()
-  }
-
-  // https://github.com/typelevel/scalacheck/blob/main/doc/UserGuide.md
-  def genInsertOperation(documentState: String) = for {
-    n <- Gen.choose(0, documentState.size)
-    c <- Gen.alphaChar
-    replica <- Gen.stringOf(Gen.alphaChar)
-  } yield OTOperation(replica, OperationType.Insert(n, c), mutable.HashMap())
-
-  def genDeleteOperation(documentState: String) = for {
-    n <- Gen.choose(0, documentState.size - 1)
-    replica <- Gen.stringOf(Gen.alphaChar)
-  } yield OTOperation(replica, OperationType.Delete(n), mutable.HashMap())
-
-  def genOperation(documentState: String) = Gen.oneOf(genInsertOperation(documentState), genDeleteOperation(documentState))
-
-  property("CP1") {
-    forAll { (documentState: String) =>
-      forAll(genOperation(documentState), genOperation(documentState)) {
-        (op1, op2) => {
-          
-        }
-      }
-    }
   }
 }
