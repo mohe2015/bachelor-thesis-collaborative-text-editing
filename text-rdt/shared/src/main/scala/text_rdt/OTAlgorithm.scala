@@ -147,13 +147,6 @@ object OTAlgorithm {
 
       def isSorted[T](list: mutable.ArrayBuffer[T])(implicit ord: Ordering[T]): Boolean = list.headOption.fold(true)(a => list.tail.headOption.fold(true)(ord.lteq(a, _) && isSorted(list.tail.tail)))
       
-      /* If an operation O is
-transformed against the same group of context-independent
-operations in multiple invocations to transform(O, CD), this
-group of operations must be included in CD and sorted in
-the same total order. Therefore, O can never be transformed
-against the same group of operations in different orders, thus
-breaking PC-CP2. */
       def cotTransform(operationParam: OTOperation, contextDifference: ArrayBuffer[OTOperation]): OTOperation = {
         assert(isSorted(contextDifference.map(_.context))(using CausalID.totalOrder))
         //println(s"enter cotTransform $operationParam $contextDifference")
