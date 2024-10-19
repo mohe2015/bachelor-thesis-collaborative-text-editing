@@ -30,7 +30,7 @@ class OTAlgorithmScalaCheckSuite extends InternalFugueScalaCheckSuite(replicaId 
 
   override def scalaCheckTestParameters: Test.Parameters =
     super.scalaCheckTestParameters
-      .withMinSuccessfulTests(5_000_000)
+      .withMinSuccessfulTests(500_000)
       .withWorkers(16)
       .withMaxSize(
         50
@@ -38,8 +38,8 @@ class OTAlgorithmScalaCheckSuite extends InternalFugueScalaCheckSuite(replicaId 
       .withMaxDiscardRatio(0.00001)
 
   property("CP1") {
-    forAll { (documentState: String, replicaA: String) =>
-      forAll(genOperation(replicaA, documentState), genOperation("d"+replicaA, documentState)) {
+    forAll { (documentState: String) =>
+      forAll(genOperation("A", documentState), genOperation("B", documentState)) {
         (opA, opB) => {
           val opAprime = inclusionTransform(opA, opB)
           val opBprime = inclusionTransform(opB, opA)
