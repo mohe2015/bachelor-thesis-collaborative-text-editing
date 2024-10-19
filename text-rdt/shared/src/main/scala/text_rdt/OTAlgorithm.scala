@@ -75,7 +75,7 @@ def exclusionTransformInternal(operationToTransform: OTOperation, operationToTra
   val result = ((operationToTransform.replica, operationToTransform.inner), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
     case Tuple2((oReplica, OperationType.Identity), other) => (oReplica, OperationType.Identity)
     case Tuple2(other, (bReplica, OperationType.Identity)) => other
-    case Tuple2((oReplica, OperationType.Insert(oI, oX)), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && operationToTransform.replica < operationToTransformAgainst.replica)) {
+    case Tuple2((oReplica, OperationType.Insert(oI, oX)), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && operationToTransform.replica < operationToTransformAgainst.replica && CausalID.totalOrder.lt(operationToTransform.context, operationToTransformAgainst.context))) {
       (oReplica, OperationType.Insert(oI, oX))
     } else {
       (oReplica, OperationType.Insert(oI - 1, oX))
