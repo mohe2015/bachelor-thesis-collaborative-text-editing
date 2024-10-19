@@ -8,40 +8,7 @@ import scala.collection.immutable.HashMap
 import org.scalacheck.Gen
 import scala.collection.mutable
 
-class OTAlgorithmScalaCheckSuite extends InternalFugueScalaCheckSuite(replicaId => OTAlgorithm(replicaId, Vector.empty)) {
-
-  // https://github.com/typelevel/scalacheck/blob/main/doc/UserGuide.md
-  def genInsertOperation(documentState: String) = for {
-    n <- Gen.choose(0, documentState.size)
-    c <- Gen.alphaChar
-    replica <- Gen.stringOf(Gen.alphaChar)
-  } yield OTOperation(replica, OperationType.Insert(n, c), mutable.HashMap())
-
-  def genDeleteOperation(documentState: String) = for {
-    n <- Gen.choose(0, documentState.size - 1)
-    replica <- Gen.stringOf(Gen.alphaChar)
-  } yield OTOperation(replica, OperationType.Delete(n), mutable.HashMap())
-
-  def genOperation(documentState: String) = Gen.oneOf(genInsertOperation(documentState), genDeleteOperation(documentState))
-
-  property("CP1") {
-    forAll { (documentState: String) =>
-      forAll(genOperation(documentState), genOperation(documentState)) {
-        (opA, opB) => {
-          val opAprime = inclusionTransform(opA, opB)
-          val opBprime = inclusionTransform(opB, opA)
-          val left = StringBuilder(documentState)
-          val right = StringBuilder(documentState)
-          OTAlgorithm.execute(left, opA)
-          OTAlgorithm.execute(left, opBprime)
-          OTAlgorithm.execute(right, opB)
-          OTAlgorithm.execute(right, opAprime)
-          assertEquals(left, right)
-        }
-      }
-    }
-  }
-}
+class OTAlgorithmScalaCheckSuite extends InternalFugueScalaCheckSuite(replicaId => OTAlgorithm(replicaId, Vector.empty))
 
 class SimpleInternalFugueScalaCheckSuite
     extends InternalFugueScalaCheckSuite(replicaId => Replica(ReplicaState(replicaId)(using SimpleFugueFactory.simpleFugueFactory), StringEditory())) {}
@@ -154,5 +121,29 @@ class InternalFugueTreeEqualityCheckSuite extends ScalaCheckSuite {
         }
       )
     ).property()
+  }
+
+  // https://github.com/typelevel/scalacheck/blob/main/doc/UserGuide.md
+  def genInsertOperation(documentState: String) = for {
+    n <- Gen.choose(0, documentState.size)
+    c <- Gen.alphaChar
+    replica <- Gen.stringOf(Gen.alphaChar)
+  } yield OTOperation(replica, OperationType.Insert(n, c), mutable.HashMap())
+
+  def genDeleteOperation(documentState: String) = for {
+    n <- Gen.choose(0, documentState.size - 1)
+    replica <- Gen.stringOf(Gen.alphaChar)
+  } yield OTOperation(replica, OperationType.Delete(n), mutable.HashMap())
+
+  def genOperation(documentState: String) = Gen.oneOf(genInsertOperation(documentState), genDeleteOperation(documentState))
+
+  property("CP1") {
+    forAll { (documentState: String) =>
+      forAll(genOperation(documentState), genOperation(documentState)) {
+        (op1, op2) => {
+          
+        }
+      }
+    }
   }
 }

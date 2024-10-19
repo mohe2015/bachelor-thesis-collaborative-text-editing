@@ -119,14 +119,6 @@ final case class OTAlgorithm(replicaId: String, val operations: Vector[OTOperati
 
 // TODO FIXME maybe disable message batching for this?
 object OTAlgorithm {
-  def execute(text: StringBuilder, operation: OTOperation): Unit = {
-    operation.inner match {
-      case OperationType.Identity => 
-      case OperationType.Insert(i, x) => text.insert(i, x)
-      case OperationType.Delete(i) => text.deleteCharAt(i)
-    }
-  }
-
   given algorithm: CollaborativeTextEditingAlgorithm[OTAlgorithm] with {
 
     extension (algorithm: OTAlgorithm) {
@@ -214,8 +206,6 @@ object OTAlgorithm {
         operation
       }
 
-      
-
       def cotDo(operation: OTOperation, documentState: CausalID): Unit = {
         //println(s"enter cotDo $operation $documentState")
         assert(CausalID.partialOrder.lteq(operation.context, documentState))
@@ -224,7 +214,11 @@ object OTAlgorithm {
 
         //println(s"executing $transformedOperation at ${algorithm.replicaId}")
 
-        execute(text, transformedOperation)
+        transformedOperation.inner match {
+          case OperationType.Identity => 
+          case OperationType.Insert(i, x) => text.insert(i, x)
+          case OperationType.Delete(i) => text.deleteCharAt(i)
+        }
       }
 
       override def syncFrom(other: OTAlgorithm) = {
