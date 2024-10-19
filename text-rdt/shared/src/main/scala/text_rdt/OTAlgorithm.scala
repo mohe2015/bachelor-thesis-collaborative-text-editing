@@ -212,6 +212,8 @@ object OTAlgorithm {
 
         val transformedOperation = cotTransform(operation, getDifference(documentState, operation.context))
 
+        assert(transformedOperation.context == documentState)
+
         //println(s"executing $transformedOperation at ${algorithm.replicaId}")
 
         transformedOperation.inner match {
