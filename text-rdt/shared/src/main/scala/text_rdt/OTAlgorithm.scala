@@ -60,47 +60,6 @@ def inclusionTransformInternal(operationToTransform: OTOperation, operationToTra
   OTOperation(result._1, result._2, operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1))
 }
 
-def exclusionTransform(operationToTransform: OTOperation, operationToTransformAgainst: OTOperation): OTOperation = {
-  //println(s"exclusion transforming $operationToTransform against $operationToTransformAgainst")
-  val result = exclusionTransformInternal(operationToTransform, operationToTransformAgainst)
-  //println(s"exclusion transformed $operationToTransform against $operationToTransformAgainst to $result")
-  //assert(operationToTransform == inclusionTransformInternal(result, operationToTransformAgainst))
-  result
-}
-
-// https://en.wikipedia.org/wiki/Operational_transformation
-// 2.17.    What are the pre-/post-conditions for transformation functions?    
-def exclusionTransformInternal(operationToTransform: OTOperation, operationToTransformAgainst: OTOperation): OTOperation = {
-  assert(operationToTransform.context == operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1), s"${operationToTransform.context} == ${operationToTransformAgainst.context.clone().addOne(operationToTransformAgainst.replica, operationToTransformAgainst.context.getOrElse(operationToTransformAgainst.replica, 0) + 1)}")
-  val result = ((operationToTransform.replica, operationToTransform.inner), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
-    case Tuple2((oReplica, OperationType.Identity), other) => (oReplica, OperationType.Identity)
-    case Tuple2(other, (bReplica, OperationType.Identity)) => other
-    case Tuple2((oReplica, OperationType.Insert(oI, oX)), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica < bReplica)) {
-      (oReplica, OperationType.Insert(oI, oX))
-    } else {
-      (oReplica, OperationType.Insert(oI - 1, oX))
-    }
-    case Tuple2((oReplica, OperationType.Insert(oI, oX)), (bReplica, OperationType.Delete(bI))) => if (oI <= bI) {
-      (oReplica, OperationType.Insert(oI, oX))
-    } else {
-      (oReplica, OperationType.Insert(oI + 1, oX))
-    }
-    case Tuple2((oReplica, OperationType.Delete(oI)), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI) {
-      (oReplica, OperationType.Delete(oI))
-    } else {
-      (oReplica, OperationType.Delete(oI - 1))
-    }
-    case Tuple2((oReplica, OperationType.Delete(oI)), (bReplica, OperationType.Delete(bI))) => if (oI < bI) {
-      (oReplica, OperationType.Delete(oI))
-    } else if (oI > bI) {
-      (oReplica, OperationType.Delete(oI + 1))
-    } else {
-      (oReplica, OperationType.Identity)
-    }
-  }
-  OTOperation(result._1, result._2, operationToTransformAgainst.context)
-}
-
 enum OperationType() {
   case Insert(i: Int, x: Char)
   case Delete(i: Int)
@@ -185,8 +144,18 @@ object OTAlgorithm {
         //println(s"exit getDifference $sorted")
         sorted
       }
+
+      def isSorted[T](list: mutable.ArrayBuffer[T])(implicit ord: Ordering[T]): Boolean = list.headOption.fold(true)(a => list.tail.headOption.fold(true)(ord.lteq(a, _) && isSorted(list.tail.tail)))
       
+      /* If an operation O is
+transformed against the same group of context-independent
+operations in multiple invocations to transform(O, CD), this
+group of operations must be included in CD and sorted in
+the same total order. Therefore, O can never be transformed
+against the same group of operations in different orders, thus
+breaking PC-CP2. */
       def cotTransform(operationParam: OTOperation, contextDifference: ArrayBuffer[OTOperation]): OTOperation = {
+        assert(isSorted(contextDifference.map(_.context))(using CausalID.totalOrder))
         //println(s"enter cotTransform $operationParam $contextDifference")
         var operation = operationParam
         while (contextDifference.nonEmpty) {
