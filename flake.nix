@@ -135,7 +135,7 @@
               nativeBuildInputs = [ pkgs.cacert ];
               outputHashMode = "recursive";
               outputHashAlgo = "sha256";
-              outputHash = "sha256-9SCW8dlfO0QJ1tew7C8Mr+sTsQ0e9VQOeb3/Xgb/DQY=";
+              outputHash = "sha256-aP2BgRzdijwn1CokDoWwvzmIhBS0ckO58f7VlFvjJgU=";
               configurePhase = ''
                 export HOME=$(mktemp -d)
                 export IVY=$(mktemp -d)

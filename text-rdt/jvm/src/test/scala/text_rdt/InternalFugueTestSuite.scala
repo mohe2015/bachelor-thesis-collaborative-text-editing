@@ -464,7 +464,8 @@ abstract class InternalFugueTestSuite[A](
   the same total order. Therefore, O can never be transformed
   against the same group of operations in different orders, thus
   breaking PC-CP2. https://dl.acm.org/doi/pdf/10.1145/1180875.1180918 */
-  test("regression-35".ignore) {
+  test("regression-35") {
+    assume(this.getClass().getName() != "text_rdt.OTAlgorithmTestSuite")
     val replicaA = factoryConstructor("1863976979") 
     val replicaB = factoryConstructor("320716343")
     val replicaC = factoryConstructor("2135938835")
