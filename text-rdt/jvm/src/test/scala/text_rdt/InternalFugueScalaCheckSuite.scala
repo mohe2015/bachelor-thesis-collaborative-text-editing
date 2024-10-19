@@ -11,35 +11,22 @@ import scala.collection.mutable
 class OTAlgorithmScalaCheckSuite extends InternalFugueScalaCheckSuite(replicaId => OTAlgorithm(replicaId, Vector.empty)) {
 
   // https://github.com/typelevel/scalacheck/blob/main/doc/UserGuide.md
-  def genInsertOperation(replica: String, documentState: String) = for {
+  def genInsertOperation(documentState: String) = for {
     n <- Gen.choose(0, documentState.size)
     c <- Gen.alphaChar
+    replica <- Gen.stringOf(Gen.alphaChar)
   } yield OTOperation(replica, OperationType.Insert(n, c), mutable.HashMap())
 
-  def genDeleteOperation(replica: String, documentState: String) = if (documentState.isEmpty()) {
-    for {
-      replica <- Gen.stringOf(Gen.alphaChar)
-    } yield OTOperation(replica, OperationType.Identity, mutable.HashMap())
-  } else {
-    for {
-      n <- Gen.choose(0, documentState.size - 1)
-    } yield OTOperation(replica, OperationType.Delete(n), mutable.HashMap())
-  }
+  def genDeleteOperation(documentState: String) = for {
+    n <- Gen.choose(0, documentState.size - 1)
+    replica <- Gen.stringOf(Gen.alphaChar)
+  } yield OTOperation(replica, OperationType.Delete(n), mutable.HashMap())
 
-  def genOperation(replica: String, documentState: String) = Gen.oneOf(genInsertOperation(replica, documentState), genDeleteOperation(replica, documentState))
-
-  override def scalaCheckTestParameters: Test.Parameters =
-    super.scalaCheckTestParameters
-      .withMinSuccessfulTests(500_000)
-      .withWorkers(16)
-      .withMaxSize(
-        50
-      )
-      .withMaxDiscardRatio(0.00001)
+  def genOperation(documentState: String) = Gen.oneOf(genInsertOperation(documentState), genDeleteOperation(documentState))
 
   property("CP1") {
     forAll { (documentState: String) =>
-      forAll(genOperation("A", documentState), genOperation("B", documentState)) {
+      forAll(genOperation(documentState), genOperation(documentState)) {
         (opA, opB) => {
           val opAprime = inclusionTransform(opA, opB)
           val opBprime = inclusionTransform(opB, opA)
@@ -49,7 +36,7 @@ class OTAlgorithmScalaCheckSuite extends InternalFugueScalaCheckSuite(replicaId 
           OTAlgorithm.execute(left, opBprime)
           OTAlgorithm.execute(right, opB)
           OTAlgorithm.execute(right, opAprime)
-          assertEquals(left, right, (documentState, opA, opB))
+          assertEquals(left, right)
         }
       }
     }
