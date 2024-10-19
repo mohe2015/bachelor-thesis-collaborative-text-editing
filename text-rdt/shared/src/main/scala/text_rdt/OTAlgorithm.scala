@@ -140,15 +140,15 @@ object OTAlgorithm {
             mutable.ArrayBuffer()
           }
         }))
-        val sorted = returnValue.sortInPlaceBy(op => op.context.clone().addOne(op.replica, op.context.getOrElse(op.replica, 0)+1))(using CausalID.totalOrder)
         //println(s"exit getDifference $sorted")
-        sorted
+        returnValue
       }
 
       def isSorted[T](list: mutable.ArrayBuffer[T])(implicit ord: Ordering[T]): Boolean = list.headOption.fold(true)(a => list.tail.headOption.fold(true)(ord.lteq(a, _) && isSorted(list.tail.tail)))
       
-      def cotTransform(operationParam: OTOperation, contextDifference: ArrayBuffer[OTOperation]): OTOperation = {
-        assert(isSorted(contextDifference.map(_.context))(using CausalID.totalOrder))
+      def cotTransform(operationParam: OTOperation, unsortedContextDifference: ArrayBuffer[OTOperation]): OTOperation = {
+        val contextDifference = unsortedContextDifference.sortInPlaceBy(op => op.context.clone().addOne(op.replica, op.context.getOrElse(op.replica, 0)+1))(using CausalID.totalOrder)
+
         //println(s"enter cotTransform $operationParam $contextDifference")
         var operation = operationParam
         while (contextDifference.nonEmpty) {
