@@ -170,7 +170,7 @@ object OTAlgorithm {
       }
 
       def getDifference(larger: CausalID, smaller: CausalID) = {
-        println(s"enter getDifference $larger $smaller")
+        //println(s"enter getDifference $larger $smaller")
 
         val returnValue = mutable.ArrayBuffer.from(larger.flatMap((key, value) => {
           val s = smaller.getOrElse(key, 0)
@@ -182,7 +182,7 @@ object OTAlgorithm {
           }
         }))
         val sorted = returnValue.sortInPlaceBy(op => op.context.clone().addOne(op.replica, op.context.getOrElse(op.replica, 0)+1))(using CausalID.totalOrder)
-        println(s"exit getDifference $sorted")
+        //println(s"exit getDifference $sorted")
         sorted
       }
       
