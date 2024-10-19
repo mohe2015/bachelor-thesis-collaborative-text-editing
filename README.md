@@ -5,6 +5,8 @@
 nix shell nixpkgs#sbt nixpkgs#openjdk21 nixpkgs#nodejs
 codium .
 
+testOnly text_rdt.OTAlgorithmTestSuite -- text_rdt.OTAlgorithmTestSuite.regression-13
+
 cd text-rdt
 nix develop .#text-rdt-sbt-tests-thesis
 #npm install
