@@ -34,7 +34,7 @@ def inclusionTransformInternal(operationToTransform: OTOperation, operationToTra
   val result = ((operationToTransform.replica, operationToTransform.inner), (operationToTransformAgainst.replica, operationToTransformAgainst.inner)) match {
     case Tuple2((oReplica, OperationType.Identity), other) => (oReplica, OperationType.Identity)
     case Tuple2(other, (bReplica, OperationType.Identity)) => other
-    case Tuple2((oReplica, OperationType.Insert(oI, oX)), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica > bReplica)) {
+    case Tuple2((oReplica, OperationType.Insert(oI, oX)), (bReplica, OperationType.Insert(bI, bX))) => if (oI < bI || (oI == bI && oReplica < bReplica)) {
       (oReplica, OperationType.Insert(oI, oX))
     } else {
       (oReplica, OperationType.Insert(oI + 1, oX))
@@ -170,7 +170,7 @@ object OTAlgorithm {
       }
 
       def getDifference(larger: CausalID, smaller: CausalID) = {
-        //println(s"enter getDifference $larger $smaller")
+        println(s"enter getDifference $larger $smaller")
 
         val returnValue = mutable.ArrayBuffer.from(larger.flatMap((key, value) => {
           val s = smaller.getOrElse(key, 0)
@@ -182,7 +182,7 @@ object OTAlgorithm {
           }
         }))
         val sorted = returnValue.sortInPlaceBy(op => op.context.clone().addOne(op.replica, op.context.getOrElse(op.replica, 0)+1))(using CausalID.totalOrder)
-        //println(s"exit getDifference $sorted")
+        println(s"exit getDifference $sorted")
         sorted
       }
       
