@@ -150,20 +150,13 @@ object OTAlgorithm {
         val contextDifference = unsortedContextDifference.sortInPlaceBy(op => op.context.clone().addOne(op.replica, op.context.getOrElse(op.replica, 0)+1))(using CausalID.totalOrder)
         assert(isSorted(contextDifference.map(op => op.context.clone().addOne(op.replica, op.context.getOrElse(op.replica, 0)+1)))(using CausalID.totalOrder))
 
-        println(s"enter cotTransform $operationParam $contextDifference")
+        println(s"enter cotTransform $operationParam $contextDifference ${contextDifference.map(op => op.context.clone().addOne(op.replica, op.context.getOrElse(op.replica, 0)+1))}")
         var operation = operationParam
         while (contextDifference.nonEmpty) {
           var operationX = contextDifference.remove(0)
           assert(CausalID.partialOrder.lteq(operationX.context, operation.context))
           operationX = cotTransform(operationX, getDifference(operation.context, operationX.context))
           operation = inclusionTransform(operation, operationX)
-
-          // does inclusiontransform already do this?
-          /*operation.context
-            .update(
-              operationX.replica,
-              operation.context.getOrElse(operationX.replica, 0) + 1
-            )*/
         }
         //println(s"exit cotTransform $operation")
         operation
