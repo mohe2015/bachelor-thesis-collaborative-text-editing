@@ -148,8 +148,9 @@ object OTAlgorithm {
       
       def cotTransform(operationParam: OTOperation, unsortedContextDifference: ArrayBuffer[OTOperation]): OTOperation = {
         val contextDifference = unsortedContextDifference.sortInPlaceBy(op => op.context.clone().addOne(op.replica, op.context.getOrElse(op.replica, 0)+1))(using CausalID.totalOrder)
+        assert(isSorted(contextDifference.map(op => op.context.clone().addOne(op.replica, op.context.getOrElse(op.replica, 0)+1)))(using CausalID.totalOrder))
 
-        //println(s"enter cotTransform $operationParam $contextDifference")
+        println(s"enter cotTransform $operationParam $contextDifference")
         var operation = operationParam
         while (contextDifference.nonEmpty) {
           var operationX = contextDifference.remove(0)
@@ -190,7 +191,7 @@ object OTAlgorithm {
           // important: the message must not be from the peer it was sent from
           algorithm.operationsPerSite.getOrElseUpdate(otherMessage.replica, mutable.ArrayBuffer()).addOne(otherMessage)
 
-          //println(s"receiving $otherMessage with causal info ${otherCausalId} from ${other.replicaId} at ${algorithm.replicaId}")
+          println(s"receiving $otherMessage with causal info ${otherCausalId} from ${other.replicaId} at ${algorithm.replicaId}")
 
           cotDo(otherMessage, algorithm.causalBroadcast.causalState)
         })

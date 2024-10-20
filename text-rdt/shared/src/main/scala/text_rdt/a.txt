@@ -1,0 +1,28 @@
+receiving OTOperation(320716343,Insert(0,$),HashMap()) with causal info HashMap(320716343 -> 1) from 320716343 at 1863976979
+enter cotTransform OTOperation(320716343,Insert(0,$),HashMap()) ArrayBuffer()
+receiving OTOperation(1863976979,Insert(1,l),HashMap(320716343 -> 1)) with causal info HashMap(320716343 -> 1, 1863976979 -> 1) from 1863976979 at 320716343
+enter cotTransform OTOperation(1863976979,Insert(1,l),HashMap(320716343 -> 1)) ArrayBuffer(OTOperation(320716343,Delete(0),HashMap(320716343 -> 1)))
+enter cotTransform OTOperation(320716343,Delete(0),HashMap(320716343 -> 1)) ArrayBuffer()
+receiving OTOperation(320716343,Delete(0),HashMap(320716343 -> 1)) with causal info HashMap(320716343 -> 2) from 320716343 at 1863976979
+enter cotTransform OTOperation(320716343,Delete(0),HashMap(320716343 -> 1)) ArrayBuffer(OTOperation(1863976979,Insert(1,l),HashMap(320716343 -> 1)))
+enter cotTransform OTOperation(1863976979,Insert(1,l),HashMap(320716343 -> 1)) ArrayBuffer()
+receiving OTOperation(2135938835,Insert(0,E),HashMap()) with causal info HashMap(2135938835 -> 1) from 2135938835 at 1863976979
+enter cotTransform OTOperation(2135938835,Insert(0,E),HashMap()) ArrayBuffer(OTOperation(320716343,Insert(0,$),HashMap()), OTOperation(320716343,Delete(0),HashMap(320716343 -> 1)), OTOperation(1863976979,Insert(1,l),HashMap(320716343 -> 1)))
+enter cotTransform OTOperation(320716343,Insert(0,$),HashMap()) ArrayBuffer()
+enter cotTransform OTOperation(320716343,Delete(0),HashMap(320716343 -> 1)) ArrayBuffer()
+enter cotTransform OTOperation(1863976979,Insert(1,l),HashMap(320716343 -> 1)) ArrayBuffer(OTOperation(320716343,Delete(0),HashMap(320716343 -> 1)))
+enter cotTransform OTOperation(320716343,Delete(0),HashMap(320716343 -> 1)) ArrayBuffer()
+receiving OTOperation(320716343,Insert(0,$),HashMap()) with causal info HashMap(320716343 -> 1) from 1863976979 at 2135938835
+enter cotTransform OTOperation(320716343,Insert(0,$),HashMap()) ArrayBuffer(OTOperation(2135938835,Insert(0,E),HashMap()))
+enter cotTransform OTOperation(2135938835,Insert(0,E),HashMap()) ArrayBuffer()
+receiving OTOperation(1863976979,Insert(1,l),HashMap(320716343 -> 1)) with causal info HashMap(320716343 -> 1, 1863976979 -> 1) from 1863976979 at 2135938835
+enter cotTransform OTOperation(1863976979,Insert(1,l),HashMap(320716343 -> 1)) ArrayBuffer(OTOperation(2135938835,Insert(0,E),HashMap()))
+enter cotTransform OTOperation(2135938835,Insert(0,E),HashMap()) ArrayBuffer(OTOperation(320716343,Insert(0,$),HashMap()))
+enter cotTransform OTOperation(320716343,Insert(0,$),HashMap()) ArrayBuffer()
+receiving OTOperation(320716343,Delete(0),HashMap(320716343 -> 1)) with causal info HashMap(320716343 -> 2) from 1863976979 at 2135938835
+enter cotTransform OTOperation(320716343,Delete(0),HashMap(320716343 -> 1)) ArrayBuffer(OTOperation(2135938835,Insert(0,E),HashMap()), OTOperation(1863976979,Insert(1,l),HashMap(320716343 -> 1)))
+enter cotTransform OTOperation(2135938835,Insert(0,E),HashMap()) ArrayBuffer(OTOperation(320716343,Insert(0,$),HashMap()))
+enter cotTransform OTOperation(320716343,Insert(0,$),HashMap()) ArrayBuffer()
+enter cotTransform OTOperation(1863976979,Insert(1,l),HashMap(320716343 -> 1)) ArrayBuffer(OTOperation(2135938835,Insert(0,E),HashMap()))
+enter cotTransform OTOperation(2135938835,Insert(0,E),HashMap()) ArrayBuffer(OTOperation(320716343,Insert(0,$),HashMap()))
+enter cotTransform OTOperation(320716343,Insert(0,$),HashMap()) ArrayBuffer()
