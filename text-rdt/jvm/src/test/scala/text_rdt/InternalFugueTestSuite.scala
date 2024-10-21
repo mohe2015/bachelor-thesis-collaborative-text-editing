@@ -465,7 +465,7 @@ abstract class InternalFugueTestSuite[A](
   against the same group of operations in different orders, thus
   breaking PC-CP2. https://dl.acm.org/doi/pdf/10.1145/1180875.1180918 */
   test("regression-35") {
-    assume(this.getClass().getName() != "text_rdt.OTAlgorithmTestSuite")
+    //assume(this.getClass().getName() != "text_rdt.OTAlgorithmTestSuite")
     val replicaA = factoryConstructor("1863976979") 
     val replicaB = factoryConstructor("320716343")
     val replicaC = factoryConstructor("2135938835")
@@ -477,7 +477,7 @@ abstract class InternalFugueTestSuite[A](
     replicaA.insert(1, 'l')
     replicaC.insert(0, 'E')
     replicaB.sync(replicaA)
-    replicaA.sync(replicaC)
+    replicaA.sync(replicaC) // 0, $ A -> C
     assertEquals(replicaA.text(), replicaC.text())
   }
 
