@@ -1,4 +1,4 @@
-#import "@preview/athena-tu-darmstadt-thesis:0.1.0": *
+#import "@preview/athena-tu-darmstadt-thesis:0.1.2": *
 #import "@preview/glossarium:0.4.1": make-glossary, print-glossary, gls, glspl 
 
 #show: make-glossary

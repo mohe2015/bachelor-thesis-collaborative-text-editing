@@ -11,8 +11,8 @@
     grid(
       columns: (50%, 50%),
       align: bottom,
-      [ #figure(image("../text-rdt/target/pdfs/" + name + "-before.svg"), caption: "before", kind: "fig"+name) #label(name) ],
-      [ #figure(image("../text-rdt/target/pdfs/" + name + "-after.svg"), caption: "after", kind: "fig"+name) #label(name) ],
+      [ #figure(image("../../result/" + name + "-before.pdf"), caption: "before", kind: "fig"+name) #label(name) ],
+      [ #figure(image("../../result/" + name + "-after.pdf"), caption: "after", kind: "fig"+name) #label(name) ],
     )
   },
   caption: "Example for " + caption

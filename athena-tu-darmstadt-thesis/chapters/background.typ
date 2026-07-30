@@ -20,15 +20,15 @@ This chapter explains how the Fugue algorithm works and is heavily based on the 
 <traversal>
 visualizes the data structure of the algorithm. It is a tree starting with the root node at the top left. The nodes are connected using lines. Lines downwards to the right connect to a right child and lines downwards to the left connect to a left child. A node can have multiple children on each side. For every node except the root node, the first part is the character or whether the character is deleted, followed by a space and the ID of the peer that created that character, a `#` symbol and then a counter for that peer that is increasing for every insertion. For example, `"t A#1"` is the character `"t"` by peer `"A"` with the counter being $1$. The ID of the peer combined with the counter that uniquely identifies an element is called a simple ID. The root node is a special node that behaves like a deleted character. To get the current text of the tree, it is traversed starting from the root node by recursively visiting the left children in order, then the value of the node itself and then the right children in order. For the example in , the traversal starts with the left children of the root node. As there are none, the node itself is visited. As it contains a deleted character, it is ignored. Then the first right child is traversed. Its first left child produces `"small "` by the same rules applied recursively. It itself produces `"t"`. Its right children produces `"rees"`. Therefore, its whole traversal produces `"small trees"`. Then the second right child is traversed in the same way and produces `" grow"`. Combining all that will therefore produce the text `"small trees grow"`.
 
-#figure([#box(image("../text-rdt/target/pdfs/traversal-example.svg"))],
+#figure([#box(image("../../result/traversal-example.pdf"))],
   caption: [
     Fugue tree traversal
   ]
 )
 <fig:fugue-traversal>
 
-#twoMinipageFigures("../text-rdt/target/pdfs/empty.svg", [Fugue tree with root node], "fig:fugue-root-node",
-"../text-rdt/target/pdfs/root-right-a.svg", [Insertion of `"a"` into Fugue tree at index $0$], "fig:fugue-right-a")
+#twoMinipageFigures("../../result/empty.pdf", [Fugue tree with root node], "fig:fugue-root-node",
+"../../result/root-right-a.pdf", [Insertion of `"a"` into Fugue tree at index $0$], "fig:fugue-right-a")
 
 == Initial State
 <initial-state>
@@ -38,8 +38,8 @@ The initial state consists only of the root node as shown in . Thus, the tree re
 <operations>
 The chosen operations are insertion and deletion based on an index into the text relative to the start. The reason for choosing that interface is that text editors conform to it. All indices are zero based, so the element at index $0$ is the first element.
 
-#twoMinipageFigures("../text-rdt/target/pdfs/root-right-ac.svg", [Insertion of `"c"` into Fugue tree at index $1$], "fig:fugue-right-ac",
-"../text-rdt/target/pdfs/root-right-ac-left-b.svg", [Insertion of `"b"` into Fugue tree at index $1$], "fig:fugue-right-ac-left-b")
+#twoMinipageFigures("../../result/root-right-ac.pdf", [Insertion of `"c"` into Fugue tree at index $1$], "fig:fugue-right-ac",
+"../../result/root-right-ac-left-b.pdf", [Insertion of `"b"` into Fugue tree at index $1$], "fig:fugue-right-ac-left-b")
 
 ==== Insert operation
 <insert-operation>
@@ -56,11 +56,11 @@ Right children are always deterministically but arbitrarily ordered by their rep
 Therefore, if the node already has right children, the new node can not be added to the right while ensuring it is at the correct position.
 Instead, the algorithm adds it to the left of the right origin to ensure it gets placed at the correct index. The right origin is the next node \(visible or not) in the tree traversal after the left origin. This right origin can not already have left children as otherwise one of them would be the right origin as they come earlier in the tree traversal. Starting with the previous tree, shows an insertion at index $1$.
 
-#twoMinipageFigures("../text-rdt/target/pdfs/concurrent-insert-a.svg", [Fugue tree with text insertion at replica A],"fig:fugue-concurrent-insert-a",
-"../text-rdt/target/pdfs/concurrent-insert-b.svg", [Fugue tree with text insertion at replica B], "fig:fugue-concurrent-insert-b")
+#twoMinipageFigures("../../result/concurrent-insert-a.pdf", [Fugue tree with text insertion at replica A],"fig:fugue-concurrent-insert-a",
+"../../result/concurrent-insert-b.pdf", [Fugue tree with text insertion at replica B], "fig:fugue-concurrent-insert-b")
 
-#twoMinipageFigures("../text-rdt/target/pdfs/concurrent-insert-both.svg", [Fugue tree with concurrent insertions after synchronization between replica A and replica B], "fig:fugue-concurrent-insert-both",
-"../text-rdt/target/pdfs/delete.svg", [Fugue tree with deletions], "fig:fugue-delete")
+#twoMinipageFigures("../../result/concurrent-insert-both.pdf", [Fugue tree with concurrent insertions after synchronization between replica A and replica B], "fig:fugue-concurrent-insert-both",
+"../../result/delete.pdf", [Fugue tree with deletions], "fig:fugue-delete")
 
 ==== Concurrent insert operation
 <concurrent-insert-operation>
@@ -71,10 +71,10 @@ The order of `"alice"` and `"bob"` is deterministic based on their replica ID bu
 <delete-operation>
 shows the deletion of a character. The node to delete, which is calculated from the index in the tree traversal of visible nodes, is simply marked as deleted. If it already was deleted by a concurrent user, the operation does nothing.
 
-#twoMinipageFigures("../text-rdt/target/pdfs/sequential-inserts.svg", [Fugue tree with sequential insertions], "fig:fugue-sequential-inserts",
-"../text-rdt/target/pdfs/reverse-sequential-inserts.svg", [Fugue tree with reverse sequential insertions], "fig:fugue-reverse-sequential-inserts")
+#twoMinipageFigures("../../result/sequential-inserts.pdf", [Fugue tree with sequential insertions], "fig:fugue-sequential-inserts",
+"../../result/reverse-sequential-inserts.pdf", [Fugue tree with reverse sequential insertions], "fig:fugue-reverse-sequential-inserts")
 
-#figure([#box(image("../text-rdt/target/pdfs/shopping.svg"));],
+#figure([#box(image("../../result/shopping.pdf"));],
   caption: [
     Fugue tree for shopping example
   ]
