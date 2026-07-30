@@ -95,32 +95,32 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 == CPU Profile for Simple Algorithm with Sequential Insertions
 <appendix:simple-sequential-inserts-cpu>
 
-//#image("./text-rdt/target/pdfs/simple-sequential-inserts-cpu.svg")
+#image("../result/simple-sequential-inserts-cpu.pdf")
 
 == CPU Profile for Batching Algorithm with Sequential Insertions
 <appendix:complex-sequential-inserts-cpu>
 
-//#image("./text-rdt/target/pdfs/complex-sequential-inserts-cpu.svg")
+#image("../result/complex-sequential-inserts-cpu.pdf")
 
 == Allocation Profile for Batching Algorithm with Sequential Insertions
 <appendix:complex-sequential-inserts-alloc>
 
-//#image("./text-rdt/target/pdfs/complex-sequential-inserts-alloc.svg")
+#image("../result/complex-sequential-inserts-alloc.pdf")
 
 == CPU Profile for Batching Algorithm with Real World Dataset
 <appendix:complex-real-world-cpu>
 
-//#image("./text-rdt/target/pdfs/complex-real-world-cpu.svg")
+#image("../result/complex-real-world-cpu.pdf")
 
 == CPU Profile for Simple AVL Algorithm with Real World Dataset
 <appendix:simpleavl-real-world-cpu>
 
-//#image("./text-rdt/target/pdfs/simpleavl-real-world-cpu.svg")
+#image("../result/simpleavl-real-world-cpu.pdf")
 
 == Allocation Profile for Simple AVL Algorithm with Real World Dataset
 <appendix:simpleavl-real-world-alloc>
 
-//#image("./text-rdt/target/pdfs/simpleavl-real-world-alloc.svg")
+#image("../result/simpleavl-real-world-alloc.pdf")
 
 == Code Showing FugueMax Is Interleaving
 <appendix:code-fuguemax-interleaving>
