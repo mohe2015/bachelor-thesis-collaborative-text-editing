@@ -1,5 +1,4 @@
-#import "@preview/glossarium:0.4.1": gls, glspl 
-#import "utils.typ": benchmarkResults
+#import "../utils.typ": gls, glspl, benchmarkResults
 
 = Evaluation
 <chapter:evaluation>

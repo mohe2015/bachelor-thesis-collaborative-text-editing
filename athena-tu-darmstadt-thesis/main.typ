@@ -1,7 +1,21 @@
 #import "@preview/athena-tu-darmstadt-thesis:0.1.2": *
-#import "@preview/glossarium:0.4.1": make-glossary, print-glossary, gls, glspl 
+#import "utils.typ": make-glossary, register-glossary, print-glossary, gls, glspl
 
 #show: make-glossary
+#let entry-list = (
+    (key: "crdt", short: "CRDT", long: "conflict-free replicated data type"),
+    (key: "ot", short: "OT", long: "operational transformation"),
+    (key: "oo", short: "OO", long: "Object-oriented"),
+    (key: "fp", short: "FP", long: "Functional programming"),
+    (key: "p2p", short: "P2P", long: "peer-to-peer"),
+    (key: "dtn", short: "DTN", long: "delay tolerant network"),
+    (key: "rdt", short: "RDT", long: "replicated data type"),
+    (key: "woot", short: "WOOT", long: "WithOut Operational Transforms"),
+    (key: "rga", short: "RGA", long: "Replicated Growable Array"),
+    (key: "yata", short: "YATA", long: "Yet Another Transformation Approach"),
+    (key: "manet", short: "MANET", long: "mobile ad hoc network"),
+)
+#register-glossary(entry-list)
 
 #show: tudapub.with(
   reduce_heading_space_when_first_on_page: false, // so it converges
@@ -62,20 +76,8 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 
 #heading(numbering: none, "Acronyms")
 
-#print-glossary((
-    (key: "crdt", short: "CRDT", long: "conflict-free replicated data type"),
-    (key: "ot", short: "OT", long: "operational transformation"),
-    (key: "oo", short: "OO", long: "Object-oriented"),
-    (key: "fp", short: "FP", long: "Functional programming"),
-    (key: "p2p", short: "P2P", long: "peer-to-peer"),
-    (key: "dtn", short: "DTN", long: "delay tolerant network"),
-    (key: "rdt", short: "RDT", long: "replicated data type"),
-    (key: "woot", short: "WOOT", long: "WithOut Operational Transforms"),
-    (key: "rga", short: "RGA", long: "Replicated Growable Array"),
-    (key: "yata", short: "YATA", long: "Yet Another Transformation Approach"),
-    (key: "manet", short: "MANET", long: "mobile ad hoc network"),
-  ),
-  show-all: true
+#print-glossary(
+ entry-list
 )
 
 #set heading(numbering: (..nums) => {

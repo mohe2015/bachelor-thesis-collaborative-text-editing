@@ -1,4 +1,4 @@
-#import "@preview/glossarium:0.4.1": gls, glspl 
+#import "../utils.typ": gls, glspl
 
 #let twoMinipageFigures(file1, caption1, label1, file2, caption2, label2) = figure(
   {

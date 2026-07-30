@@ -1,4 +1,4 @@
-#import "@preview/glossarium:0.4.1": gls, glspl 
+#import "../utils.typ": gls, glspl
 
 = Implementation of Fugue Algorithm
 <section:implementation>

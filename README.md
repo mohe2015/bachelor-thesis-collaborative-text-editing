@@ -2,7 +2,8 @@
 
 ## Setup
 ```bash
-nix build .#text-rdt-sbt-tests-thesis
+nix build --out-link figures .#figures
+nix build .#text-rdt-sbt-tests-thesis 
 # Typst then uses that build output?
 
 nix shell nixpkgs#sbt nixpkgs#openjdk21 nixpkgs#nodejs
