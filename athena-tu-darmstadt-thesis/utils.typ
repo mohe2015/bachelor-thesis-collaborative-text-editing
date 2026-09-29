@@ -17,7 +17,7 @@
   caption: caption
 )
 
-#let evil-edge-case(name, caption) = figure(
+#let evil-edge-case(name, caption) = [ #figure(
   {
     set figure(supplement: [])
     show figure.caption: it => [
@@ -44,7 +44,7 @@
     )
   },
   caption: "Example for " + caption,
-)
+) #label("fig:edge-case-" + name + "-example") ]
 
 #let twoMinipageFigures(
   file1,
