@@ -77,8 +77,12 @@ local function transform(doc, opts)
       end
     end,
     Image = function(img)
-      if img.src:match('^images/') then
-        img.src = '/src/assets/' .. img.src:sub(8)
+      if img.src:match('^../text-rdt/target/pdfs/') then
+        img.src = '/result/' .. img.src:sub(24)
+        return img
+      end
+      if img.src:match('^figures/') then
+        img.src = '/' .. img.src
         return img
       end
     end

@@ -20,7 +20,7 @@ The expected result after synchronizing is either `"milk, ``eggs,`` ``bread,`` c
 While there are two possibilities in this case, no interleaving occurs in either case.
 
 #figure(
-  image("figures/forward-more-important-than-backward.drawio.pdf"),
+  image("/figures/forward-more-important-than-backward.drawio.pdf"),
   caption: [
     Example for prioritizing forward insertions inspired by Figure 6 in Fugue @2023-weidner-minimizing-interleaving
   ],
@@ -107,7 +107,7 @@ Comparing the results#footnote[#link(
 )] from @2023-weidner-minimizing-interleaving for benchmark B1.1 with benchmark B1.3 indicates, that even the optimized variant in the Fugue paper has quadratic runtime for sequential backward insertions.
 
 #pagebreak()
-#figure(image("figures/ot.drawio.pdf"), caption: [
+#figure(image("/figures/ot.drawio.pdf"), caption: [
   Example for operation transformation with two synchronizing peers based on figure by @2024-sun-ot-faq @2024-sun-ot-faq[Section 1.4 Figure 1]
 ])
 <fig:ot-example>
