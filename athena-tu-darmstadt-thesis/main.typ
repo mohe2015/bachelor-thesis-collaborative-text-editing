@@ -95,32 +95,32 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 == CPU Profile for Simple Algorithm with Sequential Insertions
 <appendix:simple-sequential-inserts-cpu>
 
-#image("../result/simple-sequential-inserts-cpu.png")
+#image("/result/simple-sequential-inserts-cpu.png")
 
 == CPU Profile for Batching Algorithm with Sequential Insertions
 <appendix:complex-sequential-inserts-cpu>
 
-#image("../result/complex-sequential-inserts-cpu.png")
+#image("/result/complex-sequential-inserts-cpu.png")
 
 == Allocation Profile for Batching Algorithm with Sequential Insertions
 <appendix:complex-sequential-inserts-alloc>
 
-#image("../result/complex-sequential-inserts-alloc.png")
+#image("/result/complex-sequential-inserts-alloc.png")
 
 == CPU Profile for Batching Algorithm with Real World Dataset
 <appendix:complex-real-world-cpu>
 
-#image("../result/complex-real-world-cpu.png")
+#image("/result/complex-real-world-cpu.png")
 
 == CPU Profile for Simple AVL Algorithm with Real World Dataset
 <appendix:simpleavl-real-world-cpu>
 
-#image("../result/simpleavl-real-world-cpu.png")
+#image("/result/simpleavl-real-world-cpu.png")
 
 == Allocation Profile for Simple AVL Algorithm with Real World Dataset
 <appendix:simpleavl-real-world-alloc>
 
-#image("../result/simpleavl-real-world-alloc.png")
+#image("/result/simpleavl-real-world-alloc.png")
 
 == Code Showing FugueMax Is Interleaving
 <appendix:code-fuguemax-interleaving>

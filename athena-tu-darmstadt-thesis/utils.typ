@@ -29,14 +29,14 @@
       align: bottom,
       [
         #figure(
-          image("../../result/" + name + "-before.pdf"),
+          image("/result/" + name + "-before.pdf"),
           caption: "before",
           kind: "fig" + name,
         ) #label(name)
       ],
       [
         #figure(
-          image("../../result/" + name + "-after.pdf"),
+          image("/result/" + name + "-after.pdf"),
           caption: "after",
           kind: "fig" + name,
         ) #label(name)
