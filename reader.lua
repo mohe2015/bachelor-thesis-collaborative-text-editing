@@ -45,8 +45,12 @@ local definitions = [=[
 \newcommand{\KOMAoptions}{}
 \newcommand{\protect}{}
 \newcommand{\mbox}[1]{\par #1}
+\newcommand{\glsfmttext}[1]{#1}
 \newcommand{\S}{\text{§}}
 \newenvironment{flushright}{}{}
+\newenvironment{listing}{}{}
+
+\newcommand{\addtocontents}{}
 
 \newcommand{\twoMinipageFigures}[4]{
     \begin{figure}
@@ -63,13 +67,11 @@ local definitions = [=[
 
 \newcommand{\twoSubfigures}[4]{
       \begin{subfigure}{.5\textwidth}
-          \sbox0{\includegraphics[max width=\textwidth,valign=t]{#1}}
           \includegraphics[scale=\thelastscalefactor,valign=t]{#1}
           #2
       \end{subfigure}%
       \begin{subfigure}{.5\textwidth}
           \includegraphics[scale=\thelastscalefactor,valign=t]{#3}
-          \vphantom{\includegraphics[scale=\thelastscalefactor,valign=t]{#1}}
           #4
       \end{subfigure}
 }
