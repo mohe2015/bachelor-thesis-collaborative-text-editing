@@ -112,14 +112,23 @@ Comparing the results#footnote[#link(
 ])
 <fig:ot-example>
 
-```text
-Tii(Ins[p1,c1], Ins[p2, c2]) {
-  if p1 < p2 or (p1 = p2 and u1 > u2)
-    return Ins[p1, c1];
-  else
-    return Ins[p1+1, c1];
-}
-```
+#figure(
+  [```text
+    Tii(Ins[p1,c1], Ins[p2, c2]) {
+      if p1 < p2 or (p1 = p2 and u1 > u2)
+        return Ins[p1, c1];
+      else
+        return Ins[p1+1, c1];
+    }
+    ```
+
+  ],
+  caption: [
+    Example for transformation function from Sun
+    @2024-sun-ot-faq[Section 2.15]
+  ],
+)
+<lst:example-transformation-function>
 
 #pagebreak()
 == OT in Comparison to CRDTs

@@ -49,11 +49,19 @@ Finally, in @final-high-level-code-overview, we give an overview of the resultin
 )
 <fig:simple-sequential-inserts>
 
-```scala
-override def atVisibleIndex(i: Int): SimpleTreeNode[V] = {
-  factory.nodes().drop(i).iterator.next
-}
-```
+#figure(
+  [```scala
+    override def atVisibleIndex(i: Int): SimpleTreeNode[V] = {
+      factory.nodes().drop(i).iterator.next
+    }
+    ```
+
+  ],
+  caption: [
+    Code excerpt of node search based on index for the simple algorithm
+  ],
+)
+<lst:simple-at-visible-index>
 
 The most basic case is sequential insertion of text which simulates a user that perfectly writes text and never needs to fix any mistakes or add something earlier in the text.
 Benchmarking our basic implementation called the simple algorithm leads to the result in @fig:simple-sequential-inserts.
@@ -64,20 +72,28 @@ All graphs with the same border color have the same axis scale to make them comp
 As shown in @appendix:simple-sequential-inserts-cpu almost all the time is spent in `atVisibleIndex`.
 This matches the repeated linear search to find the element at which we need to insert based on its index in the original algorithm as shown in @lst:simple-at-visible-index.
 
-```scala
-final case class BatchingTreeNode(
-    rid: RID | Null,
-    counter: Int,
-    var _values: StringBuilder | Null,
-    var offset: Int,
-    var to: Int,
-    side: Side,
-    var parent: BatchingTreeNodeSingle | Null,
-    var leftChildrenBuffer: mutable.ArrayBuffer[BatchingTreeNode],
-    var rightChildrenBuffer: mutable.ArrayBuffer[BatchingTreeNode],
-    var allowAppend: Boolean
+#figure(
+  [```scala
+    final case class BatchingTreeNode(
+        rid: RID | Null,
+        counter: Int,
+        var _values: StringBuilder | Null,
+        var offset: Int,
+        var to: Int,
+        side: Side,
+        var parent: BatchingTreeNodeSingle | Null,
+        var leftChildrenBuffer: mutable.ArrayBuffer[BatchingTreeNode],
+        var rightChildrenBuffer: mutable.ArrayBuffer[BatchingTreeNode],
+        var allowAppend: Boolean
+    )
+    ```
+
+  ],
+  caption: [
+    Data structure of batching node
+  ],
 )
-```
+<lst:data-structure-batching-node>
 
 #pagebreak()
 == Optimization Using Batching
@@ -419,17 +435,25 @@ This results in logarithmic insertion.
 )
 <fig:complexavl-evil-insert-1>
 
-```scala
-val firstRightChild = leftOrigin.firstRightChild()
-var side: Side | Null = null
-val origin = if (firstRightChild == null) {
-  side = Side.Right
-  leftOrigin
-} else {
-  side = Side.Left
-  firstRightChild.leftmostDescendant()
-}
-```
+#figure(
+  [```scala
+    val firstRightChild = leftOrigin.firstRightChild()
+    var side: Side | Null = null
+    val origin = if (firstRightChild == null) {
+      side = Side.Right
+      leftOrigin
+    } else {
+      side = Side.Left
+      firstRightChild.leftmostDescendant()
+    }
+    ```
+
+  ],
+  caption: [
+    Code excerpt of an edge case for insertion to the left of the root
+  ],
+)
+<lst:code-evil-insert-1>
 
 ===== Edge case for insertion to the left of the root
 <edge-case-for-insertion-to-the-left-of-the-root>
@@ -476,14 +500,22 @@ Therefore, the leftmost descendant of this group of nodes can be efficiently ret
 )
 <fig:complexavl-evil-insert-2>
 
-```scala
-val base = if (rightChildrenBuffer.nn.isEmpty || before.isEmpty) {
-  parent
-} else {
-  BatchingAVLTreeNodeSingle(before.get, before.get.value.to)
-    .rightmostDescendant().complexTreeNode
-}
-```
+#figure(
+  [```scala
+    val base = if (rightChildrenBuffer.nn.isEmpty || before.isEmpty) {
+      parent
+    } else {
+      BatchingAVLTreeNodeSingle(before.get, before.get.value.to)
+        .rightmostDescendant().complexTreeNode
+    }
+    ```
+
+  ],
+  caption: [
+    Code excerpt of an edge case for concurrent insertion to the right
+  ],
+)
+<lst:code-evil-insert-2>
 
 #pagebreak()
 ===== Edge case for concurrent insertion to the right
@@ -581,23 +613,31 @@ All these data structures also lead to a high per-node memory overhead, so it ma
 Note especially the last edge case where almost 1300 bytes are needed per character operation.
 Through optimization, probably in an ahead-of-time compiled language and not Scala or another JVM based language, this can probably be reduced at least a bit.
 
-```scala
-final case class BatchingAVLTreeNode[V](
-  replicaId: RID | Null,
-  counter: Int,
-  var _values: ArrayBuffer[V] | Null,
-  var offset: Int,
-  var to: Int,
-  side: Side,
-  var leftChildrenBuffer: SortedSet[AVLTreeNode[BatchingAVLTreeNode[V]]]
-                          | AVLTreeNode[BatchingAVLTreeNode[V]] | Null,
-  var rightChildrenBuffer: SortedSet[AVLTreeNode[BatchingAVLTreeNode[V]]]
-                          | AVLTreeNode[BatchingAVLTreeNode[V]] | Null,
-  var allowAppend: Boolean,
-  var leftDescCache: AVL2TreeNode[AVLTreeNode[BatchingAVLTreeNode[V]]],
-  var rightDescCache: AVL2TreeNode[AVLTreeNode[BatchingAVLTreeNode[V]]],
+#figure(
+  [```scala
+    final case class BatchingAVLTreeNode[V](
+      replicaId: RID | Null,
+      counter: Int,
+      var _values: ArrayBuffer[V] | Null,
+      var offset: Int,
+      var to: Int,
+      side: Side,
+      var leftChildrenBuffer: SortedSet[AVLTreeNode[BatchingAVLTreeNode[V]]]
+                              | AVLTreeNode[BatchingAVLTreeNode[V]] | Null,
+      var rightChildrenBuffer: SortedSet[AVLTreeNode[BatchingAVLTreeNode[V]]]
+                              | AVLTreeNode[BatchingAVLTreeNode[V]] | Null,
+      var allowAppend: Boolean,
+      var leftDescCache: AVL2TreeNode[AVLTreeNode[BatchingAVLTreeNode[V]]],
+      var rightDescCache: AVL2TreeNode[AVLTreeNode[BatchingAVLTreeNode[V]]],
+    )
+    ```
+
+  ],
+  caption: [
+    Code excerpt of node data structure for batching AVL algorithm
+  ],
 )
-```
+<lst:final-code>
 
 #pagebreak()
 == Node Data Structure Including All Optimizations

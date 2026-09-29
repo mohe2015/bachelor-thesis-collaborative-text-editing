@@ -30,43 +30,59 @@ For our final benchmarks the generic parameter which specified the type of the e
 This reduces memory usage a bit as Scala otherwise needs to create an object per character.
 This leads to an overhead because of the required metadata per object and because a character object is two bytes large, but many characters only need a single byte.
 
-```scala
-ManagementFactory
-    .getPlatformMBeanServer()
-    .nn
-    .invoke(
-      new ObjectName("com.sun.management:type=DiagnosticCommand"),
-      "gcClassHistogram",
-      Array[Object | Null](null),
-      Array("[Ljava.lang.String;")
-    )
-```
+#figure(
+  [```scala
+    ManagementFactory
+        .getPlatformMBeanServer()
+        .nn
+        .invoke(
+          new ObjectName("com.sun.management:type=DiagnosticCommand"),
+          "gcClassHistogram",
+          Array[Object | Null](null),
+          Array("[Ljava.lang.String;")
+        )
+    ```
 
-```text
-     #instances         #bytes  class name (module)
--------------------------------------------------------
-        2957804       94649728  text_rdt.avl2.AVL2TreeNode
-        1609332       88413312  [B (java.base@21.0.3)
-        1478902       82818512  text_rdt.ComplexAVLTreeNode
-        1478902       59156080  text_rdt.avl.AVLTreeNode
-        1058700       50817600  text_rdt.ComplexAVLMessage$Insert
-        1254001       50160040  scala.collection.mutable.RedBlackTree$Node
-        1596802       38323248  java.lang.StringBuilder (java.base@21.0.3)
-        1478903       35493672  text_rdt.avl2.AVL2Tree
-        1596801       25548816  scala.collection.mutable.StringBuilder
-         710800       22745600  text_rdt.ComplexAVLMessage$Delete
-         538103       17219296  scala.collection.mutable.HashMap$Node
-         538105       12914520  scala.Tuple2
-         538101       12914424  text_rdt.SimpleID
-           2270        9637384  [Ljava.lang.Object; (java.base@21.0.3)
-         313201        7516824  scala.collection.mutable.RedBlackTree$Tree
-         313201        7516824  scala.collection.mutable.TreeSet
-         182315        4375560  text_rdt.FixtureOperation$Insert
-              2        4194368  [Lscala.collection.mutable.HashMap$Node;
-          77463        1239408  text_rdt.FixtureOperation$Delete
-...
-Total  17763864      627984600
-```
+  ],
+  caption: [
+    Code excerpt of memory usage measurement
+  ],
+)
+<lst:memory-usage>
+
+#figure(
+  [```text
+         #instances         #bytes  class name (module)
+    -------------------------------------------------------
+            2957804       94649728  text_rdt.avl2.AVL2TreeNode
+            1609332       88413312  [B (java.base@21.0.3)
+            1478902       82818512  text_rdt.ComplexAVLTreeNode
+            1478902       59156080  text_rdt.avl.AVLTreeNode
+            1058700       50817600  text_rdt.ComplexAVLMessage$Insert
+            1254001       50160040  scala.collection.mutable.RedBlackTree$Node
+            1596802       38323248  java.lang.StringBuilder (java.base@21.0.3)
+            1478903       35493672  text_rdt.avl2.AVL2Tree
+            1596801       25548816  scala.collection.mutable.StringBuilder
+             710800       22745600  text_rdt.ComplexAVLMessage$Delete
+             538103       17219296  scala.collection.mutable.HashMap$Node
+             538105       12914520  scala.Tuple2
+             538101       12914424  text_rdt.SimpleID
+               2270        9637384  [Ljava.lang.Object; (java.base@21.0.3)
+             313201        7516824  scala.collection.mutable.RedBlackTree$Tree
+             313201        7516824  scala.collection.mutable.TreeSet
+             182315        4375560  text_rdt.FixtureOperation$Insert
+                  2        4194368  [Lscala.collection.mutable.HashMap$Node;
+              77463        1239408  text_rdt.FixtureOperation$Delete
+    ...
+    Total  17763864      627984600
+    ```
+
+  ],
+  caption: [
+    Memory usage for batching AVL algorithm
+  ],
+)
+<lst:memory-usage-results>
 
 == Measuring Maximum Memory Usage
 <sec:memory-results>

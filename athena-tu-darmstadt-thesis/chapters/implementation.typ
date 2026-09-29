@@ -21,25 +21,33 @@ Furthermore, inserting nodes to the right and left of other nodes needs to be ef
 
 In practice, trees usually contain many deep right descendants because of consecutive character insertions @2023-weidner-minimizing-interleaving[Figure 5], so this is a case that should be heavily optimized.
 
-```scala
-val schema = Schema(SchemaSpec(orderedmap.from(StringDictionary(
-  ("text", NodeSpec()),
-  ("doc",
-    NodeSpec()
-      .setContent("text*")
-      .setMarks("")
-      .setCode(true)
-      .setDefining(true)
-      .setParseDOM(
-        js.Array(TagParseRule("pre").setPreserveWhitespace(full)))
-      .setToDOM(_ => Array("pre", 0)))))))
-val hardBreakCommand: Command = (state, dispatch, view) => {
-  dispatch.get(state.tr.insertText("\n"))
-  true
-}
-val editorStateConfig = EditorStateConfig().setSchema(schema)
-  .setPluginsVarargs(keymap(StringDictionary(("Enter", hardBreakCommand))))
-```
+#figure(
+  [```scala
+    val schema = Schema(SchemaSpec(orderedmap.from(StringDictionary(
+      ("text", NodeSpec()),
+      ("doc",
+        NodeSpec()
+          .setContent("text*")
+          .setMarks("")
+          .setCode(true)
+          .setDefining(true)
+          .setParseDOM(
+            js.Array(TagParseRule("pre").setPreserveWhitespace(full)))
+          .setToDOM(_ => Array("pre", 0)))))))
+    val hardBreakCommand: Command = (state, dispatch, view) => {
+      dispatch.get(state.tr.insertText("\n"))
+      true
+    }
+    val editorStateConfig = EditorStateConfig().setSchema(schema)
+      .setPluginsVarargs(keymap(StringDictionary(("Enter", hardBreakCommand))))
+    ```
+
+  ],
+  caption: [
+    Code excerpt of ProseMirror schema setup
+  ],
+)
+<lst:prosemirror-schema>
 
 == Browser Implementation of Text Editor
 <section:implementation-browser>

@@ -50,7 +50,10 @@ local definitions = [=[
 \newcommand{\glsfmttext}[1]{#1}
 \newcommand{\S}{\text{§}}
 \newenvironment{flushright}{}{}
-\newenvironment{listing}{}{}
+
+\newcommand{\listing}{\begin{figure}}
+\newcommand{\endlisting}{\end{figure}}
+
 
 \renewenvironment{abstract}[1][]{}{}
 
