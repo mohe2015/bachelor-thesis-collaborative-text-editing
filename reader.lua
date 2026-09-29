@@ -57,16 +57,14 @@ local definitions = [=[
 \newcommand{\addtocontents}{}
 
 \newcommand{\twoMinipageFigures}[4]{
-    \begin{figure}
-        \begin{minipage}[t]{.4875\textwidth}
-            \includegraphics[scale=\thelastscalefactor,valign=t]{#1}
-            #2
-        \end{minipage}
-        \begin{minipage}[t]{.4875\textwidth}
-            \includegraphics[scale=\thelastscalefactor,valign=t]{#3}
-            #4
-        \end{minipage}
-    \end{figure}
+  \begin{figure}
+    \includegraphics{#1}
+    #2
+  \end{figure}
+  \begin{figure}
+    \includegraphics{#3}
+    #4
+  \end{figure}
 }
 
 \newcommand{\twoSubfigures}[4]{
