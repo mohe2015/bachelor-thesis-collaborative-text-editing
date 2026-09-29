@@ -67,17 +67,6 @@ local definitions = [=[
   \end{figure}
 }
 
-\newcommand{\twoSubfigures}[4]{
-      \begin{subfigure}{.5\textwidth}
-          \includegraphics[scale=\thelastscalefactor,valign=t]{#1}
-          #2
-      \end{subfigure}%
-      \begin{subfigure}{.5\textwidth}
-          \includegraphics[scale=\thelastscalefactor,valign=t]{#3}
-          #4
-      \end{subfigure}
-}
-
 \newcommand{\benchmarkResults}[2]{
     \begin{figure}
         \begin{subfigure}{.5\textwidth}
@@ -92,16 +81,6 @@ local definitions = [=[
         \end{subfigure}
         \caption{#2}
         \label{fig:#1}
-    \end{figure}
-}
-
-\newcommand{\evilEdgeCase}[2]{
-    \begin{figure}
-        \twoSubfigures{../text-rdt/target/pdfs/#1-before.pdf}{\caption{before}
-            \label{fig:edge-case-#1-before}}{../text-rdt/target/pdfs/#1-after.pdf}{\caption{after}
-            \label{fig:edge-case-#1-after}}
-        \caption{Example for #2}
-        \label{fig:edge-case-#1-example}
     \end{figure}
 }
 

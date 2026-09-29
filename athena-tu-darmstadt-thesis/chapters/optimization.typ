@@ -343,24 +343,7 @@ The runtime per operation is one microsecond, thus one million operations can be
 The memory usage per operation is about 25 bytes per operation.
 This concludes our optimization of the common execution path.
 
-#figure(
-  [#figure(image("../text-rdt/target/pdfs/evil-children-before.pdf"), caption: [
-      before
-    ])
-    <fig:edge-case-evil-children-before>
-
-    #figure(image("../text-rdt/target/pdfs/evil-children-after.pdf"), caption: [
-      after
-    ])
-    <fig:edge-case-evil-children-after>
-
-  ],
-  caption: [
-    Example for edge case with many children
-  ],
-)
-<fig:edge-case-evil-children-example>
-
+#evil-edge-case("evil-children", "edge case with many children")
 #figure(
   [#figure(
       image(
@@ -404,24 +387,10 @@ Child insertions need to be efficient even after many children are inserted at t
 Therefore, the children are stored in a `mutable.SortedSet`, so a binary search tree.
 This results in logarithmic insertion.
 
-#figure(
-  [#figure(image("../text-rdt/target/pdfs/evil-insert-1-before.pdf"), caption: [
-      before
-    ])
-    <fig:edge-case-evil-insert-1-before>
-
-    #figure(image("../text-rdt/target/pdfs/evil-insert-1-after.pdf"), caption: [
-      after
-    ])
-    <fig:edge-case-evil-insert-1-after>
-
-  ],
-  caption: [
-    Example for edge case for insertion to the left of the root
-  ],
+#evil-edge-case(
+  "evil-insert-1",
+  "edge case for insertion to the left of the root",
 )
-<fig:edge-case-evil-insert-1-example>
-
 #figure(
   [#figure(
       image(
@@ -475,24 +444,10 @@ The cache also uses an AVL tree with the specialty of storing a parent reference
 Therefore, the leftmost descendant of this group of nodes can be efficiently retrieved and updated, the cache can be efficiently split up by splitting the AVL tree and new nodes can be efficiently inserted.
 
 #pagebreak()
-#figure(
-  [#figure(image("../text-rdt/target/pdfs/evil-insert-2-before.pdf"), caption: [
-      before
-    ])
-    <fig:edge-case-evil-insert-2-before>
-
-    #figure(image("../text-rdt/target/pdfs/evil-insert-2-after.pdf"), caption: [
-      after
-    ])
-    <fig:edge-case-evil-insert-2-after>
-
-  ],
-  caption: [
-    Example for edge case for concurrent insertion to the right
-  ],
+#evil-edge-case(
+  "evil-insert-2",
+  "edge case for concurrent insertion to the right",
 )
-<fig:edge-case-evil-insert-2-example>
-
 #figure(
   [#figure(
       image(
@@ -539,24 +494,7 @@ For example as this is a concurrent insertion, the first `c` node needs to be in
 Therefore, the last node in the subtree of its left child needs to be retrieved, which requires to get the rightmost descendant of that child as shown in @lst:code-evil-insert-2.
 Therefore, this also needs the optimization as explained for the previous edge case.
 
-#figure(
-  [#figure(image("../text-rdt/target/pdfs/evil-split-before.pdf"), caption: [
-      before
-    ])
-    <fig:edge-case-evil-split-before>
-
-    #figure(image("../text-rdt/target/pdfs/evil-split-after.pdf"), caption: [
-      after
-    ])
-    <fig:edge-case-evil-split-after>
-
-  ],
-  caption: [
-    Example for edge case for node splitting
-  ],
-)
-<fig:edge-case-evil-split-example>
-
+#evil-edge-case("evil-split", "edge case for node splitting")
 #figure(
   [#figure(
       image(
@@ -594,32 +532,10 @@ Therefore, instead of splitting it, nodes reference a subpart of the buffer.
 This means splitting a node only requires creating and inserting a new node and updating a few references to the buffer start and end, inserting it into the AVL tree and updating the descendant cache.
 The disadvantage is that the memory for deleted nodes is not reclaimed.
 
-#figure(
-  [#figure(
-      image(
-        "../text-rdt/target/pdfs/evil-split-many-right-children-before.pdf",
-      ),
-      caption: [
-        before
-      ],
-    )
-    <fig:edge-case-evil-split-many-right-children-before>
-
-    #figure(
-      image("../text-rdt/target/pdfs/evil-split-many-right-children-after.pdf"),
-      caption: [
-        after
-      ],
-    )
-    <fig:edge-case-evil-split-many-right-children-after>
-
-  ],
-  caption: [
-    Example for edge case for node splitting with many right children
-  ],
+#evil-edge-case(
+  "evil-split-many-right-children",
+  "edge case for node splitting with many right children",
 )
-<fig:edge-case-evil-split-many-right-children-example>
-
 #figure(
   [#figure(
       image(

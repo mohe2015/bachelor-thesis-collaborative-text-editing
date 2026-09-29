@@ -7,7 +7,36 @@ end
 -- Input classes: Figure.marginfigure; Span.sidenote / Span.marginnote
 -- wrapping exactly one Note. Requires haobook in the Typst document scope.
 
+-- Escape text for use inside a Typst string literal.
+local function typst_string(s)
+  s = s:gsub('\\', '\\\\'):gsub('"', '\\"'):gsub('%s*\n%s*', ' ')
+  return '"' .. s .. '"'
+end
+
+-- Parse \evilEdgeCase{a}{b}; returns Typst call text or nil.
+local function evil_edge_case(text)
+  local a, b = text:match('^\\evilEdgeCase%s*(%b{})%s*(%b{})%s*$')
+  if not a then return nil end
+  return '#evil-edge-case(' .. typst_string(a:sub(2, -2)) .. ', '
+    .. typst_string(b:sub(2, -2)) .. ')'
+end
+
 local function transform(doc, opts)
+  doc = doc:walk {
+    RawInline = function(raw)
+      if raw.format == 'latex' or raw.format == 'tex' then
+        local call = evil_edge_case(raw.text)
+        if call then return pandoc.RawInline('typst', call) end
+      end
+    end,
+    RawBlock = function(raw)
+      if raw.format == 'latex' or raw.format == 'tex' then
+        local call = evil_edge_case(raw.text)
+        if call then return pandoc.RawBlock('typst', call) end
+      end
+    end,
+  }
+
   -- Validate before rendering any fragments: otherwise unsupported TeX in a
   -- note or caption could disappear inside a generated raw Typst element.
   local function reject_raw_tex(raw)
