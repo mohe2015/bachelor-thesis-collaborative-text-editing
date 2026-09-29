@@ -1,11 +1,4 @@
-// pandoc --template template.pandoc.typ -f reader.lua -t haobook.lua chapters_en/02_Studium/0201_1x1.tex -o chapters_en/02_Studium/0201_1x1.typ
-#import "/src/packages.typ": haobook, tiaoma
-#import "/src/util.typ": TODO, multi-file-fixes, ophasenqr, räume
-
-#show heading.where(level: 3): set heading(outlined: false, numbering: none) // TODO: Fix?
-#show figure.where(kind: "symbolbild"): set figure(
-    supplement: "For illustrative purposes only",
-)
+#import "../utils.typ": gls, glspl
 
 $if(template)$
 #import "$template$": conf

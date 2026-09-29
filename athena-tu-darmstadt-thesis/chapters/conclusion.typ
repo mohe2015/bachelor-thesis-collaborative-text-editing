@@ -1,5 +1,8 @@
 #import "../utils.typ": gls, glspl
 
+
+
+
 = Conclusion
 <chapter:conclusion>
 This thesis shows that efficient collaborative plain text editing in a decentralized and #emph[non-realtime] setting while preserving user intentions is possible.
@@ -9,9 +12,7 @@ This is especially an issue in decentralized networks, as there is only limited 
 
 The WebRTC implementation shows a practical example of text editing in p2p networks and allows easy experimentation.
 
-shows that interleaving for the #emph[maximally non-interleaving] property #cite(
-  <2023-weidner-minimizing-interleaving>,
-) is indeed possible when deletions are involved.
+@section:challenges-text-interleaving shows that interleaving for the #emph[maximally non-interleaving] property @2023-weidner-minimizing-interleaving is indeed possible when deletions are involved.
 Therefore, a more accurate property should be researched to ensure non-interleaving.
 
 Significant parts that are common in text editing are still missing, the largest being rich text support.
@@ -21,3 +22,16 @@ The interaction of rich text and being able to undo arbitrary actions likely als
 
 While testing whether the algorithm converges is comparably simple, testing intent preservation and non-interleaving without reimplementing the algorithm in the test is challenging.
 As testing is a critical part to ensure correctness, more focus needs to be put on testing text editing algorithms.
+
+#block[
+  #block[
+    Weidner, Matthew, Joseph Gentle, and Martin Kleppmann. 2023.
+    “The Art of the Fugue: Minimizing Interleaving in Collaborative Text Editing.”
+    #emph[CoRR] abs/2305.00583.
+    #link("https://doi.org/10.48550/ARXIV.2305.00583").
+
+  ] <ref-2023-weidner-minimizing-interleaving>
+] <refs>
+
+
+#bibliography("latex/literature.bib")

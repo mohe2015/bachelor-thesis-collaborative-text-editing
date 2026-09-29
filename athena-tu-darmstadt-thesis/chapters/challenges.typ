@@ -1,12 +1,13 @@
 #import "../utils.typ": gls, glspl
 
+
+
+
 = Challenges with Collaborative Text Editing
 <chapter:challenges>
-This chapter first introduces the goal of user intent-preservation by showing the problem of text interleaving in .
-Then, introduces the solution proposed by Fugue #cite(
-  <2023-weidner-minimizing-interleaving>,
-) to solve text interleaving.
-Finally, compares crdts and ot and shows that the current crdts runtime complexity is quadratic and current ot algorithms are unsuitable for #emph[non-realtime] editing.
+This chapter first introduces the goal of user intent-preservation by showing the problem of text interleaving in @section:challenges-text-interleaving.
+Then, @section:challenges-text-interleaving-fugue introduces the solution proposed by Fugue @2023-weidner-minimizing-interleaving to solve text interleaving.
+Finally, @chapter:ot compares crdts and ot and shows that the current crdts runtime complexity is quadratic and current ot algorithms are unsuitable for #emph[non-realtime] editing.
 
 == Text Interleaving
 <section:challenges-text-interleaving>
@@ -23,26 +24,26 @@ The expected result after synchronizing is either `"milk, ``eggs,`` ``bread,`` c
 While there are two possibilities in this case, no interleaving occurs in either case.
 
 #figure(
-  [#box(image("../figures/forward-more-important-than-backward.drawio.svg"));],
+  image("figures/forward-more-important-than-backward.drawio.pdf"),
   caption: [
-    Example for prioritizing forward insertions inspired by Figure 6 in Fugue #cite(
-      <2023-weidner-minimizing-interleaving>,
-    )
+    Example for prioritizing forward insertions inspired by Figure 6 in Fugue @2023-weidner-minimizing-interleaving
   ],
 )
 <fig:forward-more-important-than-backward>
 
+#pagebreak()
 For an insertion in the middle of a text, current editing behavior does not convey whether the insertion semantically belongs to the left side or the right side.
-Because most text is written in a forward direction, so for left-to-right script from left to right, it is more likely that an insertion in the middle of some text is appending to the left side of the insertion point instead of prepending to the right side of the insertion point. exemplifies this.
+Because most text is written in a forward direction, so for left-to-right script from left to right, it is more likely that an insertion in the middle of some text is appending to the left side of the insertion point instead of prepending to the right side of the insertion point.
+@fig:forward-more-important-than-backward exemplifies this.
 The three replicas Alice, Bob and Carol independently add three lists to some text.
 Then, Alice and Carol synchronize.
 Afterwards, Alice adds `"``* Alpacas``"` to her list, such that it comes after `"``Animals:``"` and before `"``Colors:``"` but inherently there is no information to which part it belongs.
 Finally, Alice and Bob synchronize.
 This separates `"``* Alpacas``"` and `"``Colors:``"` by the received `"``Bands:``"`, which may not be wanted.
 In this example the assumption of the more common forward insertion is correct though.
-Further improvements to this would need analysis of the language semantics of the text which looked into #cite(
-  <2023-bauwens-nlp-for-merging>,
-);.
+Further improvements to this would need analysis of the language semantics of the text which #cite(
+  label("*"),
+)2023-bauwens-nlp-for-merging looked into @2023-bauwens-nlp-for-merging.
 For the concrete example, a different idea could be to insert `"``Bands:``"` after `"``Colors:``"` so `"``* Alpacas``"` stays in place in relation to the text preceding and following it.
 Unfortunately this would lead to even more unexpected behavior for example when Bob and Carol synchronized before and would order the entries alphabetically because they do not know about the insertion of `"``* Alpacas``"`.
 As soon as Alice would then synchronize with them, the entries would need to be reordered, so that they converge.
@@ -52,29 +53,27 @@ This has similar issues if concurrent edits are received later and change the ef
 
 == Fugues Approach to Avoid Text Interleaving
 <section:challenges-text-interleaving-fugue>
-This section shows the proposed solution by Fugue #cite(
-  <2023-weidner-minimizing-interleaving>,
-) to solve text interleaving.
+This section shows the proposed solution by Fugue @2023-weidner-minimizing-interleaving to solve text interleaving.
 It also gives an example that the proposed #emph[maximally non-interleaving] property can still interleave text when deletions are involved.
 
 #cite(
-  <2023-weidner-minimizing-interleaving>,
-) show that a previous attempt at formalizing a property for non-interleaving by #cite(
-  <2019-Kleppmann-incorrect-noninterleaving-property>,
-) is incorrect @2023-weidner-minimizing-interleaving[Section 2.5].
-Therefore, they propose their own property which they refer to as #emph[maximally non-interleaving];.
+  label("*"),
+)2023-weidner-minimizing-interleaving @2023-weidner-minimizing-interleaving show that a previous attempt at formalizing a property for non-interleaving by #cite(
+  label("*"),
+)2019-Kleppmann-incorrect-noninterleaving-property @2019-Kleppmann-incorrect-noninterleaving-property is incorrect @2023-weidner-minimizing-interleaving[Section 2.5].
+Therefore, they propose their own property which they refer to as #emph[maximally non-interleaving].
 It associates every inserted character with the character to its left and right, which they label left and right origin.
 The property orders the characters by prioritizing keeping the left origin as the previous character because of the common forward insertions and otherwise ordering to preserve the right origin as the following character if possible.
 Only if both origins are the same, the order is arbitrary but deterministically chosen.
 Therefore, this property creates a unique order aside from tie-breaking @2023-weidner-minimizing-interleaving[Section 4.5].
 
 Fugue refers to an interleaving issue as forward interleaving, when only one character has another character as a left origin, yet the two characters are not consecutive.
-One example where the Logoot algorithm #cite(
-  <2009-weiss-logoot>,
-) interleaved characters, which also violates this rule, is concurrently inserting `"``bread``"` and `"``eggs``"`, producing `"``b``e``r``g``e``g``a``s``d``"` @2019-sun-difference-ot-crdt-2-correctness-complexity[Section 4.4.1].
+One example where the Logoot algorithm @2009-weiss-logoot interleaved characters, which also violates this rule, is concurrently inserting `"``bread``"` and `"``eggs``"`, producing `"``b``e``r``g``e``g``a``s``d``"` @2019-sun-difference-ot-crdt-2-correctness-complexity[Section 4.4.1].
 For example the `"``r``"` from `"``bread``"` has the `"``b``"` as its left origin and no other character has the `"``b``"` as its left origin but in the result they are not consecutive characters.
 
-refer to another problem that many prior algorithms exhibit as backward interleaving.
+#cite(
+  label("*"),
+)2023-weidner-minimizing-interleaving refer to another problem that many prior algorithms exhibit as backward interleaving.
 When two insertions have the same left origin but a different right origin, they should be ordered in a way that they are consecutive with their right origins.
 Although it may seem this is not a common use case, the following is a plausible example @2023-weidner-minimizing-interleaving[Figure 2].
 Starting with the text `"Shopping"`, Alice first appends `"``* apples``"` after `"Shopping"` and then prepends `"``Fruit:``"` before `"``* apples``"`.
@@ -83,25 +82,25 @@ Concurrently, Bob first appends `"``* bread``"` after `"Shopping"` and then pre
 The category insertions by Alice and Bob both have `"Shopping"` as their left origin but different right origins.
 Therefore, this should lead to either the outcome of `"Shopping``Fruit:* apples``Bakery:* bread``"` or `"Shopping``Bakery:* bread``Fruit:* apples``"` which only differ in the order of which users text comes first, which is arbitrary.
 When algorithms exhibit backward interleaving, `"Shopping``Bakery:``Fruit:``* bread``* apples``"` can be a possible result.
-Note that the order of the elements has not changed in relation to each other \(e.g. `"``Fruit:``"` comes before `"``* apples``"` and after `"Shopping"`) but this still violates the intent of the user.
+Note that the order of the elements has not changed in relation to each other (e.g.
+`"``Fruit:``"` comes before `"``* apples``"` and after `"Shopping"`) but this still violates the intent of the user.
 
-According to , many popular algorithms they looked into exhibit either forward or backward interleaving @2023-weidner-minimizing-interleaving[Table 1].
-A review by #cite(<2023-sun-critical-examination-fugue-ot>);#cite(
-  <2023-sun-critical-examination-fugue-ot-1>,
-);#cite(<2023-sun-critical-examination-fugue-ot-2>);#cite(
-  <2023-sun-critical-examination-fugue-ot-3>,
-) that refutes these claims for OT algorithms is addressed in .
-For Logoot #cite(
-  <2009-weiss-logoot>,
-) the character-by-character interleaving issue occurs.
-Further examples are provided in the appendix of the Fugue paper #cite(
-  <2023-weidner-minimizing-interleaving>,
-);.
-While the prior #gls("crdt") algorithms YjsMod#footnote[#link(
+According to #cite(
+  label("*"),
+)2023-weidner-minimizing-interleaving, many popular algorithms they looked into exhibit either forward or backward interleaving @2023-weidner-minimizing-interleaving[Table 1].
+A review by #cite(
+  label("*"),
+)2023-sun-critical-examination-fugue-ot @2023-sun-critical-examination-fugue-ot@2023-sun-critical-examination-fugue-ot-1@2023-sun-critical-examination-fugue-ot-2@2023-sun-critical-examination-fugue-ot-3 that refutes these claims for OT algorithms is addressed in @chapter:ot.
+For Logoot @2009-weiss-logoot the character-by-character interleaving issue occurs.
+Further examples are provided in the appendix of the Fugue paper @2023-weidner-minimizing-interleaving.
+While the prior crdt algorithms YjsMod#footnote[#link(
   "https://github.com/josephg/reference-crdts",
-);] and Sync9#footnote[#link(
+)] and Sync9#footnote[#link(
   "https://braid.org/sync9",
-);] do not exhibit interleaving @2023-weidner-minimizing-interleaving[Table 1], those approaches were not considered here due to the lack of documentation and their intrinsic complexity. propose their own algorithms Fugue and FugueMax to solve these problems.
+)] do not exhibit interleaving @2023-weidner-minimizing-interleaving[Table 1], those approaches were not considered here due to the lack of documentation and their intrinsic complexity.
+#cite(
+  label("*"),
+)2023-weidner-minimizing-interleaving propose their own algorithms Fugue and FugueMax to solve these problems.
 They conjecture that Sync9 is semantically equivalent to Fugue and YjsMod is semantically equivalent to FugueMax @2023-weidner-minimizing-interleaving[Section 6].
 They also prove that FugueMax fulfills the #emph[maximally non-interleaving] property @2023-weidner-minimizing-interleaving[Theorem 9], prove that the Fugue algorithm is always forward non-interleaving @2023-weidner-minimizing-interleaving[Lemma 7] and argue that it is also backward non-interleaving when there are not multiple interacting concurrent updates @2023-weidner-minimizing-interleaving[Section 4.3].
 
@@ -109,55 +108,58 @@ A counter example that interleaving can also happen for the #emph[maximally non-
 Starting with the text `"Shopping"`, Alice appends `"``* apples``"` after `"Shopping"` and then prepends `"``Fruit:``"` before `"``* apples``"`.
 Concurrently, Bob appends `"``* bread``"` after `"Shopping"`, then deletes and reinserts the `"``g``"` of `"Shopping"` and finally prepends `"``Bakery:``"` before `"``* bread``"`.
 The expected result would be `"Shoppin``gBakery:* bread``Fruit:* apples``"` but the actual result can be `"Shoppin``gBakery:``Fruit:* apples``* bread``"` when the replicas IDs have a specific order.
-The code in verifies this with the reference implementation#footnote[#link(
+The code in @appendix:code-fuguemax-interleaving verifies this with the reference implementation#footnote[#link(
   "https://github.com/mweidner037/fugue",
-);];.
+)].
 The reason the #emph[maximally non-interleaving] property does not cover this case is that it disregards deletions.
 This example shows that this simplification is not suitable to ensure non-interleaving.
 
-The basic implementation of Fugue has a linear runtime per character insertion or deletion in relation to the text length \(including deleted text) which proved to be too inefficient for larger text given the resulting runtime scales quadratically with the text length.
+The basic implementation of Fugue has a linear runtime per character insertion or deletion in relation to the text length (including deleted text) which proved to be too inefficient for larger text given the resulting runtime scales quadratically with the text length.
 Comparing the results#footnote[#link(
   "https://github.com/mweidner037/fugue/blob/main/results_table.md",
-);] from for benchmark B1.1 with benchmark B1.3 indicates, that even the optimized variant in the Fugue paper has quadratic runtime for sequential backward insertions.
+)] from #cite(
+  label("*"),
+)2023-weidner-minimizing-interleaving for benchmark B1.1 with benchmark B1.3 indicates, that even the optimized variant in the Fugue paper has quadratic runtime for sequential backward insertions.
 
-#figure([#box(image("../figures/ot.drawio.svg"));], caption: [
-  Example for operation transformation with two synchronizing peers based on figure by @2024-sun-ot-faq[Section 1.4 Figure 1]
+#pagebreak()
+#figure(image("figures/ot.drawio.pdf"), caption: [
+  Example for operation transformation with two synchronizing peers based on figure by #cite(
+    label("*"),
+  )2024-sun-ot-faq
+  @2024-sun-ot-faq[Section 1.4 Figure 1]
 ])
 <fig:ot-example>
 
-#figure(
-  ```text
-  Tii(Ins[p1,c1], Ins[p2, c2]) {
-    if p1 < p2 or (p1 = p2 and u1 > u2)
-      return Ins[p1, c1];
-    else
-      return Ins[p1+1, c1];
-  }
-  ```,
-  caption: [Example for transformation function from Sun @2024-sun-ot-faq[Section 2.15]],
-) <lst:example-transformation-function>
+```text
+Tii(Ins[p1,c1], Ins[p2, c2]) {
+  if p1 < p2 or (p1 = p2 and u1 > u2)
+    return Ins[p1, c1];
+  else
+    return Ins[p1+1, c1];
+}
+```
 
+#pagebreak()
 == OT in Comparison to CRDTs
 <chapter:ot>
 This section explains the differences and similarities between ot and crdts and shows that the current crdts runtime complexity is quadratic and current ot algorithms are unsuitable for #emph[non-realtime] editing.
 
-While #gls(
-  "crdt",
-) papers often claim crdts are superior to ot, crdts often miss major relevant parts of the required algorithmic steps which makes them seem potentially simpler and more performant @2019-sun-difference-ot-crdt-1-general-transformation-framework[page 2].
+While crdt papers often claim crdts are superior to ot, crdts often miss major relevant parts of the required algorithmic steps which makes them seem potentially simpler and more performant @2019-sun-difference-ot-crdt-1-general-transformation-framework[page 2].
 For example, crdts need to extract the text from their internal state and need to be able to address characters based on their text position as most text editors work that way @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 5.1, Section 5.2]. crdts often miss this conversion step which is a major algorithmic complication that also affects their performance a lot @2019-sun-difference-ot-crdt-1-general-transformation-framework[page 2].
 Note that Fugue also has this issue as it does not describe converting the received operations to character offsets @2023-weidner-minimizing-interleaving[Algorithm 1].
 
-also show that both approaches are more similar than often presented @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 4.1 Table 1].
+#cite(
+  label("*"),
+)2019-sun-difference-ot-crdt-1-general-transformation-framework also show that both approaches are more similar than often presented @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 4.1 Table 1].
 While ots have position based operations directly on the character sequence that are then transformed by concurrent operations, crdts have identifier based operations on an internal object sequence, that are converted to the position based character sequence after the operations have been applied.
 
-ot based algorithms consist of a control algorithm and a transformation function #cite(
-  <2024-sun-ot-faq>,
-);.
+ot based algorithms consist of a control algorithm and a transformation function @2024-sun-ot-faq.
 The control algorithm is generic, and the transformation function is application specific.
-For example for plain text editing there could be two operations, Insert\(index, character) and Delete\(index).
-The transformation function $T (O_2 , O_1)$ transforms $O_2$ against $O_1$.
-This produces the operation that needs to be applied after $O_1$ if they were concurrent before. shows an example where the positions of the concurrent operations are transformed when receiving them and therefore result in the same text at both peers.
-In that example the transformation function could be defined as shown in for transforming two insert operations @2024-sun-ot-faq[Section 2.15].
+For example for plain text editing there could be two operations, Insert(index, character) and Delete(index).
+The transformation function $T\(O_2\,O_1\)$ transforms $O_2$ against $O_1$.
+This produces the operation that needs to be applied after $O_1$ if they were concurrent before.
+@fig:ot-example shows an example where the positions of the concurrent operations are transformed when receiving them and therefore result in the same text at both peers.
+In that example the transformation function could be defined as shown in @lst:example-transformation-function for transforming two insert operations @2024-sun-ot-faq[Section 2.15].
 If a concurrent insertion happened at a position after the current insertion it does not need to be transformed.
 If a concurrent insertion happened at a position before the current insertion it needs to be offset by one.
 For equal positions, tie breaking using the replica identifier is required.
@@ -168,26 +170,138 @@ Also, some control algorithms are able to handle undo, some can undo arbitrary a
 
 Transformation functions need to be defined for all possible combinations of operations.
 This means $N^2$ such functions are needed for $N$ possible operations.
-An alternative proposed by is POT+COA \(Primitive Operation Transformation plus Complex Operation Adaptation).
+An alternative proposed by #cite(
+  label("*"),
+)2019-sun-difference-ot-crdt-3-building-real-world-applications is POT+COA (Primitive Operation Transformation plus Complex Operation Adaptation).
 It consists of having some primitive operations for which transformation functions are defined, and then complex application operations are converted to these primitive operations @2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 2.1.3].
 
 OT based algorithms can be integrated into existing editors with little change of the editors source code as OT is operation and concurrency-centric.
-The algorithm can just apply the received and transformed operations to the local editor and send local operations to other peers. refer to this as Transparent Adaptation \(TA) @2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 2.1.2].
+The algorithm can just apply the received and transformed operations to the local editor and send local operations to other peers.
+#cite(
+  label("*"),
+)2019-sun-difference-ot-crdt-3-building-real-world-applications refer to this as Transparent Adaptation (TA) @2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 2.1.2].
 
-According to , ot uses a concurrency-centric and direct transformation approach and #gls(
-  "crdt",
-) uses a content-centric and indirect transformation approach @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 1].
+According to #cite(
+  label("*"),
+)2019-sun-difference-ot-crdt-1-general-transformation-framework, ot uses a concurrency-centric and direct transformation approach and crdt uses a content-centric and indirect transformation approach @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 1].
 This has an important consequence for the time and space complexity.
-The time and space complexity of ot for #emph[realtime] editing depends on the number of concurrent operations which are usually small in realtime text editing while the time and space complexity of #glspl(
-  "crdt",
-) depends on the length of the text or even the length of the text including all deleted content which are usually a lot larger @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 5.3].
-The time complexity for prior ot based algorithms is at least $O (c)$ per remote operation @2019-sun-difference-ot-crdt-2-correctness-complexity[Section 3.1.4].
+The time and space complexity of ot for #emph[realtime] editing depends on the number of concurrent operations which are usually small in realtime text editing while the time and space complexity of crdt depends on the length of the text or even the length of the text including all deleted content which are usually a lot larger @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 5.3].
+The time complexity for prior ot based algorithms is at least $O\(c\)$ per remote operation @2019-sun-difference-ot-crdt-2-correctness-complexity[Section 3.1.4].
 This means quadratic runtime complexity in relation to the operation count for handling some count of operations, which is unusable for #emph[non-realtime] editing because there can be many concurrent operations.
 It is important to mention that the time complexity class is relevant.
-For example, $O (log (upright("text-length-including-deletions")))$ runtime complexity can be equally acceptable to $O (upright("concurrent-operations"))$ runtime complexity because $O (log (n))$ is growing quite slowly even for extremely large inputs.
-Prior research of crdts mostly managed a linear time complexity or worse except of a paper by which optimizes an rga adaptation to $O (log (n))$ per operation similarly to us @2019-sun-difference-ot-crdt-2-correctness-complexity[Table 4].
-However, have not gone into the analysis of performance edge cases prohibiting us from drawing a fair comparison.
+For example, $O\(log\(upright("text-length-including-deletions")\)\)$ runtime complexity can be equally acceptable to $O\(upright("concurrent-operations")\)$ runtime complexity because $O\(log\(n\)\)$ is growing quite slowly even for extremely large inputs.
+Prior research of crdts mostly managed a linear time complexity or worse except of a paper by #cite(
+  label("*"),
+)2016-briot-logn-optimization which optimizes an rga adaptation to $O\(log\(n\)\)$ per operation similarly to us @2019-sun-difference-ot-crdt-2-correctness-complexity[Table 4].
+However, #cite(
+  label("*"),
+)2016-briot-logn-optimization have not gone into the analysis of performance edge cases prohibiting us from drawing a fair comparison.
 Additionally, it is unclear whether they include the conversion of remote operations to character positions.
 Furthermore, as the algorithm is based on rga, it exhibits interleaving @2023-weidner-minimizing-interleaving[Table 1].
 
 While crdts often seem to be simple and easy to understand, the fundamental concurrency issues which are inherent to unconstrained co-editing also exist there and mixing content and concurrency creates new difficulties with handling them @2019-sun-difference-ot-crdt-2-correctness-complexity[Section~4].
+
+#block[
+  #block[
+    Bauwens, Jim, Kevin De Porre, and Elisa Gonzalez Boix. 2023.
+    “\[Short Paper\] Towards Improved Collaborative Text Editing CRDTs by Using Natural Language Processing.”
+    In #emph[Proceedings of the 10th Workshop on Principles and Practice of Consistency for Distributed Data, PaPoC 2023, Rome, Italy, 8 May 2023], edited by Elisa Gonzalez Boix and Pierre Sutra.
+    ACM.
+    #link("https://doi.org/10.1145/3578358.3591330").
+
+  ] <ref-2023-bauwens-nlp-for-merging>
+  #block[
+    Kleppmann, Martin, Victor B.
+    F.
+    Gomes, Dominic P.
+    Mulligan, and Alastair R.
+    Beresford. 2019.
+    “Interleaving Anomalies in Collaborative Text Editors.”
+    #emph[Proceedings of the 6th Workshop on Principles and Practice of Consistency for Distributed Data, PaPoC\@EuroSys 2019, Dresden, Germany, March 25-28, 2019], 6:1--7.
+    #link("https://doi.org/10.1145/3301419.3323972").
+
+  ] <ref-2019-Kleppmann-incorrect-noninterleaving-property>
+  #block[
+    Sun, Chengzheng, David Sun, Agustina, and Weiwei Cai. 2019.
+    “Real Differences Between OT and CRDT Under a General Transformation Framework for Consistency Maintenance in Co-Editors.”
+    #emph[CoRR] abs/1905.01518.
+    #link("http://arxiv.org/abs/1905.01518").
+
+  ] <ref-2019-sun-difference-ot-crdt-1-general-transformation-framework>
+  #block[
+    Sun, David, Chengzheng Sun, Agustina, and Weiwei Cai. 2019a.
+    “Real Differences Between OT and CRDT in Building Co-Editing Systems and Real World Applications.”
+    #emph[CoRR] abs/1905.01517.
+    #link("http://arxiv.org/abs/1905.01517").
+
+  ] <ref-2019-sun-difference-ot-crdt-3-building-real-world-applications>
+  #block[
+    Sun, David, Chengzheng Sun, Agustina, and Weiwei Cai. 2019b.
+    “Real Differences Between OT and CRDT in Correctness and Complexity for Consistency Maintenance in Co-Editors.”
+    #emph[CoRR] abs/1905.01302.
+    #link("http://arxiv.org/abs/1905.01302").
+
+  ] <ref-2019-sun-difference-ot-crdt-2-correctness-complexity>
+  #block[
+    Sun, Dr.
+    Chengzheng. 2023a.
+    “A Critical Examination of ‘the Fugue Paper' in Relation to OT.”
+    #link(
+      "https://web.archive.org/web/20240603141053/https://medium.com/codox/a-critical-examination-of-the-fugue-paper-in-relation-to-ot-157f6ccaed95",
+    ).
+
+  ] <ref-2023-sun-critical-examination-fugue-ot>
+  #block[
+    Sun, Dr.
+    Chengzheng. 2023b.
+    “Dispelling Misconceptions in the Fugue Paper about GOT and OT.”
+    #link(
+      "https://web.archive.org/web/20240603143419/https://medium.com/codox/dispelling-misconceptions-in-the-fugue-paper-about-got-and-ot-16e362609f6f",
+    ).
+
+  ] <ref-2023-sun-critical-examination-fugue-ot-3>
+  #block[
+    Sun, Dr.
+    Chengzheng. 2023c.
+    “Unveiling Issues with the Fugue Paper Regarding Jupiter-OT.”
+    #link(
+      "https://web.archive.org/web/20240603142535/https://medium.com/codox/unveiling-issues-with-the-fugue-paper-regarding-jupiter-ot-72565337b923",
+    ).
+
+  ] <ref-2023-sun-critical-examination-fugue-ot-2>
+  #block[
+    Sun, Dr.
+    Chengzheng. 2023d.
+    “What's Wrong with the Fugue Paper about adOPTed and OT?”
+    #link(
+      "https://web.archive.org/web/20240603141850/https://medium.com/codox/whats-wrong-with-the-fugue-paper-about-adopted-and-ot-9e74ffa0f828",
+    ).
+
+  ] <ref-2023-sun-critical-examination-fugue-ot-1>
+  #block[
+    Sun, Dr.
+    Chengzheng. 2024.
+    “Operational Transformation Frequently Asked Questions and Answers.”
+    #link(
+      "https://web.archive.org/web/20240603145105/https://www3.ntu.edu.sg/scse/staff/czsun/projects/otfaq/",
+    ).
+
+  ] <ref-2024-sun-ot-faq>
+  #block[
+    Weidner, Matthew, Joseph Gentle, and Martin Kleppmann. 2023.
+    “The Art of the Fugue: Minimizing Interleaving in Collaborative Text Editing.”
+    #emph[CoRR] abs/2305.00583.
+    #link("https://doi.org/10.48550/ARXIV.2305.00583").
+
+  ] <ref-2023-weidner-minimizing-interleaving>
+  #block[
+    Weiss, Stéphane, Pascal Urso, and Pascal Molli. 2009.
+    “Logoot: A Scalable Optimistic Replication Algorithm for Collaborative Editing on P2P Networks.”
+    #emph[29th IEEE International Conference on Distributed Computing Systems \(ICDCS 2009), 22-26 June 2009, Montreal, Québec, Canada], 404--12.
+    #link("https://doi.org/10.1109/ICDCS.2009.75").
+
+  ] <ref-2009-weiss-logoot>
+] <refs>
+
+
+#bibliography("latex/literature.bib")

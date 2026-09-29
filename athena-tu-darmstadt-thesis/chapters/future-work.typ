@@ -1,35 +1,30 @@
 #import "../utils.typ": gls, glspl
 
+
+
+
 = Future Work
 <chapter:future-work>
 In this chapter we look at what is missing and which aspects could be researched further.
 
 ===== Investigating OT Algorithms
 <investigating-ot-algorithms>
-In their review of the Fugue paper, shows that the claims in the Fugue paper #cite(
-  <2023-weidner-minimizing-interleaving>,
-) about ot being interleaving are not correct #cite(
-  <2023-sun-critical-examination-fugue-ot>,
-);#cite(<2023-sun-critical-examination-fugue-ot-1>);#cite(
-  <2023-sun-critical-examination-fugue-ot-2>,
-);#cite(<2023-sun-critical-examination-fugue-ot-3>);.
-First, they show that mistakes were made in the Fugue paper when applying the ot algorithms which render their results regarding ot invalid #cite(
-  <2023-sun-critical-examination-fugue-ot-1>,
-);#cite(<2023-sun-critical-examination-fugue-ot-2>);.
-They also show that interleaving has been examined and documented before and can be solved in ot, usually by having operations based on strings and not single characters, but this is also possible when operating on single characters #cite(
-  <2023-sun-critical-examination-fugue-ot-2>,
-);.
+In their review of the Fugue paper, #cite(
+  label("*"),
+)2023-sun-critical-examination-fugue-ot shows that the claims in the Fugue paper @2023-weidner-minimizing-interleaving about ot being interleaving are not correct @2023-sun-critical-examination-fugue-ot@2023-sun-critical-examination-fugue-ot-1@2023-sun-critical-examination-fugue-ot-2@2023-sun-critical-examination-fugue-ot-3.
+First, they show that mistakes were made in the Fugue paper when applying the ot algorithms which render their results regarding ot invalid @2023-sun-critical-examination-fugue-ot-1@2023-sun-critical-examination-fugue-ot-2.
+They also show that interleaving has been examined and documented before and can be solved in ot, usually by having operations based on strings and not single characters, but this is also possible when operating on single characters @2023-sun-critical-examination-fugue-ot-2.
 Therefore, investigating OT algorithms, especially in a #emph[non-realtime] setting could be interesting.
 
 ===== Necessary Non-interleaving Properties for Intent-Preserving Text Editing
 <necessary-non-interleaving-properties-for-intent-preserving-text-editing>
-The review by also suggests that not all the properties that are proposed in the Fugue paper \(especially multi-user relay interleaving and backward interleaving) are necessary or useful for user intent preserving text editing #cite(
-  <2023-sun-critical-examination-fugue-ot-2>,
-);.
-While the examples we show in and are realistic, we do not know which properties are strictly necessary, as required properties seriously limit the freedom in the design of suitable algorithms.
+The review by #cite(
+  label("*"),
+)2023-sun-critical-examination-fugue-ot also suggests that not all the properties that are proposed in the Fugue paper (especially multi-user relay interleaving and backward interleaving) are necessary or useful for user intent preserving text editing @2023-sun-critical-examination-fugue-ot-2.
+While the examples we show in @section:challenges-text-interleaving and @section:challenges-text-interleaving-fugue are realistic, we do not know which properties are strictly necessary, as required properties seriously limit the freedom in the design of suitable algorithms.
 For example, the Fugue paper proposes a property of maximally non-interleaving that produces a unique order with the least possible interleaving.
 While it is interesting that this property produces a unique order it is unclear whether this is useful in practice.
-Our example in also shows that this property is not sufficient for non-interleaving when deletions are involved.
+Our example in @section:challenges-text-interleaving-fugue also shows that this property is not sufficient for non-interleaving when deletions are involved.
 Future work could investigate how this property could be adapted to better model non-interleaving in such cases.
 
 ===== Privacy
@@ -65,39 +60,23 @@ Both create new challenges with user intent.
 While for ot there is a lot of previous work which is also successfully used in production e.g.
 Google Docs#footnote[#link(
   "https://www.google.com/docs/about/",
-);];, for crdts there is not much previous research #cite(
-  <2022-litt-peritext>,
-);.
-The Peritext paper #cite(
-  <2022-litt-peritext>,
-) investigates inline formatting and shows some problems in prior algorithms with correctly preserving user intentions #cite(
-  <2022-litt-peritext>,
-);.
-For example the Yjs algorithm based on yata #cite(
-  <2016-yata-yjs>,
-) adds markers where inline formatting starts and where it ends into the text.
+)], for crdts there is not much previous research @2022-litt-peritext.
+The Peritext paper @2022-litt-peritext investigates inline formatting and shows some problems in prior algorithms with correctly preserving user intentions @2022-litt-peritext.
+For example the Yjs algorithm based on yata @2016-yata-yjs adds markers where inline formatting starts and where it ends into the text.
 This fails to handle a simple case where a bold text is unbolded and concurrently part of that bold text is unbolded which then leads to unrelated text getting bold @2022-litt-peritext[Section 2.3.2].
 
 In a collaborative context it needs to be possible to undo arbitrary actions by any user and not only the last action like it is usually the case in traditional editors.
 Therefore, support for so-called selective undo is needed.
-For ot algorithms, transformations need to be applied to the correct document context #cite(
-  <2009-sun-ot-context-undo>,
-);.
-This means the control algorithms need to properly handle this and transformation functions potentially need to uphold specific properties #cite(
-  <2009-sun-ot-context-undo>,
-);.
+For ot algorithms, transformations need to be applied to the correct document context @2009-sun-ot-context-undo.
+This means the control algorithms need to properly handle this and transformation functions potentially need to uphold specific properties @2009-sun-ot-context-undo.
 
 When part of a text is moved and concurrently part of that text is edited it would make sense that these edits are correctly preserved.
 As normal copy and paste does not track this state this needs a special operation or needs to store the necessary metadata in the clipboard.
-Also, this needs support at the #gls("crdt") level #cite(
-  <2022-anjana-move>,
-);#cite(<2023-kleppmann-json-move>);.
+Also, this needs support at the crdt level @2022-anjana-move@2023-kleppmann-json-move.
 
 Instead of operating on a character level it could make sense to operate on a string level.
 This would be more efficient and could have better semantics for range deletions, copy and paste or moving text.
-For ot this seems to often be done but is much more complicated, especially in combination with undo #cite(
-  <2024-sun-ot-faq>,
-);.
+For ot this seems to often be done but is much more complicated, especially in combination with undo @2024-sun-ot-faq.
 
 While we did not look at this in this thesis, it is not hard to serialize and deserialize our representation.
 It may be interesting to find out which parts of the data structures, that are only needed to improve lookup performance, should be persisted to storage and which parts can be quickly rebuilt on loading.
@@ -107,14 +86,115 @@ It may be interesting to find out which parts of the data structures, that are o
 While in some cases the full editing history needs to be kept to be able to attribute all changes, in other cases it can be reduced as much as possible without causing causality problems.
 The approach of the antimatter#footnote[#link(
   "https://web.archive.org/web/20240623153539/https://braid.org/antimatter",
-);] algorithm is to combine operations that have been seen by the same group of peers by tracking acknowledgements.
+)] algorithm is to combine operations that have been seen by the same group of peers by tracking acknowledgements.
 In case peers go offline but come online at some point later it can potentially still combine operations.
 
 Our current performance measurements only test non-concurrent actions.
 It may be beneficial to either find or create some real-world editing trace with concurrent actions or generate some artificial trace like in YATA @2016-yata-yjs[Section 6.1].
 
 The memory usage per character is pretty high, even for the real world benchmark.
-Except for using a low-level language it could also make sense to investigate how to only create the cache for the leftmost and rightmost descendant if they are deeply nested which based on would likely save large amounts of memory.
+Except for using a low-level language it could also make sense to investigate how to only create the cache for the leftmost and rightmost descendant if they are deeply nested which based on @sec:memory-results would likely save large amounts of memory.
 
 When the data is larger than the available memory, our algorithm currently can only be used with swapping.
 Future work could look into alternatives, for example to store currently not edited parts to disk.
+
+#block[
+  #block[
+    Anjana, Parwat Singh, Adithya Rajesh Chandrassery, and Sathya Peri.
+    \2022.
+    “An Efficient Approach to Move Elements in a Distributed Geo-Replicated Tree.”
+    In #emph[IEEE 15th International Conference on Cloud Computing, CLOUD 2022, Barcelona, Spain, July 10-16, 2022], edited by Claudio Agostino Ardagna, Nimanthi L.
+    Atukorala, Rajkumar Buyya, et al.
+    IEEE.
+    #link("https://doi.org/10.1109/CLOUD55607.2022.00071").
+
+  ] <ref-2022-anjana-move>
+  #block[
+    Da, Liangrun, and Martin Kleppmann. 2023.
+    “Extending JSON CRDT with Move Operations.”
+    #emph[CoRR] abs/2311.14007.
+    #link("https://doi.org/10.48550/ARXIV.2311.14007").
+
+  ] <ref-2023-kleppmann-json-move>
+  #block[
+    Litt, Geoffrey, Sarah Lim, Martin Kleppmann, and Peter van Hardenberg.
+    \2022.
+    “Peritext: A CRDT for Collaborative Rich Text Editing.”
+    #emph[Proc.
+      ACM Hum.
+      Comput.
+      Interact.] 6 (CSCW2): 1--36.
+    #link("https://doi.org/10.1145/3555644").
+
+  ] <ref-2022-litt-peritext>
+  #block[
+    Nicolaescu, Petru, Kevin Jahns, Michael Derntl, and Ralf Klamma. 2016.
+    “Near Real-Time Peer-to-Peer Shared Editing on Extensible Data Types.”
+    #emph[Proceedings of the 19th International Conference on Supporting Group Work, Sanibel Island, FL, USA, November 13 - 16, 2016], 39--49.
+    #link("https://doi.org/10.1145/2957276.2957310").
+
+  ] <ref-2016-yata-yjs>
+  #block[
+    Sun, David, and Chengzheng Sun. 2009.
+    “Context-Based Operational Transformation in Distributed Collaborative Editing Systems.”
+    #emph[IEEE Trans.
+      Parallel Distributed Syst.] 20 (10): 1454--70.
+    #link("https://doi.org/10.1109/TPDS.2008.240").
+
+  ] <ref-2009-sun-ot-context-undo>
+  #block[
+    Sun, Dr.
+    Chengzheng. 2023a.
+    “A Critical Examination of ‘the Fugue Paper' in Relation to OT.”
+    #link(
+      "https://web.archive.org/web/20240603141053/https://medium.com/codox/a-critical-examination-of-the-fugue-paper-in-relation-to-ot-157f6ccaed95",
+    ).
+
+  ] <ref-2023-sun-critical-examination-fugue-ot>
+  #block[
+    Sun, Dr.
+    Chengzheng. 2023b.
+    “Dispelling Misconceptions in the Fugue Paper about GOT and OT.”
+    #link(
+      "https://web.archive.org/web/20240603143419/https://medium.com/codox/dispelling-misconceptions-in-the-fugue-paper-about-got-and-ot-16e362609f6f",
+    ).
+
+  ] <ref-2023-sun-critical-examination-fugue-ot-3>
+  #block[
+    Sun, Dr.
+    Chengzheng. 2023c.
+    “Unveiling Issues with the Fugue Paper Regarding Jupiter-OT.”
+    #link(
+      "https://web.archive.org/web/20240603142535/https://medium.com/codox/unveiling-issues-with-the-fugue-paper-regarding-jupiter-ot-72565337b923",
+    ).
+
+  ] <ref-2023-sun-critical-examination-fugue-ot-2>
+  #block[
+    Sun, Dr.
+    Chengzheng. 2023d.
+    “What's Wrong with the Fugue Paper about adOPTed and OT?”
+    #link(
+      "https://web.archive.org/web/20240603141850/https://medium.com/codox/whats-wrong-with-the-fugue-paper-about-adopted-and-ot-9e74ffa0f828",
+    ).
+
+  ] <ref-2023-sun-critical-examination-fugue-ot-1>
+  #block[
+    Sun, Dr.
+    Chengzheng. 2024.
+    “Operational Transformation Frequently Asked Questions and Answers.”
+    #link(
+      "https://web.archive.org/web/20240603145105/https://www3.ntu.edu.sg/scse/staff/czsun/projects/otfaq/",
+    ).
+
+  ] <ref-2024-sun-ot-faq>
+  #block[
+    Weidner, Matthew, Joseph Gentle, and Martin Kleppmann. 2023.
+    “The Art of the Fugue: Minimizing Interleaving in Collaborative Text Editing.”
+    #emph[CoRR] abs/2305.00583.
+    #link("https://doi.org/10.48550/ARXIV.2305.00583").
+
+  ] <ref-2023-weidner-minimizing-interleaving>
+] <refs>
+
+
+#bibliography("latex/literature.bib")
