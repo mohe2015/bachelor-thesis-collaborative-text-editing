@@ -1,0 +1,110 @@
+-- https://github.com/jgm/pandoc/releases/download/3.11/pandoc-3.11-1-amd64.deb
+if PANDOC_VERSION < pandoc.types.Version '3.11' then
+  error('Pandoc 3.11 or higher is required (found ' .. tostring(PANDOC_VERSION) .. ')')
+end
+
+-- Pandoc 3.x Lua filter and custom Typst writer for the accompanying reader.
+-- Input classes: Figure.marginfigure; Span.sidenote / Span.marginnote
+-- wrapping exactly one Note. Requires haobook in the Typst document scope.
+
+local function transform(doc, opts)
+  -- Validate before rendering any fragments: otherwise unsupported TeX in a
+  -- note or caption could disappear inside a generated raw Typst element.
+  local function reject_raw_tex(raw)
+    if raw.format == 'latex' or raw.format == 'tex' then
+      error('Unhandled raw LaTeX (' .. raw.t .. '):\n' .. raw.text, 0)
+    end
+  end
+  doc:walk { RawInline = reject_raw_tex, RawBlock = reject_raw_tex }
+
+  -- Use fresh options so a standalone template is never applied to fragments.
+  local fragment_opts = pandoc.WriterOptions {
+    columns = opts.columns,
+    wrap_text = opts.wrap_text,
+    dpi = opts.dpi,
+    identifier_prefix = opts.identifier_prefix,
+  }
+
+  local function render(blocks)
+    return pandoc.write(pandoc.Pandoc(blocks), 'typst', fragment_opts)
+      :gsub('%s+$', '')
+  end
+
+  local function indent(text)
+    return '  ' .. text:gsub('\n', '\n  ')
+  end
+
+  -- Convert layout markers before rendering notes or figure fragments,
+  -- and map the LaTeX project's images/ directory to the Typst assets directory.
+  doc = doc:walk {
+    Span = function(span)
+      if #span.content == 0 and span.classes:includes('pagebreak') then
+        return pandoc.RawInline('typst', '#pagebreak()')
+      end
+    end,
+    Div = function(div)
+      if #div.content == 0 and div.classes:includes('pagebreak') then
+        return pandoc.RawBlock('typst', '#pagebreak()')
+      end
+    end,
+    Image = function(img)
+      if img.src:match('^images/') then
+        img.src = '/src/assets/' .. img.src:sub(8)
+        return img
+      end
+    end
+  }
+
+  doc = doc:walk {
+    Span = function(span)
+      local command
+      if span.classes:includes('marginnote') then
+        command = 'margin-note'
+      elseif span.classes:includes('sidenote') then
+        command = 'side-note'
+      else
+        return
+      end
+      if #span.content ~= 1 or span.content[1].t ~= 'Note' then
+        error(command .. ' requires a Span containing exactly one Note')
+      end
+      return pandoc.RawInline('typst',
+        '#haobook.' .. command .. '[' .. render(span.content[1].content) .. ']')
+    end,
+
+    Figure = function(fig)
+      if not fig.classes:includes('marginfigure') then return end
+
+      local label_argument = ''
+      if fig.identifier ~= '' then
+        -- Construct the label programmatically using any prefix in options
+        local label_id = (opts.identifier_prefix or '') .. fig.identifier
+        label_argument = '  label: <' .. label_id .. '>,\n'
+        -- Clear identifier so Pandoc renders the figure without a trailing label
+        fig.identifier = ''
+      end
+
+      local rendered = render({ fig })
+
+      -- In a function argument, figure(...) is already in code mode.
+      assert(rendered:match('^#figure%('), 'Unexpected Typst figure output')
+      return pandoc.RawBlock('typst',
+        '#haobook.side-figure(\n' .. indent(rendered:sub(2)) .. ',\n'
+          .. label_argument .. ')')
+    end
+  }
+
+  return doc
+end
+
+-- Entry point when used with --lua-filter haobook.lua -t typst.
+function Pandoc(doc)
+  return transform(doc, PANDOC_WRITER_OPTIONS)
+end
+
+-- Entry point when used with -t haobook.lua.
+function Writer(doc, opts)
+  return pandoc.write(transform(doc, opts), 'typst', opts)
+end
+
+Template = pandoc.template.default('typst')
