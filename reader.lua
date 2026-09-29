@@ -24,6 +24,9 @@ local definitions = [=[
 
 \newcommand{\labsec}[1]{\label{#1}}
 \newcommand{\labfig}[1]{\label{#1}}
+\newcommand{\Cref}[1]{\ref{#1}}
+\newcommand{\Citeauthor}[1]{\cite{#1}}
+\newcommand{\footref}[1]{\ref{#1}}
 \newcommand{\index}[1]{}
 \newcommand{\setchapterpreamble}[2][]{}
 \newcommand{\pagebreak}{\pandocpagebreak{}}
@@ -40,6 +43,7 @@ local definitions = [=[
 \newcommand{\bgroup}{}
 \newcommand{\egroup}{}
 \newcommand{\KOMAoptions}{}
+\newcommand{\protect}{}
 \newcommand{\mbox}[1]{\par #1}
 \newcommand{\S}{\text{§}}
 \newenvironment{flushright}{}{}
@@ -65,8 +69,7 @@ function Reader(input, opts)
           return pandoc.Span({}, pandoc.Attr('', { 'pagebreak' }))
         end
 
-        local target = raw.text:match('^\\autoref%s*%{([^}]+)%}')
-                    or raw.text:match('^\\ref%s*%{([^}]+)%}')
+        local target = raw.text:match('^\\ref%s*%{([^}]+)%}')
         if target then
           local citation = pandoc.Citation(target, 'NormalCitation')
           return pandoc.Cite({ pandoc.Str('@' .. target) }, { citation })
