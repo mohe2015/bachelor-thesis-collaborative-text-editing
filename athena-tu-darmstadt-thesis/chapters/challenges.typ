@@ -1,8 +1,4 @@
 #import "../utils.typ": gls, glspl
-
-
-
-
 = Challenges with Collaborative Text Editing
 <chapter:challenges>
 This chapter first introduces the goal of user intent-preservation by showing the problem of text interleaving in @section:challenges-text-interleaving.

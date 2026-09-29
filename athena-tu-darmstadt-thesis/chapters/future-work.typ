@@ -1,8 +1,4 @@
 #import "../utils.typ": gls, glspl
-
-
-
-
 = Future Work
 <chapter:future-work>
 In this chapter we look at what is missing and which aspects could be researched further.

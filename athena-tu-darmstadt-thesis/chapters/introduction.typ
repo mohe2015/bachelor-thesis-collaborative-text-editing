@@ -1,8 +1,4 @@
 #import "../utils.typ": gls, glspl
-
-
-
-
 = Introduction
 <introduction>
 Nearly all applications require text editing in some form --- even if just for text entry into a form element.

@@ -1,8 +1,4 @@
 #import "../utils.typ": gls, glspl
-
-
-
-
 = Fugue Algorithm
 <chapter:background>
 This chapter explains how the Fugue algorithm works and is heavily based on the Fugue paper @2023-weidner-minimizing-interleaving.

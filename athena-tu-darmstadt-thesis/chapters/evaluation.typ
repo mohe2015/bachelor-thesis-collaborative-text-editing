@@ -1,8 +1,4 @@
 #import "../utils.typ": gls, glspl
-
-
-
-
 toc#pagebreak()
 
 = Evaluation
