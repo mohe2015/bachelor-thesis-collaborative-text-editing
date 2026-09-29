@@ -90,7 +90,7 @@ The property tests run using ScalaCheck#footnote[#link(
     "https://github.com/typelevel/scalacheck/blob/main/core/shared/src/main/scala/org/scalacheck/commands/Commands.scala",
   )].
 ScalaCheck `Commands` store a system under test and a state that is compared to the system under test.
-Possible actions are defined by implementing the `Command`@footnote:commands trait.
+Possible actions are defined by implementing the `Command` trait.
 The trait has several methods for pre conditions, post conditions, running the action and calculating the next state.
 ScalaCheck generates `Command`s and their contents using Generators, e.g. `Gen.chooseNum(0, Int.MaxValue)` which are then run by ScalaCheck against the system under test and if failures occur it tries to simplify the failure case.
 

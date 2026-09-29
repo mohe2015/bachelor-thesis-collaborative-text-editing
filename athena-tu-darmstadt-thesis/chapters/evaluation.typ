@@ -17,7 +17,7 @@ We use the JMH support for async-profiler#footnote[​<footnote:async-profiler>#
 )] which can lead to bias in the profiler results.
 Additionally, its allocation profiling does not influence Escape Analysis#footnote[#link(
   "https://blogs.oracle.com/javamagazine/post/escape-analysis-in-the-hotspot-jit-compiler",
-)] or prevent JIT optimizations like allocation elimination and therefore measures only actual heap allocations@footnote:async-profiler.
+)] or prevent JIT optimizations like allocation elimination and therefore measures only actual heap allocations.
 
 The Scala.js output was not considered in the analysis given the inherent challenges arising from the additional layer of indirection created by the transpilation from Scala to JavaScript.
 This indirection likely affects performance and complicates optimization efforts because they potentially only affect the transpiled version rather than the original.

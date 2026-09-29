@@ -28,7 +28,7 @@ local definitions = [=[
 
 \def\Citeauthor*#1{\cite{#1}}
 
-\newcommand{\footref}[1]{\ref{#1}}
+\newcommand{\footref}[1]{}
 \newcommand{\index}[1]{}
 \newcommand{\setchapterpreamble}[2][]{}
 \newcommand{\pagebreak}{\pandocpagebreak{}}
