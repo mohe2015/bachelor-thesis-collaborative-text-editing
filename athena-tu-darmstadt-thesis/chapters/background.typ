@@ -164,30 +164,3 @@ The intuitive reason this avoids interleaving in these cases is that merging con
 Another reason is that Fugue prefers linking nodes to their left origin because of forward insertions and if there are already existing nodes it links to the right origin instead to avoid ambiguity.
 @fig:fugue-shopping shows that this also keeps parts that were inserted together in one subtree.
 Note that consecutive right children are combined here to make the figure more readable.
-
-#block[
-  #block[
-    Birman, Kenneth, André Schiper, and Pat Stephenson. 1991.
-    “Lightweight Causal and Atomic Group Multicast.”
-    #emph[ACM Trans.
-      Comput.
-      Syst.] (New York, NY, USA) 9 (3): 272--314.
-    #link("https://doi.org/10.1145/128738.128742").
-
-  ] <ref-1991-birman-causal-multicast>
-  #block[
-    Tanenbaum, Andrew S. 2013.
-    “Distributed Systems: Pearson New International Edition : Principles and Paradigms.” 2.
-    Auflage.
-    Harlow.
-    #link("https://elibrary.pearson.de/book/99.150005/9781292038001").
-
-  ] <ref-2013-tanenbaum-distributed>
-  #block[
-    Weidner, Matthew, Joseph Gentle, and Martin Kleppmann. 2023.
-    “The Art of the Fugue: Minimizing Interleaving in Collaborative Text Editing.”
-    #emph[CoRR] abs/2305.00583.
-    #link("https://doi.org/10.48550/ARXIV.2305.00583").
-
-  ] <ref-2023-weidner-minimizing-interleaving>
-] <refs>

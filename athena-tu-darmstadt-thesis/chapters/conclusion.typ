@@ -18,13 +18,3 @@ The interaction of rich text and being able to undo arbitrary actions likely als
 
 While testing whether the algorithm converges is comparably simple, testing intent preservation and non-interleaving without reimplementing the algorithm in the test is challenging.
 As testing is a critical part to ensure correctness, more focus needs to be put on testing text editing algorithms.
-
-#block[
-  #block[
-    Weidner, Matthew, Joseph Gentle, and Martin Kleppmann. 2023.
-    “The Art of the Fugue: Minimizing Interleaving in Collaborative Text Editing.”
-    #emph[CoRR] abs/2305.00583.
-    #link("https://doi.org/10.48550/ARXIV.2305.00583").
-
-  ] <ref-2023-weidner-minimizing-interleaving>
-] <refs>

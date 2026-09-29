@@ -691,13 +691,3 @@ The fields that are from the batching node data structure shown in @lst:data-str
 For the look-up tree optimization, the `leftDescCache` and `rightDescCache` store an AVL tree for quickly retrieving the respective descendant.
 The `leftChildrenBuffer` and `rightChildrenBuffer` use a `SortedSet` to insert nodes in $log\(n\)$ and have an optimization for single or no children to save memory.
 They also store the children in an `AVLTreeNode` for the fast node retrieval using an AVL tree.
-
-#block[
-  #block[
-    Weidner, Matthew, Joseph Gentle, and Martin Kleppmann. 2023.
-    “The Art of the Fugue: Minimizing Interleaving in Collaborative Text Editing.”
-    #emph[CoRR] abs/2305.00583.
-    #link("https://doi.org/10.48550/ARXIV.2305.00583").
-
-  ] <ref-2023-weidner-minimizing-interleaving>
-] <refs>

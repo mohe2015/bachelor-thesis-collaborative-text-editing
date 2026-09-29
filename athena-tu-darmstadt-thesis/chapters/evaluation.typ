@@ -165,13 +165,3 @@ First, they do not give any indication about asymptotic behavior as they are onl
 Optimizing asymptotic behavior is much harder in general than achieving acceptable performance for the common choice of $N = 6000$ on modern CPUs with multiple billion instruction cycles per second.
 Also, they do not use a trusted benchmark framework but use self-written warmup and benchmark code which is likely affecting the accuracy of the benchmark as they run in the context of a JIT compiler similar to the JVM.
 The JMH framework is designed to have as accurate results as possible.
-
-#block[
-  #block[
-    Weidner, Matthew, Joseph Gentle, and Martin Kleppmann. 2023.
-    “The Art of the Fugue: Minimizing Interleaving in Collaborative Text Editing.”
-    #emph[CoRR] abs/2305.00583.
-    #link("https://doi.org/10.48550/ARXIV.2305.00583").
-
-  ] <ref-2023-weidner-minimizing-interleaving>
-] <refs>

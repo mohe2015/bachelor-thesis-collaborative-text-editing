@@ -128,25 +128,3 @@ Lastly, the node after `leftOrigin` in line 24 @2023-weidner-minimizing-interlea
 The leftmost descendant is the node that is reached by repeatedly descending into the leftmost child until there are no left children.
 This is logical as the next node must be in the right subtree and there the first node is the leftmost node.
 Depending on the implementation that may be faster or easier.
-
-#block[
-  #block[
-    Fidge, Colin J. 1988.
-    “Timestamps in Message-Passing Systems That Preserve the Partial Ordering.”
-    Department of Computer Science, Australian National University, Canberra, A CT.
-
-  ] <ref-1988-fidge-vector-clock>
-  #block[
-    Mattern, Friedemann. 1988.
-    “Virtual Time and Global States of Distributed Systems.”
-    Department of Computer Science, University of Kaiserslautern.
-
-  ] <ref-1988-mattern-vector-clock>
-  #block[
-    Weidner, Matthew, Joseph Gentle, and Martin Kleppmann. 2023.
-    “The Art of the Fugue: Minimizing Interleaving in Collaborative Text Editing.”
-    #emph[CoRR] abs/2305.00583.
-    #link("https://doi.org/10.48550/ARXIV.2305.00583").
-
-  ] <ref-2023-weidner-minimizing-interleaving>
-] <refs>
