@@ -47,6 +47,60 @@ local definitions = [=[
 \newcommand{\mbox}[1]{\par #1}
 \newcommand{\S}{\text{§}}
 \newenvironment{flushright}{}{}
+
+\newcommand{\twoMinipageFigures}[4]{
+    \begin{figure}
+        \begin{minipage}[t]{.4875\textwidth}
+            \includegraphics[scale=\thelastscalefactor,valign=t]{#1}
+            #2
+        \end{minipage}
+        \begin{minipage}[t]{.4875\textwidth}
+            \includegraphics[scale=\thelastscalefactor,valign=t]{#3}
+            #4
+        \end{minipage}
+    \end{figure}
+}
+
+\newcommand{\twoSubfigures}[4]{
+      \begin{subfigure}{.5\textwidth}
+          \sbox0{\includegraphics[max width=\textwidth,valign=t]{#1}}
+          \includegraphics[scale=\thelastscalefactor,valign=t]{#1}
+          #2
+      \end{subfigure}%
+      \begin{subfigure}{.5\textwidth}
+          \includegraphics[scale=\thelastscalefactor,valign=t]{#3}
+          \vphantom{\includegraphics[scale=\thelastscalefactor,valign=t]{#1}}
+          #4
+      \end{subfigure}
+}
+
+\newcommand{\benchmarkResults}[2]{
+    \begin{figure}
+        \begin{subfigure}{.5\textwidth}
+            \includegraphics[width=\textwidth]{../text-rdt/jvm/figure-benchmark-results/#1.pdf}
+            \caption{time}
+            \label{fig:#1-time}
+        \end{subfigure}%
+        \begin{subfigure}{.5\textwidth}
+            \includegraphics[width=\textwidth]{../text-rdt/jvm/figure-benchmark-results/#1-memory.pdf}
+            \caption{memory}
+            \label{fig:#1-memory}
+        \end{subfigure}
+        \caption{#2}
+        \label{fig:#1}
+    \end{figure}
+}
+
+\newcommand{\evilEdgeCase}[2]{
+    \begin{figure}
+        \twoSubfigures{../text-rdt/target/pdfs/#1-before.pdf}{\caption{before}
+            \label{fig:edge-case-#1-before}}{../text-rdt/target/pdfs/#1-after.pdf}{\caption{after}
+            \label{fig:edge-case-#1-after}}
+        \caption{Example for #2}
+        \label{fig:edge-case-#1-example}
+    \end{figure}
+}
+
 ]=]
 
 local function marker_text(block)
