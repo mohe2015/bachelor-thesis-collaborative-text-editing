@@ -1,4 +1,4 @@
-#import "../utils.typ": gls, glspl
+#import "../utils.typ": evil-edge-case, gls, glspl
 = Optimizing Common Edit Operations
 <optimization>
 Based on a theoretical understanding of our base implementation developed from the algorithmic description in the Fugue paper @2023-weidner-minimizing-interleaving[Algorithm~1] we expect quadratic runtime complexity and linear memory usage in relation to the text length.

@@ -17,7 +17,7 @@
   caption: caption
 )
 
-#let evilEdgeCase(name, caption) = figure(
+#let evil-edge-case(name, caption) = figure(
   {
     set figure(supplement: [])
     show figure.caption: it => [

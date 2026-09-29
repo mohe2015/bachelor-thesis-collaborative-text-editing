@@ -1,4 +1,4 @@
-#import "../utils.typ": gls, glspl
+#import "../utils.typ": evil-edge-case, gls, glspl
 toc#pagebreak()
 
 = Evaluation

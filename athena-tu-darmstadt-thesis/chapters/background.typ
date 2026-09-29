@@ -1,4 +1,4 @@
-#import "../utils.typ": gls, glspl
+#import "../utils.typ": evil-edge-case, gls, glspl
 = Fugue Algorithm
 <chapter:background>
 This chapter explains how the Fugue algorithm works and is heavily based on the Fugue paper @2023-weidner-minimizing-interleaving.
@@ -31,17 +31,17 @@ Then the second right child is traversed in the same way and produces `" grow"`
 Combining all that will therefore produce the text `"small trees grow"`.
 
 #pagebreak()
-#figure(image("../text-rdt/target/pdfs/traversal-example.pdf"), caption: [
+#figure(image("/result/traversal-example.pdf"), caption: [
   Fugue tree traversal
 ])
 <fig:fugue-traversal>
 
-#figure(image("../text-rdt/target/pdfs/empty.pdf"), caption: [
+#figure(image("/result/empty.pdf"), caption: [
   Fugue tree with root node
 ])
 <fig:fugue-root-node>
 
-#figure(image("../text-rdt/target/pdfs/root-right-a.pdf"), caption: [
+#figure(image("/result/root-right-a.pdf"), caption: [
   Insertion of `"a"` into Fugue tree at index $0$
 ])
 <fig:fugue-right-a>
@@ -58,12 +58,12 @@ The chosen operations are insertion and deletion based on an index into the text
 The reason for choosing that interface is that text editors conform to it.
 All indices are zero based, so the element at index $0$ is the first element.
 
-#figure(image("../text-rdt/target/pdfs/root-right-ac.pdf"), caption: [
+#figure(image("/result/root-right-ac.pdf"), caption: [
   Insertion of `"c"` into Fugue tree at index $1$
 ])
 <fig:fugue-right-ac>
 
-#figure(image("../text-rdt/target/pdfs/root-right-ac-left-b.pdf"), caption: [
+#figure(image("/result/root-right-ac-left-b.pdf"), caption: [
   Insertion of `"b"` into Fugue tree at index $1$
 ])
 <fig:fugue-right-ac-left-b>
@@ -90,22 +90,22 @@ The right origin is the next node (visible or not) in the tree traversal after t
 This right origin can not already have left children as otherwise one of them would be the right origin as they come earlier in the tree traversal.
 Starting with the previous tree, @fig:fugue-right-ac-left-b shows an insertion at index $1$.
 
-#figure(image("../text-rdt/target/pdfs/concurrent-insert-a.pdf"), caption: [
+#figure(image("/result/concurrent-insert-a.pdf"), caption: [
   Fugue tree with text insertion at replica A
 ])
 <fig:fugue-concurrent-insert-a>
 
-#figure(image("../text-rdt/target/pdfs/concurrent-insert-b.pdf"), caption: [
+#figure(image("/result/concurrent-insert-b.pdf"), caption: [
   Fugue tree with text insertion at replica B
 ])
 <fig:fugue-concurrent-insert-b>
 
-#figure(image("../text-rdt/target/pdfs/concurrent-insert-both.pdf"), caption: [
+#figure(image("/result/concurrent-insert-both.pdf"), caption: [
   Fugue tree with concurrent insertions after synchronization between replica A and replica B
 ])
 <fig:fugue-concurrent-insert-both>
 
-#figure(image("../text-rdt/target/pdfs/delete.pdf"), caption: [
+#figure(image("/result/delete.pdf"), caption: [
   Fugue tree with deletions
 ])
 <fig:fugue-delete>
@@ -126,20 +126,17 @@ As there is no choice that is inherently better, it is just important that all c
 The node to delete, which is calculated from the index in the tree traversal of visible nodes, is simply marked as deleted.
 If it already was deleted by a concurrent user, the operation does nothing.
 
-#figure(image("../text-rdt/target/pdfs/sequential-inserts.pdf"), caption: [
+#figure(image("/result/sequential-inserts.pdf"), caption: [
   Fugue tree with sequential insertions
 ])
 <fig:fugue-sequential-inserts>
 
-#figure(
-  image("../text-rdt/target/pdfs/reverse-sequential-inserts.pdf"),
-  caption: [
-    Fugue tree with reverse sequential insertions
-  ],
-)
+#figure(image("/result/reverse-sequential-inserts.pdf"), caption: [
+  Fugue tree with reverse sequential insertions
+])
 <fig:fugue-reverse-sequential-inserts>
 
-#figure(image("../text-rdt/target/pdfs/shopping.pdf"), caption: [
+#figure(image("/result/shopping.pdf"), caption: [
   Fugue tree for shopping example
 ])
 <fig:fugue-shopping>
