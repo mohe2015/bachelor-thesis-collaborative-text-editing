@@ -32,6 +32,3 @@ As testing is a critical part to ensure correctness, more focus needs to be put 
 
   ] <ref-2023-weidner-minimizing-interleaving>
 ] <refs>
-
-
-#bibliography("latex/literature.bib")

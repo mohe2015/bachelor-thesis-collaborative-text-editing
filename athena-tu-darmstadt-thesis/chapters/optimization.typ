@@ -705,6 +705,3 @@ They also store the children in an `AVLTreeNode` for the fast node retrieval usi
 
   ] <ref-2023-weidner-minimizing-interleaving>
 ] <refs>
-
-
-#bibliography("latex/literature.bib")

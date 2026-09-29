@@ -195,6 +195,3 @@ Note that consecutive right children are combined here to make the figure more r
 
   ] <ref-2023-weidner-minimizing-interleaving>
 ] <refs>
-
-
-#bibliography("latex/literature.bib")

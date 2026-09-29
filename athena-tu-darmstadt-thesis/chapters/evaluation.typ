@@ -179,6 +179,3 @@ The JMH framework is designed to have as accurate results as possible.
 
   ] <ref-2023-weidner-minimizing-interleaving>
 ] <refs>
-
-
-#bibliography("latex/literature.bib")

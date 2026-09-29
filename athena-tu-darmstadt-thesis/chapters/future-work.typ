@@ -195,6 +195,3 @@ Future work could look into alternatives, for example to store currently not edi
 
   ] <ref-2023-weidner-minimizing-interleaving>
 ] <refs>
-
-
-#bibliography("latex/literature.bib")

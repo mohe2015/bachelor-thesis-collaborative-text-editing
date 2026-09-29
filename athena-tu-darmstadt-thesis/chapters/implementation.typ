@@ -154,6 +154,3 @@ Depending on the implementation that may be faster or easier.
 
   ] <ref-2023-weidner-minimizing-interleaving>
 ] <refs>
-
-
-#bibliography("latex/literature.bib")

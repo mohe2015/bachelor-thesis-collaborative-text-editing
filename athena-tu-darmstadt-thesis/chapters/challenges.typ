@@ -302,6 +302,3 @@ While crdts often seem to be simple and easy to understand, the fundamental conc
 
   ] <ref-2009-weiss-logoot>
 ] <refs>
-
-
-#bibliography("latex/literature.bib")

@@ -151,6 +151,3 @@ Finally, @chapter:future-work shows future work such as rich text editing, and @
 
   ] <ref-2009-weiss-logoot>
 ] <refs>
-
-
-#bibliography("latex/literature.bib")

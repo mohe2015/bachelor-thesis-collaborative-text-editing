@@ -14,5 +14,3 @@ Our optimized algorithm can handle character insertion and deletion in logarithm
 It uses 25 bytes and one microsecond per operation on four Intel Xeon Gold vCPUs for a representative text with 25 million operations.
 We also develop a local web application as a proof of concept for working on plain text collaboratively using WebRTC.
 Additionally, we show that the maximally non-interleaving property in the Fugue paper can exhibit interleaving when deletions are involved.
-
-#bibliography("latex/literature.bib")
