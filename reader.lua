@@ -50,6 +50,8 @@ local definitions = [=[
 \newenvironment{flushright}{}{}
 \newenvironment{listing}{}{}
 
+\renewenvironment{abstract}[1][]{}{}
+
 \newcommand{\addtocontents}{}
 
 \newcommand{\twoMinipageFigures}[4]{
