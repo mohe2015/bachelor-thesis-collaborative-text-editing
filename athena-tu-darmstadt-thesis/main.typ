@@ -56,11 +56,6 @@
 
 #set figure(placement: top)
 
-= THIS IS AN INCOMPLETE TYPST CONVERSION OF MY THESIS
-
-My actual thesis is published at https://doi.org/10.26083/tuprints-00027834.
-Some parts have been lost in the conversion using pandoc and I did not put in the effort to fix this manually. This is only as a proof of concept and not for actually reading my thesis.
-
 #include "chapters/introduction.typ"
 #include "chapters/challenges.typ"
 #include "chapters/background.typ"
