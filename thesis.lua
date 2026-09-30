@@ -63,6 +63,10 @@ local function transform(doc, opts)
     return '  ' .. text:gsub('\n', '\n  ')
   end
 
+  local custom_colors = {
+    mygreen = 'rgb(38, 162, 105)',
+  }
+
   -- Convert layout markers before rendering notes or figure fragments,
   -- and map the LaTeX project's images/ directory to the Typst assets directory.
   doc = doc:walk {
@@ -86,6 +90,22 @@ local function transform(doc, opts)
         end
 
         return pandoc.RawInline('typst', '@' .. label .. suffix)
+      end
+
+      local style = span.attributes['style']
+      if style then
+        -- wrap in ';' so `background-color` is not matched by accident
+        local name = (';' .. style .. ';'):match(';%s*color%s*:%s*(%a+)%s*;')
+        if name then
+          name = name:lower()
+          local fill = custom_colors[name] or name
+          local out = pandoc.List{
+            pandoc.RawInline('typst', '#text(fill: ' .. fill .. ')[')
+          }
+          out:extend(span.content)
+          out:insert(pandoc.RawInline('typst', ']'))
+          return out
+        end
       end
     end,
     Div = function(div)

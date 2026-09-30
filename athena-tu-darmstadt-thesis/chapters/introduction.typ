@@ -25,26 +25,26 @@ For example, @p2p networks work without a central server.
 Furthermore, @manet:pl and @dtn:pl do not require public communication infrastructure at all but instead can utilize Wi-Fi, Bluetooth and other short-range communication technology.
 
 In a decentralized setting there is no guarantee that peers are frequently online.
-Therefore, the ability to handle #emph[non-realtime] editing with potentially long periods of offline activity is #linebreak(justify: true) essential.
+Therefore, the ability to handle #emph[non-realtime] editing with potentially long periods of offline activity is essential.
 This combination of offline and decentralized software is often called local-first software @2019-kleppmann-local-first.
 
 The two major ways in research to approach collaborative text editing are @ot and @crdt:pl @2019-sun-difference-ot-crdt-1-general-transformation-framework[page 2].
 @ot algorithms store edit operations based on the text position and therefore need to transform concurrent edit operations against each other to correct the text positions.
 Then, the algorithms apply the operations directly to the text.
 Prior algorithms for @ot are, for example, COT @2009-sun-ot-context-undo and Jupiter @1995-nichols-jupiter.
-While some of these are #emph[not] able to work in a decentralized network but need a central server to order changes like Jupiter @1995-nichols-jupiter, a #linebreak(justify: true) lot of them #emph[are] able to work in a decentralized network like COT @2009-sun-ot-context-undo~@2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 4].
+While some of these are #emph[not] able to work in a decentralized network but need a central server to order changes like Jupiter @1995-nichols-jupiter, a lot of them #emph[are] able to work in a decentralized network like COT @2009-sun-ot-context-undo @2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 4].
 Prior @ot algorithms have a runtime complexity per remote operation that is linear in the amount of concurrent edit operations @2019-sun-difference-ot-crdt-2-correctness-complexity[Section 3.1.4].
 This makes them really efficient for #emph[near-realtime] editing where only few concurrent edit operations occur.
 Near-realtime editing means that only short connection interruptions happen @2016-yata-yjs.
 For #emph[non-realtime] text editing this leads to a highly inefficient runtime complexity because the many concurrent edit operations must be transformed against each other @2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 1].
-Therefore, prior @ot algorithms are undesirable for supporting a wide range of network scenarios like #linebreak(justify: true) @dtn:pl.
+Therefore, prior @ot algorithms are undesirable for supporting a wide range of network scenarios like @dtn:pl.
 
 In contrast, @crdt:pl associate parts of the text with identifiers and merge these together on synchronization.
 Therefore, they need to convert between identifiers and text positions to handle text edit operations.
 Prior algorithms for @crdt:pl are, for example, @woot @2006-oster-woot, Logoot @2009-weiss-logoot, @rga:pl @2011-roh-rga and Fugue @2023-weidner-minimizing-interleaving.
 @crdt:pl work in decentralized networks, but each prior algorithm has shortcomings that make it undesirable for a general solution.
 For example, Logoot @2009-weiss-logoot has quadratic memory use in some cases.
-Also, for handling text of some length their runtime complexity is often quadratic or worse in relation to the text length, as with @woot @2006-oster-woot, @rga @2011-roh-rga and Fugue @2023-weidner-minimizing-interleaving~@2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 5.3].
+Also, for handling text of some length their runtime complexity is often quadratic or worse in relation to the text length, as with @woot @2006-oster-woot, @rga @2011-roh-rga and Fugue @2023-weidner-minimizing-interleaving @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 5.3].
 
 While Fugue @2023-weidner-minimizing-interleaving avoids interleaving issues of prior solutions and works in an offline setting, the current implementation for handling text of some length has quadratic runtime complexity in relation to the text length.
 

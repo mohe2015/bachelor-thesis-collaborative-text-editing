@@ -9,14 +9,36 @@ Finally, @chapter:ot compares @crdt:pl and @ot and shows that the current @crdt:
 <section:challenges-text-interleaving>
 When users write text in a collaborative text editor, they expect that their text is not modified in an unexpected way by concurrent edits from other users.
 One example are insertions at #emph[different] positions.
-Starting with the text `"Alice plays Minecraft"`, Alice changes the text to `"Alice ``happily`` plays Minecraft"`.
-Concurrently, Bob changes the text to `"Alice plays Minecraft ``with Bob``"`.
-Then, the expected result after synchronizing is `"Alice ``happily`` plays Minecraft ``with Bob``"`.
+Starting with the text `"Alice plays Minecraft"`, #text(
+  fill: red,
+)[Alice] changes the text to `"Alice `#text(
+  fill: red,
+)[`happily`]` plays Minecraft"`.
+Concurrently, #text(
+  fill: blue,
+)[Bob] changes the text to `"Alice plays Minecraft `#text(
+  fill: blue,
+)[`with Bob`]`"`.
+Then, the expected result after synchronizing is `"Alice `#text(
+  fill: red,
+)[`happily`]` plays Minecraft `#text(fill: blue)[`with Bob`]`"`.
 As the insertions are at different positions in the text, the expected outcome is unambiguous, and all characters should stay at their relative position to the surrounding characters.
 Users also expect that text they wrote in one go is not interleaved by text that another user wrote concurrently.
 An example with insertions at the #emph[same] position is the following.
-Starting with the text `"milk, chocolate"`, Alice changes the text to `"milk, ``eggs,`` chocolate"` and Bob concurrently changes the text to `"milk, ``bread,`` chocolate"`.
-The expected result after synchronizing is either `"milk, ``eggs,`` ``bread,`` chocolate"` or `"milk, ``bread,`` ``eggs,`` chocolate"`.
+Starting with the text `"milk, chocolate"`, #text(
+  fill: red,
+)[Alice] changes the text to `"milk, `#text(
+  fill: red,
+)[`eggs,`]` chocolate"` and #text(
+  fill: blue,
+)[Bob] concurrently changes the text to `"milk, `#text(
+  fill: blue,
+)[`bread,`]` chocolate"`.
+The expected result after synchronizing is either `"milk, `#text(
+  fill: red,
+)[`eggs,`]` `#text(fill: blue)[`bread,`]` chocolate"` or `"milk, `#text(
+  fill: blue,
+)[`bread,`]` `#text(fill: red)[`eggs,`]` chocolate"`.
 While there are two possibilities in this case, no interleaving occurs in either case.
 
 #figure(
@@ -31,16 +53,54 @@ While there are two possibilities in this case, no interleaving occurs in either
 For an insertion in the middle of a text, current editing behavior does not convey whether the insertion semantically belongs to the left side or the right side.
 Because most text is written in a forward direction, so for left-to-right script from left to right, it is more likely that an insertion in the middle of some text is appending to the left side of the insertion point instead of prepending to the right side of the insertion point.
 @fig:forward-more-important-than-backward exemplifies this.
-The three replicas Alice, Bob and Carol independently add three lists to some text.
-Then, Alice and Carol synchronize.
-Afterwards, Alice adds `"``* Alpacas``"` to her list, such that it comes after `"``Animals:``"` and before `"``Colors:``"` but inherently there is no information to which part it belongs.
-Finally, Alice and Bob synchronize.
-This separates `"``* Alpacas``"` and `"``Colors:``"` by the received `"``Bands:``"`, which may not be wanted.
+The three replicas #text(fill: red)[Alice], #text(fill: blue)[Bob] and #text(
+  fill: rgb(38, 162, 105),
+)[Carol] independently add three lists to some text.
+Then, #text(fill: red)[Alice] and #text(fill: rgb(
+  38,
+  162,
+  105,
+))[Carol] synchronize.
+Afterwards, #text(fill: red)[Alice] adds `"`#text(
+  fill: red,
+)[`* Alpacas`]`"` to her list, such that it comes after `"`#text(
+  fill: red,
+)[`Animals:`]`"` and before `"`#text(fill: rgb(
+  38,
+  162,
+  105,
+))[`Colors:`]`"` but inherently there is no information to which part it belongs.
+Finally, #text(fill: red)[Alice] and #text(fill: blue)[Bob] synchronize.
+This separates `"`#text(fill: red)[`* Alpacas`]`"` and `"`#text(fill: rgb(
+  38,
+  162,
+  105,
+))[`Colors:`]`"` by the received `"`#text(
+  fill: blue,
+)[`Bands:`]`"`, which may not be wanted.
 In this example the assumption of the more common forward insertion is correct though.
 Further improvements to this would need analysis of the language semantics of the text which @2023-bauwens-nlp-for-merging looked into @2023-bauwens-nlp-for-merging.
-For the concrete example, a different idea could be to insert `"``Bands:``"` after `"``Colors:``"` so `"``* Alpacas``"` stays in place in relation to the text preceding and following it.
-Unfortunately this would lead to even more unexpected behavior for example when Bob and Carol synchronized before and would order the entries alphabetically because they do not know about the insertion of `"``* Alpacas``"`.
-As soon as Alice would then synchronize with them, the entries would need to be reordered, so that they converge.
+For the concrete example, a different idea could be to insert `"`#text(
+  fill: blue,
+)[`Bands:`]`"` after `"`#text(fill: rgb(
+  38,
+  162,
+  105,
+))[`Colors:`]`"` so `"`#text(
+  fill: red,
+)[`* Alpacas`]`"` stays in place in relation to the text preceding and following it.
+Unfortunately this would lead to even more unexpected behavior for example when #text(
+  fill: blue,
+)[Bob] and #text(fill: rgb(
+  38,
+  162,
+  105,
+))[Carol] synchronized before and would order the entries alphabetically because they do not know about the insertion of `"`#text(
+  fill: red,
+)[`* Alpacas`]`"`.
+As soon as #text(
+  fill: red,
+)[Alice] would then synchronize with them, the entries would need to be reordered, so that they converge.
 As the synchronized data is not structured like the example may suggest, but instead consists of arbitrary characters, this reordering could result in sentence reordering or other unwanted results.
 Another idea could be to prefer the side by the same replica.
 This has similar issues if concurrent edits are received later and change the effect of that rule.
@@ -61,20 +121,58 @@ Only if both origins are the same, the order is arbitrary but deterministically 
 Therefore, this property creates a unique order aside from tie-breaking @2023-weidner-minimizing-interleaving[Section 4.5].
 
 Fugue refers to an interleaving issue as forward interleaving, when only one character has another character as a left origin, yet the two characters are not consecutive.
-One example where the Logoot algorithm @2009-weiss-logoot interleaved characters, which also violates this rule, is concurrently inserting `"``bread``"` and `"``eggs``"`, producing `"``b``e``r``g``e``g``a``s``d``"` @2019-sun-difference-ot-crdt-2-correctness-complexity[Section 4.4.1].
-For example the `"``r``"` from `"``bread``"` has the `"``b``"` as its left origin and no other character has the `"``b``"` as its left origin but in the result they are not consecutive characters.
+One example where the Logoot algorithm @2009-weiss-logoot interleaved characters, which also violates this rule, is concurrently inserting `"`#text(
+  fill: blue,
+)[`bread`]`"` and `"`#text(fill: red)[`eggs`]`"`, producing `"`#text(
+  fill: blue,
+)[`b`]#text(fill: red)[`e`]#text(fill: blue)[`r`]#text(fill: red)[`g`]#text(
+  fill: blue,
+)[`e`]#text(fill: red)[`g`]#text(fill: blue)[`a`]#text(fill: red)[`s`]#text(
+  fill: blue,
+)[`d`]`"` @2019-sun-difference-ot-crdt-2-correctness-complexity[Section 4.4.1].
+For example the `"`#text(fill: blue)[`r`]`"` from `"`#text(
+  fill: blue,
+)[`bread`]`"` has the `"`#text(
+  fill: blue,
+)[`b`]`"` as its left origin and no other character has the `"`#text(
+  fill: blue,
+)[`b`]`"` as its left origin but in the result they are not consecutive characters.
 
 @2023-weidner-minimizing-interleaving refer to another problem that many prior algorithms exhibit as backward interleaving.
 When two insertions have the same left origin but a different right origin, they should be ordered in a way that they are consecutive with their right origins.
 Although it may seem this is not a common use case, the following is a plausible example @2023-weidner-minimizing-interleaving[Figure 2].
-Starting with the text `"Shopping"`, Alice first appends `"``* apples``"` after `"Shopping"` and then prepends `"``Fruit:``"` before `"``* apples``"`.
+Starting with the text `"Shopping"`, #text(
+  fill: red,
+)[Alice] first appends `"`#text(
+  fill: red,
+)[`* apples`]`"` after `"Shopping"` and then prepends `"`#text(
+  fill: red,
+)[`Fruit:`]`"` before `"`#text(fill: red)[`* apples`]`"`.
 While semantically she is prepending, both inserted texts have `"Shopping"` as their left origin and different right origins.
-Concurrently, Bob first appends `"``* bread``"` after `"Shopping"` and then prepends `"``Bakery:``"` before `"``* bread``"`.
-The category insertions by Alice and Bob both have `"Shopping"` as their left origin but different right origins.
-Therefore, this should lead to either the outcome of `"Shopping``Fruit:* apples``Bakery:* bread``"` or `"Shopping``Bakery:* bread``Fruit:* apples``"` which only differ in the order of which users text comes first, which is arbitrary.
-When algorithms exhibit backward interleaving, `"Shopping``Bakery:``Fruit:``* bread``* apples``"` can be a possible result.
+Concurrently, #text(fill: blue)[Bob] first appends `"`#text(
+  fill: blue,
+)[`* bread`]`"` after `"Shopping"` and then prepends `"`#text(
+  fill: blue,
+)[`Bakery:`]`"` before `"`#text(fill: blue)[`* bread`]`"`.
+The category insertions by #text(fill: red)[Alice] and #text(
+  fill: blue,
+)[Bob] both have `"Shopping"` as their left origin but different right origins.
+Therefore, this should lead to either the outcome of `"Shopping`#text(
+  fill: red,
+)[`Fruit:* apples`]#text(fill: blue)[`Bakery:* bread`]`"` or `"Shopping`#text(
+  fill: blue,
+)[`Bakery:* bread`]#text(
+  fill: red,
+)[`Fruit:* apples`]`"` which only differ in the order of which users text comes first, which is arbitrary.
+When algorithms exhibit backward interleaving, `"Shopping`#text(
+  fill: blue,
+)[`Bakery:`]#text(fill: red)[`Fruit:`]#text(fill: blue)[`* bread`]#text(
+  fill: red,
+)[`* apples`]`"` can be a possible result.
 Note that the order of the elements has not changed in relation to each other (e.g.
-`"``Fruit:``"` comes before `"``* apples``"` and after `"Shopping"`) but this still violates the intent of the user.
+`"`#text(fill: red)[`Fruit:`]`"` comes before `"`#text(
+  fill: red,
+)[`* apples`]`"` and after `"Shopping"`) but this still violates the intent of the user.
 
 According to @2023-weidner-minimizing-interleaving, many popular algorithms they looked into exhibit either forward or backward interleaving @2023-weidner-minimizing-interleaving[Table 1].
 A review by
@@ -92,9 +190,27 @@ They conjecture that Sync9 is semantically equivalent to Fugue and YjsMod is sem
 They also prove that FugueMax fulfills the #emph[maximally non-interleaving] property @2023-weidner-minimizing-interleaving[Theorem 9], prove that the Fugue algorithm is always forward non-interleaving @2023-weidner-minimizing-interleaving[Lemma 7] and argue that it is also backward non-interleaving when there are not multiple interacting concurrent updates @2023-weidner-minimizing-interleaving[Section 4.3].
 
 A counter example that interleaving can also happen for the #emph[maximally non-interleaving] FugueMax algorithm is the following.
-Starting with the text `"Shopping"`, Alice appends `"``* apples``"` after `"Shopping"` and then prepends `"``Fruit:``"` before `"``* apples``"`.
-Concurrently, Bob appends `"``* bread``"` after `"Shopping"`, then deletes and reinserts the `"``g``"` of `"Shopping"` and finally prepends `"``Bakery:``"` before `"``* bread``"`.
-The expected result would be `"Shoppin``gBakery:* bread``Fruit:* apples``"` but the actual result can be `"Shoppin``gBakery:``Fruit:* apples``* bread``"` when the replicas IDs have a specific order.
+Starting with the text `"Shopping"`, #text(fill: red)[Alice] appends `"`#text(
+  fill: red,
+)[`* apples`]`"` after `"Shopping"` and then prepends `"`#text(
+  fill: red,
+)[`Fruit:`]`"` before `"`#text(fill: red)[`* apples`]`"`.
+Concurrently, #text(fill: blue)[Bob] appends `"`#text(
+  fill: blue,
+)[`* bread`]`"` after `"Shopping"`, then deletes and reinserts the `"`#text(
+  fill: blue,
+)[`g`]`"` of `"Shopping"` and finally prepends `"`#text(
+  fill: blue,
+)[`Bakery:`]`"` before `"`#text(fill: blue)[`* bread`]`"`.
+The expected result would be `"Shoppin`#text(
+  fill: blue,
+)[`gBakery:* bread`]#text(
+  fill: red,
+)[`Fruit:* apples`]`"` but the actual result can be `"Shoppin`#text(
+  fill: blue,
+)[`gBakery:`]#text(fill: red)[`Fruit:* apples`]#text(
+  fill: blue,
+)[`* bread`]`"` when the replicas IDs have a specific order.
 The code in @appendix:code-fuguemax-interleaving verifies this with the reference implementation#footnote[#link(
   "https://github.com/mweidner037/fugue",
 )].
