@@ -91,7 +91,9 @@
   thesis_statement_pursuant_include_english_translation: false,
 )
 
-#set heading(numbering: "1.", supplement: [Chapter])
+#set heading(numbering: "1.")
+#show heading.where(level: 1): set heading(supplement: [Chapter])
+
 // https://forum.typst.app/t/are-there-equivalent-to-the-latex-microtype-package-and-the-memoir-document-class/1540
 #set par(justify: true, justification-limits: (tracking: (min: -0.01em, max: 0.02em)))
 
