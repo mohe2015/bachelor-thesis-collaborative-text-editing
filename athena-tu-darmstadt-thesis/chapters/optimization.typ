@@ -115,7 +115,7 @@ This is the case for the root node.
 The `_values` reference one `ArrayBuffer` per @simple-ID, so multiple nodes may reference the same `ArrayBuffer`.
 This happens when a batching node needs to be split.
 The `offset` and `to` variables represent which subrange of the `ArrayBuffer` this node represents, so which characters of the text it stores.
-This means the @batching-IDs for this node then consist of the @simple-ID part and each value in the range from `offset` until `to` combined with the character at that index in `_values`.
+This means the @batching-ID:pl for this node then consist of the @simple-ID part and each value in the range from `offset` until `to` combined with the character at that index in `_values`.
 In the tree these are always right children of their predecessor as we optimize forward insertions.
 The `side` stores if this is a left or right child of its parent, except for the root node where this value does not store anything meaningful.
 `BatchingTreeNodeSingle` stores a reference to the parent `BatchingTreeNode` combined with the offset into that node at which this node is added.
