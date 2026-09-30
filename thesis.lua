@@ -70,6 +70,23 @@ local function transform(doc, opts)
       if #span.content == 0 and span.classes:includes('pagebreak') then
         return pandoc.RawInline('typst', '#pagebreak()')
       end
+
+      local label = span.attributes['acronym-label']
+      if label then
+        -- spaces -> dashes (parentheses drop gsub's second return value)
+        label = (label:gsub('%s+', '-'))
+
+        local form = span.attributes['acronym-form'] or ''
+
+        local suffix = ''
+        if form:find('plural') then
+          suffix = ':pl'
+        elseif form:find('long') then
+          suffix = ':long'
+        end
+
+        return pandoc.RawInline('typst', '@' .. label .. suffix)
+      end
     end,
     Div = function(div)
       if #div.content == 0 and div.classes:includes('pagebreak') then

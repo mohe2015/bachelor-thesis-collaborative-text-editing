@@ -16,7 +16,7 @@ Lines downwards to the right connect to a right child and lines downwards to the
 A node can have multiple children on each side.
 For every node except the root node, the first part is the character or whether the character is deleted, followed by a space and the ID of the peer that created that character, a `#` symbol and then a counter for that peer that is increasing for every insertion.
 For example, `"t A#1"` is the character `"t"` by peer `"A"` with the counter being $1$.
-The ID of the peer combined with the counter that uniquely identifies an element is called a simple ID.
+The ID of the peer combined with the counter that uniquely identifies an element is called a @simple-ID.
 The root node is a special node that behaves like a deleted character.
 To get the current text of the tree, it is traversed starting from the root node by recursively visiting the left children in order, then the value of the node itself and then the right children in order.
 For the example in @fig:fugue-traversal, the traversal starts with the left children of the root node.
@@ -70,7 +70,7 @@ All indices are zero based, so the element at index $0$ is the first element.
 
 ==== Insert operation
 <insert-operation>
-To insert an element $x$ at a position $i$, the algorithm first creates a new simple ID.
+To insert an element $x$ at a position $i$, the algorithm first creates a new @simple-ID.
 A special case is inserting at position $0$.
 In that case the root node is the left origin of the insertion.
 To insert the element, it is added as a right child to this left origin.

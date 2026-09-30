@@ -21,29 +21,30 @@ This may be the case when public infrastructure like cell towers is unavailable,
 A recent example are the Ahrtal floods.
 
 Decentralized algorithms can adapt to these challenges by functioning in a wide range of network scenarios.
-For example, p2p networks work without a central server.
-Furthermore, manets and dtns do not require public communication infrastructure at all but instead can utilize Wi-Fi, Bluetooth and other short-range communication technology.
+For example, @p2p networks work without a central server.
+Furthermore, @manet:pl and @dtn:pl do not require public communication infrastructure at all but instead can utilize Wi-Fi, Bluetooth and other short-range communication technology.
 
 In a decentralized setting there is no guarantee that peers are frequently online.
 Therefore, the ability to handle #emph[non-realtime] editing with potentially long periods of offline activity is essential.
 This combination of offline and decentralized software is often called local-first software @2019-kleppmann-local-first.
 
-The two major ways in research to approach collaborative text editing are ot and crdts @2019-sun-difference-ot-crdt-1-general-transformation-framework[page 2].
-ot algorithms store edit operations based on the text position and therefore need to transform concurrent edit operations against each other to correct the text positions.
+The two major ways in research to approach collaborative text editing are @ot and @crdt:pl @2019-sun-difference-ot-crdt-1-general-transformation-framework[page 2].
+@ot algorithms store edit operations based on the text position and therefore need to transform concurrent edit operations against each other to correct the text positions.
 Then, the algorithms apply the operations directly to the text.
-Prior algorithms for ot are, for example, COT @2009-sun-ot-context-undo and Jupiter @1995-nichols-jupiter.
+Prior algorithms for @ot are, for example, COT @2009-sun-ot-context-undo and Jupiter @1995-nichols-jupiter.
 While some of these are #emph[not] able to work in a decentralized network but need a central server to order changes like Jupiter @1995-nichols-jupiter, a lot of them #emph[are] able to work in a decentralized network like COT @2009-sun-ot-context-undo @2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 4].
-Prior ot algorithms have a runtime complexity per remote operation that is linear in the amount of concurrent edit operations @2019-sun-difference-ot-crdt-2-correctness-complexity[Section 3.1.4].
+Prior @ot algorithms have a runtime complexity per remote operation that is linear in the amount of concurrent edit operations @2019-sun-difference-ot-crdt-2-correctness-complexity[Section 3.1.4].
 This makes them really efficient for #emph[near-realtime] editing where only few concurrent edit operations occur.
 Near-realtime editing means that only short connection interruptions happen @2016-yata-yjs.
 For #emph[non-realtime] text editing this leads to a highly inefficient runtime complexity because the many concurrent edit operations must be transformed against each other @2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 1].
-Therefore, prior ot algorithms are undesirable for supporting a wide range of network scenarios like dtns.
+Therefore, prior @ot algorithms are undesirable for supporting a wide range of network scenarios like @dtn:pl.
 
-In contrast, crdts associate parts of the text with identifiers and merge these together on synchronization.
+In contrast, @crdt:pl associate parts of the text with identifiers and merge these together on synchronization.
 Therefore, they need to convert between identifiers and text positions to handle text edit operations.
-Prior algorithms for crdts are, for example, woot @2006-oster-woot, Logoot @2009-weiss-logoot, rgas @2011-roh-rga and Fugue @2023-weidner-minimizing-interleaving. crdts work in decentralized networks, but each prior algorithm has shortcomings that make it undesirable for a general solution.
+Prior algorithms for @crdt:pl are, for example, @woot @2006-oster-woot, Logoot @2009-weiss-logoot, @rga:pl @2011-roh-rga and Fugue @2023-weidner-minimizing-interleaving.
+@crdt:pl work in decentralized networks, but each prior algorithm has shortcomings that make it undesirable for a general solution.
 For example, Logoot @2009-weiss-logoot has quadratic memory use in some cases.
-Also, for handling text of some length their runtime complexity is often quadratic or worse in relation to the text length, as with woot @2006-oster-woot, rga @2011-roh-rga and Fugue @2023-weidner-minimizing-interleaving @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 5.3].
+Also, for handling text of some length their runtime complexity is often quadratic or worse in relation to the text length, as with @woot @2006-oster-woot, @rga @2011-roh-rga and Fugue @2023-weidner-minimizing-interleaving @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 5.3].
 
 While Fugue @2023-weidner-minimizing-interleaving avoids interleaving issues of prior solutions and works in an offline setting, the current implementation for handling text of some length has quadratic runtime complexity in relation to the text length.
 
@@ -51,7 +52,7 @@ In this thesis, we first investigate suitable algorithms for local-first plain t
 Based on the evaluation of prior solutions in Fugue @2023-weidner-minimizing-interleaving, we consider interleaving the major issue apart from performance issues, see @section:challenges-text-interleaving.
 Therefore, we extensively investigate how the Fugue algorithm avoids interleaving by looking at the algorithm, the examples and the proofs in the Fugue paper @2023-weidner-minimizing-interleaving, see @section:challenges-text-interleaving-fugue.
 Additionally, we show that the property of #emph[maximally non-interleaving] in the Fugue paper @2023-weidner-minimizing-interleaving still allows interleaving when deletions are involved.
-@chapter:ot gives an insight into crdts and ot and their advantages and disadvantages.
+@chapter:ot gives an insight into @crdt:pl and @ot and their advantages and disadvantages.
 
 Then, @chapter:background describes the Fugue algorithm @2023-weidner-minimizing-interleaving in depth.
 @section:implementation discusses our base implementation of Fugue in Scala to be able to experiment with the algorithm and proposes using property tests to ensure the convergence of our implementation.

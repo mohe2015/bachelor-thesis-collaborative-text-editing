@@ -79,7 +79,7 @@ This leads to an overhead because of the required metadata per object and becaus
 
   ],
   caption: [
-    Memory usage for batching AVL algorithm
+    Memory usage for @batching-AVL-algorithm
   ],
 )
 <lst:memory-usage-results>

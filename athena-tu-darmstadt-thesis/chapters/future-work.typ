@@ -5,9 +5,9 @@ In this chapter we look at what is missing and which aspects could be researched
 
 ===== Investigating OT Algorithms
 <investigating-ot-algorithms>
-In their review of the Fugue paper, @2023-sun-critical-examination-fugue-ot shows that the claims in the Fugue paper @2023-weidner-minimizing-interleaving about ot being interleaving are not correct @2023-sun-critical-examination-fugue-ot@2023-sun-critical-examination-fugue-ot-1@2023-sun-critical-examination-fugue-ot-2@2023-sun-critical-examination-fugue-ot-3.
-First, they show that mistakes were made in the Fugue paper when applying the ot algorithms which render their results regarding ot invalid @2023-sun-critical-examination-fugue-ot-1@2023-sun-critical-examination-fugue-ot-2.
-They also show that interleaving has been examined and documented before and can be solved in ot, usually by having operations based on strings and not single characters, but this is also possible when operating on single characters @2023-sun-critical-examination-fugue-ot-2.
+In their review of the Fugue paper, @2023-sun-critical-examination-fugue-ot shows that the claims in the Fugue paper @2023-weidner-minimizing-interleaving about @ot being interleaving are not correct @2023-sun-critical-examination-fugue-ot@2023-sun-critical-examination-fugue-ot-1@2023-sun-critical-examination-fugue-ot-2@2023-sun-critical-examination-fugue-ot-3.
+First, they show that mistakes were made in the Fugue paper when applying the @ot algorithms which render their results regarding @ot invalid @2023-sun-critical-examination-fugue-ot-1@2023-sun-critical-examination-fugue-ot-2.
+They also show that interleaving has been examined and documented before and can be solved in @ot, usually by having operations based on strings and not single characters, but this is also possible when operating on single characters @2023-sun-critical-examination-fugue-ot-2.
 Therefore, investigating OT algorithms, especially in a #emph[non-realtime] setting could be interesting.
 
 ===== Necessary Non-interleaving Properties for Intent-Preserving Text Editing
@@ -49,26 +49,26 @@ Rich text is probably the largest missing feature that may also lead to many des
 First, there is inline formatting like bold, underlined, italic, strike-through, subscript or superscript text.
 But there is also structural formatting like headings, subheadings, ordered and unordered lists, tables, etc.
 Both create new challenges with user intent.
-While for ot there is a lot of previous work which is also successfully used in production e.g.
+While for @ot there is a lot of previous work which is also successfully used in production e.g.
 Google Docs#footnote[#link(
   "https://www.google.com/docs/about/",
-)], for crdts there is not much previous research @2022-litt-peritext.
+)], for @crdt:pl there is not much previous research @2022-litt-peritext.
 The Peritext paper @2022-litt-peritext investigates inline formatting and shows some problems in prior algorithms with correctly preserving user intentions @2022-litt-peritext.
-For example the Yjs algorithm based on yata @2016-yata-yjs adds markers where inline formatting starts and where it ends into the text.
+For example the Yjs algorithm based on @yata @2016-yata-yjs adds markers where inline formatting starts and where it ends into the text.
 This fails to handle a simple case where a bold text is unbolded and concurrently part of that bold text is unbolded which then leads to unrelated text getting bold @2022-litt-peritext[Section 2.3.2].
 
 In a collaborative context it needs to be possible to undo arbitrary actions by any user and not only the last action like it is usually the case in traditional editors.
 Therefore, support for so-called selective undo is needed.
-For ot algorithms, transformations need to be applied to the correct document context @2009-sun-ot-context-undo.
+For @ot algorithms, transformations need to be applied to the correct document context @2009-sun-ot-context-undo.
 This means the control algorithms need to properly handle this and transformation functions potentially need to uphold specific properties @2009-sun-ot-context-undo.
 
 When part of a text is moved and concurrently part of that text is edited it would make sense that these edits are correctly preserved.
 As normal copy and paste does not track this state this needs a special operation or needs to store the necessary metadata in the clipboard.
-Also, this needs support at the crdt level @2022-anjana-move@2023-kleppmann-json-move.
+Also, this needs support at the @crdt level @2022-anjana-move@2023-kleppmann-json-move.
 
 Instead of operating on a character level it could make sense to operate on a string level.
 This would be more efficient and could have better semantics for range deletions, copy and paste or moving text.
-For ot this seems to often be done but is much more complicated, especially in combination with undo @2024-sun-ot-faq.
+For @ot this seems to often be done but is much more complicated, especially in combination with undo @2024-sun-ot-faq.
 
 While we did not look at this in this thesis, it is not hard to serialize and deserialize our representation.
 It may be interesting to find out which parts of the data structures, that are only needed to improve lookup performance, should be persisted to storage and which parts can be quickly rebuilt on loading.

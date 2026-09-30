@@ -6,7 +6,7 @@ The optimization to logarithmic runtime per operation in relation to the text le
 This thesis also shows that prior benchmarks do not measure asymptotic complexity and do not cover all algorithmic performance edge cases and proposes to include both in future benchmarks.
 This is especially an issue in decentralized networks, as there is only limited control over all messages and peers can send you messages with malicious content that triggers these edge cases.
 
-The WebRTC implementation shows a practical example of text editing in p2p networks and allows easy experimentation.
+The WebRTC implementation shows a practical example of text editing in @p2p networks and allows easy experimentation.
 
 @section:challenges-text-interleaving shows that interleaving for the #emph[maximally non-interleaving] property @2023-weidner-minimizing-interleaving is indeed possible when deletions are involved.
 Therefore, a more accurate property should be researched to ensure non-interleaving.

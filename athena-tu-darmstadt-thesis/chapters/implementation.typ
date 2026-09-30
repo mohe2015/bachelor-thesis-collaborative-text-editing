@@ -2,7 +2,7 @@
 = Implementation of Fugue Algorithm
 <section:implementation>
 This chapter first lists the requirements for an implementation of the Fugue algorithm in @section:implementation-requirements.
-@section:implementation-browser gives insights into our editor implementation in the browser and our p2p functionality and @sec:synchronization explains how our synchronization works and is optimized.
+@section:implementation-browser gives insights into our editor implementation in the browser and our @p2p functionality and @sec:synchronization explains how our synchronization works and is optimized.
 @sec:property-tests introduces our use of property tests to ensure convergence of our implementation and argues that extensive use of assertions for invariants aids in finding the root cause of test failures.
 Finally, @section:implementation-issues-algorithmic-description reveals some small issues in the algorithmic description in the Fugue paper @2023-weidner-minimizing-interleaving.
 
@@ -77,7 +77,7 @@ Instead of creating a message per character insertion or deletion, consecutive d
 
 == Testing Using Property Tests
 <sec:property-tests>
-Property tests are a core part of testing rdts as the existence of numerous edge cases make unit testing infeasible.
+Property tests are a core part of testing @rdt:pl as the existence of numerous edge cases make unit testing infeasible.
 The tests run both on the internal data structure, with an interface for inserting and deleting characters at indices, and on the local web application as a Playwright#footnote[#link(
   "https://playwright.dev/java/",
 )] test.

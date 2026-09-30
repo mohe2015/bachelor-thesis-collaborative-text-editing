@@ -3,7 +3,7 @@
 <chapter:challenges>
 This chapter first introduces the goal of user intent-preservation by showing the problem of text interleaving in @section:challenges-text-interleaving.
 Then, @section:challenges-text-interleaving-fugue introduces the solution proposed by Fugue @2023-weidner-minimizing-interleaving to solve text interleaving.
-Finally, @chapter:ot compares crdts and ot and shows that the current crdts runtime complexity is quadratic and current ot algorithms are unsuitable for #emph[non-realtime] editing.
+Finally, @chapter:ot compares @crdt:pl and @ot and shows that the current @crdt:pl runtime complexity is quadratic and current @ot algorithms are unsuitable for #emph[non-realtime] editing.
 
 == Text Interleaving
 <section:challenges-text-interleaving>
@@ -82,7 +82,7 @@ A review by
 @2023-sun-critical-examination-fugue-ot@2023-sun-critical-examination-fugue-ot-1@2023-sun-critical-examination-fugue-ot-2@2023-sun-critical-examination-fugue-ot-3 that refutes these claims for OT algorithms is addressed in @chapter:ot.
 For Logoot @2009-weiss-logoot the character-by-character interleaving issue occurs.
 Further examples are provided in the appendix of the Fugue paper @2023-weidner-minimizing-interleaving.
-While the prior crdt algorithms YjsMod#footnote[#link(
+While the prior @crdt algorithms YjsMod#footnote[#link(
   "https://github.com/josephg/reference-crdts",
 )] and Sync9#footnote[#link(
   "https://braid.org/sync9",
@@ -133,16 +133,17 @@ Comparing the results#footnote[#link(
 #pagebreak()
 == OT in Comparison to CRDTs
 <chapter:ot>
-This section explains the differences and similarities between ot and crdts and shows that the current crdts runtime complexity is quadratic and current ot algorithms are unsuitable for #emph[non-realtime] editing.
+This section explains the differences and similarities between @ot and @crdt:pl and shows that the current @crdt:pl runtime complexity is quadratic and current @ot algorithms are unsuitable for #emph[non-realtime] editing.
 
-While crdt papers often claim crdts are superior to ot, crdts often miss major relevant parts of the required algorithmic steps which makes them seem potentially simpler and more performant @2019-sun-difference-ot-crdt-1-general-transformation-framework[page 2].
-For example, crdts need to extract the text from their internal state and need to be able to address characters based on their text position as most text editors work that way @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 5.1, Section 5.2]. crdts often miss this conversion step which is a major algorithmic complication that also affects their performance a lot @2019-sun-difference-ot-crdt-1-general-transformation-framework[page 2].
+While @crdt papers often claim @crdt:pl are superior to @ot, @crdt:pl often miss major relevant parts of the required algorithmic steps which makes them seem potentially simpler and more performant @2019-sun-difference-ot-crdt-1-general-transformation-framework[page 2].
+For example, @crdt:pl need to extract the text from their internal state and need to be able to address characters based on their text position as most text editors work that way @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 5.1, Section 5.2].
+@crdt:pl often miss this conversion step which is a major algorithmic complication that also affects their performance a lot @2019-sun-difference-ot-crdt-1-general-transformation-framework[page 2].
 Note that Fugue also has this issue as it does not describe converting the received operations to character offsets @2023-weidner-minimizing-interleaving[Algorithm 1].
 
 @2019-sun-difference-ot-crdt-1-general-transformation-framework also show that both approaches are more similar than often presented @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 4.1 Table 1].
-While ots have position based operations directly on the character sequence that are then transformed by concurrent operations, crdts have identifier based operations on an internal object sequence, that are converted to the position based character sequence after the operations have been applied.
+While @ot:pl have position based operations directly on the character sequence that are then transformed by concurrent operations, @crdt:pl have identifier based operations on an internal object sequence, that are converted to the position based character sequence after the operations have been applied.
 
-ot based algorithms consist of a control algorithm and a transformation function @2024-sun-ot-faq.
+@ot based algorithms consist of a control algorithm and a transformation function @2024-sun-ot-faq.
 The control algorithm is generic, and the transformation function is application specific.
 For example for plain text editing there could be two operations, Insert(index, character) and Delete(index).
 The transformation function $T\(O_2\,O_1\)$ transforms $O_2$ against $O_1$.
@@ -166,16 +167,16 @@ OT based algorithms can be integrated into existing editors with little change o
 The algorithm can just apply the received and transformed operations to the local editor and send local operations to other peers.
 @2019-sun-difference-ot-crdt-3-building-real-world-applications refer to this as Transparent Adaptation (TA) @2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 2.1.2].
 
-According to @2019-sun-difference-ot-crdt-1-general-transformation-framework, ot uses a concurrency-centric and direct transformation approach and crdt uses a content-centric and indirect transformation approach @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 1].
+According to @2019-sun-difference-ot-crdt-1-general-transformation-framework, @ot uses a concurrency-centric and direct transformation approach and @crdt uses a content-centric and indirect transformation approach @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 1].
 This has an important consequence for the time and space complexity.
-The time and space complexity of ot for #emph[realtime] editing depends on the number of concurrent operations which are usually small in realtime text editing while the time and space complexity of crdt depends on the length of the text or even the length of the text including all deleted content which are usually a lot larger @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 5.3].
-The time complexity for prior ot based algorithms is at least $O\(c\)$ per remote operation @2019-sun-difference-ot-crdt-2-correctness-complexity[Section 3.1.4].
+The time and space complexity of @ot for #emph[realtime] editing depends on the number of concurrent operations which are usually small in realtime text editing while the time and space complexity of @crdt depends on the length of the text or even the length of the text including all deleted content which are usually a lot larger @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 5.3].
+The time complexity for prior @ot based algorithms is at least $O\(c\)$ per remote operation @2019-sun-difference-ot-crdt-2-correctness-complexity[Section 3.1.4].
 This means quadratic runtime complexity in relation to the operation count for handling some count of operations, which is unusable for #emph[non-realtime] editing because there can be many concurrent operations.
 It is important to mention that the time complexity class is relevant.
 For example, $O\(log\(upright("text-length-including-deletions")\)\)$ runtime complexity can be equally acceptable to $O\(upright("concurrent-operations")\)$ runtime complexity because $O\(log\(n\)\)$ is growing quite slowly even for extremely large inputs.
-Prior research of crdts mostly managed a linear time complexity or worse except of a paper by @2016-briot-logn-optimization which optimizes an rga adaptation to $O\(log\(n\)\)$ per operation similarly to us @2019-sun-difference-ot-crdt-2-correctness-complexity[Table 4].
+Prior research of @crdt:pl mostly managed a linear time complexity or worse except of a paper by @2016-briot-logn-optimization which optimizes an @rga adaptation to $O\(log\(n\)\)$ per operation similarly to us @2019-sun-difference-ot-crdt-2-correctness-complexity[Table 4].
 However, @2016-briot-logn-optimization have not gone into the analysis of performance edge cases prohibiting us from drawing a fair comparison.
 Additionally, it is unclear whether they include the conversion of remote operations to character positions.
-Furthermore, as the algorithm is based on rga, it exhibits interleaving @2023-weidner-minimizing-interleaving[Table 1].
+Furthermore, as the algorithm is based on @rga, it exhibits interleaving @2023-weidner-minimizing-interleaving[Table 1].
 
-While crdts often seem to be simple and easy to understand, the fundamental concurrency issues which are inherent to unconstrained co-editing also exist there and mixing content and concurrency creates new difficulties with handling them @2019-sun-difference-ot-crdt-2-correctness-complexity[Section~4].
+While @crdt:pl often seem to be simple and easy to understand, the fundamental concurrency issues which are inherent to unconstrained co-editing also exist there and mixing content and concurrency creates new difficulties with handling them @2019-sun-difference-ot-crdt-2-correctness-complexity[Section~4].

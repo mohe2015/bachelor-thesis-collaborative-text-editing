@@ -64,7 +64,7 @@ Finally, in @final-high-level-code-overview, we give an overview of the resultin
 <lst:simple-at-visible-index>
 
 The most basic case is sequential insertion of text which simulates a user that perfectly writes text and never needs to fix any mistakes or add something earlier in the text.
-Benchmarking our basic implementation called the simple algorithm leads to the result in @fig:simple-sequential-inserts.
+Benchmarking our basic implementation called the @simple-algorithm leads to the result in @fig:simple-sequential-inserts.
 
 Note: The graphs show the time and memory #emph[per character operation], thus the total time to handle the character operations grows quadratically in @fig:simple-sequential-inserts.
 All graphs with the same border color have the same axis scale to make them comparable.
@@ -101,27 +101,27 @@ This matches the repeated linear search to find the element at which we need to 
 The optimization that many algorithms already utilize and that the Fugue authors also have hinted at @2023-weidner-minimizing-interleaving[Section 5], is batching sequential insertions by one peer to reduce metadata and memory overhead.
 In the following section we describe what is needed for that optimization in detail.
 
-The previously used simple ID for tree nodes consists of a replica ID and a counter.
+The previously used @simple-ID for tree nodes consists of a replica ID and a counter.
 To combine sequential tree nodes by the same replica, an offset is added to be able to address single characters for insert and delete operations.
-This ID that consists of a replica ID, counter and offset is called a batching ID and our algorithm the batching algorithm.
+This ID that consists of a replica ID, counter and offset is called a @batching-ID and our algorithm the @batching-algorithm.
 
 The algorithm intentionally only optimizes consecutive right children or rather forward insertions as that is the most common case.
 In all cases this is only a best-effort optimization as operations may not be combinable at all, for example if they are from multiple peers.
 
 @lst:data-structure-batching-node shows the rough data structure of a node.
-The `replicaId` and `counter` represent the simple ID part of this node.
+The `replicaId` and `counter` represent the @simple-ID part of this node.
 If the `replicaId` is null, then the value of the `counter` is not relevant.
 This is the case for the root node.
-The `_values` reference one `ArrayBuffer` per simple ID, so multiple nodes may reference the same `ArrayBuffer`.
+The `_values` reference one `ArrayBuffer` per @simple-ID, so multiple nodes may reference the same `ArrayBuffer`.
 This happens when a batching node needs to be split.
 The `offset` and `to` variables represent which subrange of the `ArrayBuffer` this node represents, so which characters of the text it stores.
-This means the batching IDs for this node then consist of the simple ID part and each value in the range from `offset` until `to` combined with the character at that index in `_values`.
+This means the @batching-IDs for this node then consist of the @simple-ID part and each value in the range from `offset` until `to` combined with the character at that index in `_values`.
 In the tree these are always right children of their predecessor as we optimize forward insertions.
 The `side` stores if this is a left or right child of its parent, except for the root node where this value does not store anything meaningful.
 `BatchingTreeNodeSingle` stores a reference to the parent `BatchingTreeNode` combined with the offset into that node at which this node is added.
 The `leftChildrenBuffer` and `rightChildrenBuffer` store the children in an array.
 `allowAppend` stores whether appending an element to this node is possible by appending an element to `_values`.
-This is not allowed for the left part of a split because otherwise batching IDs could be duplicated.
+This is not allowed for the left part of a split because otherwise @batching-ID:pl could be duplicated.
 
 #pagebreak()
 ===== Insert operation
@@ -157,7 +157,7 @@ As later optimizations combine sequential #emph[deletions], this also needs to b
 If an element is already deleted because of concurrent actions, nothing needs to be done.
 Note that also the editor then does not need any updates.
 Deletion generally needs to split a node into up to three parts (except if the first or last element is deleted) as there needs to be a node for the part before the deleted element, a node for the deleted element and a node for the part after the deleted element.
-Later optimizations avoid this for sequential forward and backward deletions by the same replica if both nodes have the same simple ID.
+Later optimizations avoid this for sequential forward and backward deletions by the same replica if both nodes have the same @simple-ID.
 Instead, the deleted element is moved to the node containing the other already deleted elements if the parent node has no other right children.
 
 #figure(
@@ -191,7 +191,7 @@ Instead, the deleted element is moved to the node containing the other already d
 ===== Results for sequential insertions
 <results-for-sequential-insertions>
 Benchmarking the sequential insertions produces the results in @fig:simple-complex-sequential-inserts.
-The reason the batching algorithm is so fast in comparison to the simple algorithm is that it mainly needs to append to an `ArrayBuffer` for sequential insertions.
+The reason the @batching-algorithm is so fast in comparison to the @simple-algorithm is that it mainly needs to append to an `ArrayBuffer` for sequential insertions.
 
 Even though every character insertion only needs to append a character to an `ArrayBuffer`, the memory usage per character is about 100 bytes.
 This is because it also stores the causal history which is required for properly syncing between peers but is only optimized in the final version later.
@@ -317,7 +317,7 @@ An AVL tree was chosen as the binary search tree because it has logarithmic asym
 The batching optimization is excluded to be able to isolate the performance changes to the algorithmic changes.
 
 This results in a very low time per character operation as shown in @fig:simple-complex-simpleavl-real-world in comparison to the two other approaches with the real world benchmark.
-As it is not possible to read the values for the simple AVL algorithm there, @fig:simpleavl-real-world shows only the simple AVL algorithm with the full text, so much more operations, and a different y-axis scale.
+As it is not possible to read the values for the @simple-AVL-algorithm there, @fig:simpleavl-real-world shows only the @simple-AVL-algorithm with the full text, so much more operations, and a different y-axis scale.
 The CPU profile in @appendix:simpleavl-real-world-cpu shows that there is not a single hot location, but execution is distributed over many methods.
 The memory overhead is still very high, because a new node in the AVL tree and the Fugue tree needs to be created for every character.
 @fig:simpleavl-real-world shows a memory usage of about 250 bytes per character operation.
@@ -600,7 +600,7 @@ The disadvantage is that the memory for deleted nodes is not reclaimed.
 <edge-case-for-node-splitting-with-many-right-children>
 A previous version of the algorithm stored a reference to the parent in each node.
 Therefore, splitting a node as shown in @fig:edge-case-evil-split-many-right-children-example with the benchmark results in @fig:complexavl-evil-split-many-right-children required updating the parent of all its former children.
-The parent reference is not required for the batching AVL algorithm, therefore it was simply removed.
+The parent reference is not required for the @batching-AVL-algorithm, therefore it was simply removed.
 
 ===== Closing remarks
 <closing-remarks>
@@ -642,7 +642,7 @@ Through optimization, probably in an ahead-of-time compiled language and not Sca
 #pagebreak()
 == Node Data Structure Including All Optimizations
 <final-high-level-code-overview>
-In @lst:final-code we show our node data structure for the batching AVL algorithm that combines the batching with the look-up tree optimization.
+In @lst:final-code we show our node data structure for the @batching-AVL-algorithm that combines the batching with the look-up tree optimization.
 The fields that are from the batching node data structure shown in @lst:data-structure-batching-node have the same meaning as explained in @sec:optimization-batching.
 For the look-up tree optimization, the `leftDescCache` and `rightDescCache` store an AVL tree for quickly retrieving the respective descendant.
 The `leftChildrenBuffer` and `rightChildrenBuffer` use a `SortedSet` to insert nodes in $log\(n\)$ and have an optimization for single or no children to save memory.
