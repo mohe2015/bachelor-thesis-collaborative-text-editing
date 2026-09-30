@@ -48,7 +48,7 @@
   abstract: [
     #include "chapters/abstract.typ"
   ],
-  bib: bibliography("./literature.bib"),
+  bib: bibliography("./literature.bib", style: "basic.csl"),
   margin: tud_page_margin_big,
   // outline_table_of_contents_style: "adapted",
   // reduce_heading_space_when_first_on_page: false
