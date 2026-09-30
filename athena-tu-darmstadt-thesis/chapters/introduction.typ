@@ -37,14 +37,14 @@ Prior @ot algorithms have a runtime complexity per remote operation that is line
 This makes them really efficient for #emph[near-realtime] editing where only few concurrent edit operations occur.
 Near-realtime editing means that only short connection interruptions happen @2016-yata-yjs.
 For #emph[non-realtime] text editing this leads to a highly inefficient runtime complexity because the many concurrent edit operations must be transformed against each other @2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 1].
-Therefore, prior @ot algorithms are undesirable for supporting a wide range of network scenarios like @dtn:pl.
+Therefore, prior @ot algorithms are undesirable for supporting a wide range of network scenarios like #linebreak(justify: true) @dtn:pl.
 
 In contrast, @crdt:pl associate parts of the text with identifiers and merge these together on synchronization.
 Therefore, they need to convert between identifiers and text positions to handle text edit operations.
 Prior algorithms for @crdt:pl are, for example, @woot @2006-oster-woot, Logoot @2009-weiss-logoot, @rga:pl @2011-roh-rga and Fugue @2023-weidner-minimizing-interleaving.
 @crdt:pl work in decentralized networks, but each prior algorithm has shortcomings that make it undesirable for a general solution.
 For example, Logoot @2009-weiss-logoot has quadratic memory use in some cases.
-Also, for handling text of some length their runtime complexity is often quadratic or worse in relation to the text length, as with @woot @2006-oster-woot, @rga @2011-roh-rga and Fugue @2023-weidner-minimizing-interleaving @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 5.3].
+Also, for handling text of some length their runtime complexity is often quadratic or worse in relation to the text length, as with @woot @2006-oster-woot, @rga @2011-roh-rga and Fugue @2023-weidner-minimizing-interleaving~@2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 5.3].
 
 While Fugue @2023-weidner-minimizing-interleaving avoids interleaving issues of prior solutions and works in an offline setting, the current implementation for handling text of some length has quadratic runtime complexity in relation to the text length.
 
