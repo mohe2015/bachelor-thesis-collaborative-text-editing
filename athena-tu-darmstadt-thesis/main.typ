@@ -51,6 +51,37 @@
     outline_table_of_contents: true,
     thesis_statement_pursuant: true
   ),
+  page_numbering_starts_after_outline: false,
+  additional_pages_after_title_page: [
+    #set page(header: none, footer: none)
+    #grid(rows: 1fr,
+    [Optimizing Collaborative Plain Text Editing Algorithms\
+    for Decentralized Non-Realtime Text Editing
+
+    Bachelor thesis by Moritz Hedtke
+
+    Date of submission: August 5, 2024
+
+    Darmstadt],
+
+    [Bitte zitieren Sie dieses Dokument als:\
+    URN: urn:nbn:de:tuda-tuprints-278347\
+    URL: https://tuprints.ulb.tu-darmstadt.de/27834\
+    Jahr der Veröffentlichung auf TUprints: 2024
+
+    Dieses Dokument wird bereitgestellt von tuprints,\
+    E-Publishing-Service der TU Darmstadt\
+    https://tuprints.ulb.tu-darmstadt.de\
+    tuprints\@ulb.tu-darmstadt.de],
+
+    [Die Veröffentlichung steht unter folgender Creative Commons Lizenz:\
+    Namensnennung 4.0 International\
+    https://creativecommons.org/licenses/by/4.0/\
+    This work is licensed under a Creative Commons License:\
+    Attribution 4.0 International\
+    https://creativecommons.org/licenses/by/4.0/])
+    #pagebreak(weak: true)
+  ],
   thesis_statement_pursuant_include_english_translation: false,
 )
 
