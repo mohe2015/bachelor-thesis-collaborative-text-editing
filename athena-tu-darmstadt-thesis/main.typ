@@ -91,6 +91,8 @@
   thesis_statement_pursuant_include_english_translation: false,
 )
 
+#set heading(numbering: "1.") // patch
+
 #set figure(placement: top)
 
 #include "chapters/introduction.typ"
