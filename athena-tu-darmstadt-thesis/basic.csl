@@ -102,7 +102,10 @@
       <key variable="citation-number"/>
     </sort>
     <layout prefix="[" suffix="]" delimiter=", ">
-      <text variable="citation-number"/>
+      <group delimiter=", ">
+        <text variable="citation-number"/>
+        <text variable="locator"/>
+      </group>
     </layout>
   </citation>
 
