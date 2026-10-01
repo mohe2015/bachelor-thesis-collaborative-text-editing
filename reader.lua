@@ -26,7 +26,7 @@ local definitions = [=[
 \newcommand{\labfig}[1]{\label{#1}}
 \newcommand{\Cref}[1]{\ref{#1}}
 
-\def\Citeauthor*#1{\cite{#1}}
+\def\Citeauthor*#1{\citeauthor{#1}}
 
 \newcommand{\footref}[1]{}
 \newcommand{\index}[1]{}

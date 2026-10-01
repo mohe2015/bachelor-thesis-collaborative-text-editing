@@ -79,7 +79,10 @@ This separates `"`#text(fill: red)[`* Alpacas`]`"` and `"`#text(fill: rgb(
   fill: blue,
 )[`Bands:`]`"`, which may not be wanted.
 In this example the assumption of the more common forward insertion is correct though.
-Further improvements to this would need analysis of the language semantics of the text which @2023-bauwens-nlp-for-merging looked into @2023-bauwens-nlp-for-merging.
+Further improvements to this would need analysis of the language semantics of the text which #cite(
+  <2023-bauwens-nlp-for-merging>,
+  form: "prose",
+) looked into @2023-bauwens-nlp-for-merging.
 For the concrete example, a different idea could be to insert `"`#text(
   fill: blue,
 )[`Bands:`]`"` after `"`#text(fill: rgb(
@@ -110,9 +113,9 @@ This has similar issues if concurrent edits are received later and change the ef
 This section shows the proposed solution by Fugue @2023-weidner-minimizing-interleaving to solve text interleaving.
 It also gives an example that the proposed #emph[maximally non-interleaving] property can still interleave text when deletions are involved.
 
-@2023-weidner-minimizing-interleaving
+#cite(<2023-weidner-minimizing-interleaving>, form: "prose")
 @2023-weidner-minimizing-interleaving show that a previous attempt at formalizing a property for non-interleaving by
-@2019-Kleppmann-incorrect-noninterleaving-property
+#cite(<2019-Kleppmann-incorrect-noninterleaving-property>, form: "prose")
 @2019-Kleppmann-incorrect-noninterleaving-property is incorrect @2023-weidner-minimizing-interleaving[Section 2.5].
 Therefore, they propose their own property which they refer to as #emph[maximally non-interleaving].
 It associates every inserted character with the character to its left and right, which they label left and right origin.
@@ -138,7 +141,10 @@ For example the `"`#text(fill: blue)[`r`]`"` from `"`#text(
   fill: blue,
 )[`b`]`"` as its left origin but in the result they are not consecutive characters.
 
-@2023-weidner-minimizing-interleaving refer to another problem that many prior algorithms exhibit as backward interleaving.
+#cite(
+  <2023-weidner-minimizing-interleaving>,
+  form: "prose",
+) refer to another problem that many prior algorithms exhibit as backward interleaving.
 When two insertions have the same left origin but a different right origin, they should be ordered in a way that they are consecutive with their right origins.
 Although it may seem this is not a common use case, the following is a plausible example @2023-weidner-minimizing-interleaving[Figure 2].
 Starting with the text `"Shopping"`, #text(
@@ -174,9 +180,12 @@ Note that the order of the elements has not changed in relation to each other (e
   fill: red,
 )[`* apples`]`"` and after `"Shopping"`) but this still violates the intent of the user.
 
-According to @2023-weidner-minimizing-interleaving, many popular algorithms they looked into exhibit either forward or backward interleaving @2023-weidner-minimizing-interleaving[Table 1].
+According to #cite(
+  <2023-weidner-minimizing-interleaving>,
+  form: "prose",
+), many popular algorithms they looked into exhibit either forward or backward interleaving @2023-weidner-minimizing-interleaving[Table 1].
 A review by
-@2023-sun-critical-examination-fugue-ot
+#cite(<2023-sun-critical-examination-fugue-ot>, form: "prose")
 @2023-sun-critical-examination-fugue-ot@2023-sun-critical-examination-fugue-ot-1@2023-sun-critical-examination-fugue-ot-2@2023-sun-critical-examination-fugue-ot-3 that refutes these claims for OT algorithms is addressed in @chapter:ot.
 For Logoot @2009-weiss-logoot the character-by-character interleaving issue occurs.
 Further examples are provided in the appendix of the Fugue paper @2023-weidner-minimizing-interleaving.
@@ -185,7 +194,10 @@ While the prior @crdt algorithms YjsMod#footnote[#link(
 )] and Sync9#footnote[#link(
   "https://braid.org/sync9",
 )] do not exhibit interleaving @2023-weidner-minimizing-interleaving[Table 1], those approaches were not considered here due to the lack of documentation and their intrinsic complexity.
-@2023-weidner-minimizing-interleaving propose their own algorithms Fugue and FugueMax to solve these problems.
+#cite(
+  <2023-weidner-minimizing-interleaving>,
+  form: "prose",
+) propose their own algorithms Fugue and FugueMax to solve these problems.
 They conjecture that Sync9 is semantically equivalent to Fugue and YjsMod is semantically equivalent to FugueMax @2023-weidner-minimizing-interleaving[Section 6].
 They also prove that FugueMax fulfills the #emph[maximally non-interleaving] property @2023-weidner-minimizing-interleaving[Theorem 9], prove that the Fugue algorithm is always forward non-interleaving @2023-weidner-minimizing-interleaving[Lemma 7] and argue that it is also backward non-interleaving when there are not multiple interacting concurrent updates @2023-weidner-minimizing-interleaving[Section 4.3].
 
@@ -220,11 +232,18 @@ This example shows that this simplification is not suitable to ensure non-interl
 The basic implementation of Fugue has a linear runtime per character insertion or deletion in relation to the text length (including deleted text) which proved to be too inefficient for larger text given the resulting runtime scales quadratically with the text length.
 Comparing the results#footnote[#link(
   "https://github.com/mweidner037/fugue/blob/main/results_table.md",
-)] from @2023-weidner-minimizing-interleaving for benchmark B1.1 with benchmark B1.3 indicates, that even the optimized variant in the Fugue paper has quadratic runtime for sequential backward insertions.
+)] from #cite(
+  <2023-weidner-minimizing-interleaving>,
+  form: "prose",
+) for benchmark B1.1 with benchmark B1.3 indicates, that even the optimized variant in the Fugue paper has quadratic runtime for sequential backward insertions.
 
 #pagebreak()
 #figure(image("/figures/ot.drawio.pdf"), caption: [
-  Example for operation transformation with two synchronizing peers based on figure by @2024-sun-ot-faq @2024-sun-ot-faq[Section 1.4 Figure 1]
+  Example for operation transformation with two synchronizing peers based on figure by #cite(
+    <2024-sun-ot-faq>,
+    form: "prose",
+  )
+  @2024-sun-ot-faq[Section 1.4 Figure 1]
 ])
 <fig:ot-example>
 
@@ -256,7 +275,11 @@ For example, @crdt:pl need to extract the text from their internal state and nee
 @crdt:pl often miss this conversion step which is a major algorithmic complication that also affects their performance a lot @2019-sun-difference-ot-crdt-1-general-transformation-framework[page 2].
 Note that Fugue also has this issue as it does not describe converting the received operations to character offsets @2023-weidner-minimizing-interleaving[Algorithm 1].
 
-@2019-sun-difference-ot-crdt-1-general-transformation-framework also show that both approaches are more similar than often presented @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 4.1 Table 1].
+#cite(
+  <2019-sun-difference-ot-crdt-1-general-transformation-framework>,
+  form: "prose",
+)
+also show that both approaches are more similar than often presented @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 4.1 Table 1].
 While @ot:pl have position based operations directly on the character sequence that are then transformed by concurrent operations, @crdt:pl have identifier based operations on an internal object sequence, that are converted to the position based character sequence after the operations have been applied.
 
 @ot based algorithms consist of a control algorithm and a transformation function @2024-sun-ot-faq.
@@ -276,22 +299,40 @@ Also, some control algorithms are able to handle undo, some can undo arbitrary a
 
 Transformation functions need to be defined for all possible combinations of operations.
 This means $N^2$ such functions are needed for $N$ possible operations.
-An alternative proposed by @2019-sun-difference-ot-crdt-3-building-real-world-applications is POT+COA (Primitive Operation Transformation plus Complex Operation Adaptation).
+An alternative proposed by
+#cite(
+  <2019-sun-difference-ot-crdt-3-building-real-world-applications>,
+  form: "prose",
+)
+is POT+COA (Primitive Operation Transformation plus Complex Operation Adaptation).
 It consists of having some primitive operations for which transformation functions are defined, and then complex application operations are converted to these primitive operations @2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 2.1.3].
 
 OT based algorithms can be integrated into existing editors with little change of the editors source code as OT is operation and concurrency-centric.
 The algorithm can just apply the received and transformed operations to the local editor and send local operations to other peers.
-@2019-sun-difference-ot-crdt-3-building-real-world-applications refer to this as Transparent Adaptation (TA) @2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 2.1.2].
+#cite(
+  <2019-sun-difference-ot-crdt-3-building-real-world-applications>,
+  form: "prose",
+)
+refer to this as Transparent Adaptation (TA) @2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 2.1.2].
 
-According to @2019-sun-difference-ot-crdt-1-general-transformation-framework, @ot uses a concurrency-centric and direct transformation approach and @crdt uses a content-centric and indirect transformation approach @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 1].
+According to #cite(
+  <2019-sun-difference-ot-crdt-1-general-transformation-framework>,
+  form: "prose",
+), @ot uses a concurrency-centric and direct transformation approach and @crdt uses a content-centric and indirect transformation approach @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 1].
 This has an important consequence for the time and space complexity.
 The time and space complexity of @ot for #emph[realtime] editing depends on the number of concurrent operations which are usually small in realtime text editing while the time and space complexity of @crdt depends on the length of the text or even the length of the text including all deleted content which are usually a lot larger @2019-sun-difference-ot-crdt-1-general-transformation-framework[Section 5.3].
 The time complexity for prior @ot based algorithms is at least $O\(c\)$ per remote operation @2019-sun-difference-ot-crdt-2-correctness-complexity[Section 3.1.4].
 This means quadratic runtime complexity in relation to the operation count for handling some count of operations, which is unusable for #emph[non-realtime] editing because there can be many concurrent operations.
 It is important to mention that the time complexity class is relevant.
 For example, $O\(log\(upright("text-length-including-deletions")\)\)$ runtime complexity can be equally acceptable to $O\(upright("concurrent-operations")\)$ runtime complexity because $O\(log\(n\)\)$ is growing quite slowly even for extremely large inputs.
-Prior research of @crdt:pl mostly managed a linear time complexity or worse except of a paper by @2016-briot-logn-optimization which optimizes an @rga adaptation to $O\(log\(n\)\)$ per operation similarly to us @2019-sun-difference-ot-crdt-2-correctness-complexity[Table 4].
-However, @2016-briot-logn-optimization have not gone into the analysis of performance edge cases prohibiting us from drawing a fair comparison.
+Prior research of @crdt:pl mostly managed a linear time complexity or worse except of a paper by #cite(
+  <2016-briot-logn-optimization>,
+  form: "prose",
+) which optimizes an @rga adaptation to $O\(log\(n\)\)$ per operation similarly to us @2019-sun-difference-ot-crdt-2-correctness-complexity[Table 4].
+However, #cite(
+  <2016-briot-logn-optimization>,
+  form: "prose",
+) have not gone into the analysis of performance edge cases prohibiting us from drawing a fair comparison.
 Additionally, it is unclear whether they include the conversion of remote operations to character positions.
 Furthermore, as the algorithm is based on @rga, it exhibits interleaving @2023-weidner-minimizing-interleaving[Table 1].
 
