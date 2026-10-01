@@ -183,7 +183,7 @@ local function transform(doc, opts)
         return pandoc.RawBlock('typst',
           '#figure(\n'
             .. '  {\n'
-            .. '    show figure: set figure(numbering: "(a)", supplement: [])\n'
+            .. '    show figure: set figure(numbering: "(a)")\n'
             .. '    show figure: set align(bottom)\n'
             .. '    grid(\n'
             .. '      columns: ' .. #cells .. ',\n'

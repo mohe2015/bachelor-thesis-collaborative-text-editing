@@ -23,7 +23,7 @@ Finally, in @final-high-level-code-overview, we give an overview of the resultin
 
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -163,7 +163,7 @@ Instead, the deleted element is moved to the node containing the other already d
 
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -210,7 +210,7 @@ Still, Scala, Java and the JVM are well-suited to look at the asymptotic perform
 
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -254,7 +254,7 @@ We therefore looked into an approach that fixes the root cause which is the sear
 
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -283,7 +283,7 @@ We therefore looked into an approach that fixes the root cause which is the sear
 ) <fig:simple-complex-simpleavl-real-world>
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -330,7 +330,7 @@ Note that this also includes the full insertion and deletion history and not onl
 
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -367,7 +367,7 @@ This concludes our optimization of the common execution path.
 
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -386,7 +386,7 @@ This concludes our optimization of the common execution path.
 ) <fig:edge-case-evil-children-example>
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -430,7 +430,7 @@ This results in logarithmic insertion.
 
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -449,7 +449,7 @@ This results in logarithmic insertion.
 ) <fig:edge-case-evil-insert-1-example>
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -511,7 +511,7 @@ Therefore, the leftmost descendant of this group of nodes can be efficiently ret
 #pagebreak()
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -530,7 +530,7 @@ Therefore, the leftmost descendant of this group of nodes can be efficiently ret
 ) <fig:edge-case-evil-insert-2-example>
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -585,7 +585,7 @@ Therefore, this also needs the optimization as explained for the previous edge c
 
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -604,7 +604,7 @@ Therefore, this also needs the optimization as explained for the previous edge c
 ) <fig:edge-case-evil-split-example>
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -642,7 +642,7 @@ The disadvantage is that the memory for deleted nodes is not reclaimed.
 
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -667,7 +667,7 @@ The disadvantage is that the memory for deleted nodes is not reclaimed.
 ) <fig:edge-case-evil-split-many-right-children-example>
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,

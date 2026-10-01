@@ -103,7 +103,7 @@ The `FixtureOperation` is the underlying test data and therefore does not count 
 
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,
@@ -132,7 +132,7 @@ The `FixtureOperation` is the underlying test data and therefore does not count 
 ) <fig:complexavl-extra-large-local-real-world>
 #figure(
   {
-    show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set figure(numbering: "(a)")
     show figure: set align(bottom)
     grid(
       columns: 2,

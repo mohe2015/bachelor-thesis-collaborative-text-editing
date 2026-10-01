@@ -37,7 +37,7 @@ Combining all that will therefore produce the text `"small trees grow"`.
 <fig:fugue-traversal>
 
 #figure({
-  show figure: set figure(numbering: "(a)", supplement: [])
+  show figure: set figure(numbering: "(a)")
   show figure: set align(bottom)
   grid(
     columns: 2,
@@ -65,7 +65,7 @@ The reason for choosing that interface is that text editors conform to it.
 All indices are zero based, so the element at index $0$ is the first element.
 
 #figure({
-  show figure: set figure(numbering: "(a)", supplement: [])
+  show figure: set figure(numbering: "(a)")
   show figure: set align(bottom)
   grid(
     columns: 2,
@@ -103,7 +103,7 @@ This right origin can not already have left children as otherwise one of them wo
 Starting with the previous tree, @fig:fugue-right-ac-left-b shows an insertion at index $1$.
 
 #figure({
-  show figure: set figure(numbering: "(a)", supplement: [])
+  show figure: set figure(numbering: "(a)")
   show figure: set align(bottom)
   grid(
     columns: 2,
@@ -119,7 +119,7 @@ Starting with the previous tree, @fig:fugue-right-ac-left-b shows an insertion a
   )
 })
 #figure({
-  show figure: set figure(numbering: "(a)", supplement: [])
+  show figure: set figure(numbering: "(a)")
   show figure: set align(bottom)
   grid(
     columns: 2,
@@ -151,7 +151,7 @@ The node to delete, which is calculated from the index in the tree traversal of 
 If it already was deleted by a concurrent user, the operation does nothing.
 
 #figure({
-  show figure: set figure(numbering: "(a)", supplement: [])
+  show figure: set figure(numbering: "(a)")
   show figure: set align(bottom)
   grid(
     columns: 2,
