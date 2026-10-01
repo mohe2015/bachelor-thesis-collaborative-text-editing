@@ -24,6 +24,7 @@ Finally, in @final-high-level-code-overview, we give an overview of the resultin
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -163,6 +164,7 @@ Instead, the deleted element is moved to the node containing the other already d
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -209,6 +211,7 @@ Still, Scala, Java and the JVM are well-suited to look at the asymptotic perform
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -252,6 +255,7 @@ We therefore looked into an approach that fixes the root cause which is the sear
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -280,6 +284,7 @@ We therefore looked into an approach that fixes the root cause which is the sear
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -326,6 +331,7 @@ Note that this also includes the full insertion and deletion history and not onl
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -362,6 +368,7 @@ This concludes our optimization of the common execution path.
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -380,6 +387,7 @@ This concludes our optimization of the common execution path.
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -423,6 +431,7 @@ This results in logarithmic insertion.
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -441,6 +450,7 @@ This results in logarithmic insertion.
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -502,6 +512,7 @@ Therefore, the leftmost descendant of this group of nodes can be efficiently ret
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -520,6 +531,7 @@ Therefore, the leftmost descendant of this group of nodes can be efficiently ret
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -574,6 +586,7 @@ Therefore, this also needs the optimization as explained for the previous edge c
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -592,6 +605,7 @@ Therefore, this also needs the optimization as explained for the previous edge c
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -629,6 +643,7 @@ The disadvantage is that the memory for deleted nodes is not reclaimed.
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
@@ -653,6 +668,7 @@ The disadvantage is that the memory for deleted nodes is not reclaimed.
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
+    show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,

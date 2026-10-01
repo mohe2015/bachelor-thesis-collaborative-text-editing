@@ -184,6 +184,7 @@ local function transform(doc, opts)
           '#figure(\n'
             .. '  {\n'
             .. '    show figure: set figure(numbering: "(a)", supplement: [])\n'
+            .. '    show figure: set align(bottom)\n'
             .. '    grid(\n'
             .. '      columns: ' .. #cells .. ',\n'
             .. '      align: bottom,\n'
