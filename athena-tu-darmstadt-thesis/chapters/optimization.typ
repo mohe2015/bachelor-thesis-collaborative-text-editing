@@ -1,4 +1,4 @@
-#import "../utils.typ": evil-edge-case, gls, glspl, twoMinipageFigures
+#import "../utils.typ": gls, glspl, twoMinipageFigures
 = Optimizing Common Edit Operations
 <optimization>
 Based on a theoretical understanding of our base implementation developed from the algorithmic description in the Fugue paper @2023-weidner-minimizing-interleaving[Algorithm~1] we expect quadratic runtime complexity and linear memory usage in relation to the text length.
@@ -21,7 +21,7 @@ In @edge-cases we investigate these performance edge cases, and develop optimiza
 This is important so malicious peers or unusual editing behavior can not lead to unusable runtime performance.
 Finally, in @final-high-level-code-overview, we give an overview of the resulting data structure.
 
-#figure(
+#twoMinipageFigures(
   [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/simple-sequential-inserts.pdf",
@@ -30,9 +30,8 @@ Finally, in @final-high-level-code-overview, we give an overview of the resultin
         time
       ],
     )
-    <fig:simple-sequential-inserts-time>
-
-    #figure(
+    <fig:simple-sequential-inserts-time>],
+  [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/simple-sequential-inserts-memory.pdf",
       ),
@@ -40,15 +39,8 @@ Finally, in @final-high-level-code-overview, we give an overview of the resultin
         memory
       ],
     )
-    <fig:simple-sequential-inserts-memory>
-
-  ],
-  caption: [
-    Benchmark results for sequential insertions with the simple algorithm
-  ],
+    <fig:simple-sequential-inserts-memory>],
 )
-<fig:simple-sequential-inserts>
-
 #figure(
   [```scala
     override def atVisibleIndex(i: Int): SimpleTreeNode[V] = {
@@ -160,7 +152,7 @@ Deletion generally needs to split a node into up to three parts (except if the f
 Later optimizations avoid this for sequential forward and backward deletions by the same replica if both nodes have the same @simple-ID.
 Instead, the deleted element is moved to the node containing the other already deleted elements if the parent node has no other right children.
 
-#figure(
+#twoMinipageFigures(
   [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/simple-complex-sequential-inserts.pdf",
@@ -169,9 +161,8 @@ Instead, the deleted element is moved to the node containing the other already d
         time
       ],
     )
-    <fig:simple-complex-sequential-inserts-time>
-
-    #figure(
+    <fig:simple-complex-sequential-inserts-time>],
+  [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/simple-complex-sequential-inserts-memory.pdf",
       ),
@@ -179,15 +170,8 @@ Instead, the deleted element is moved to the node containing the other already d
         memory
       ],
     )
-    <fig:simple-complex-sequential-inserts-memory>
-
-  ],
-  caption: [
-    Benchmark results for sequential insertions comparing the simple algorithm and the batching algorithm
-  ],
+    <fig:simple-complex-sequential-inserts-memory>],
 )
-<fig:simple-complex-sequential-inserts>
-
 ===== Results for sequential insertions
 <results-for-sequential-insertions>
 Benchmarking the sequential insertions produces the results in @fig:simple-complex-sequential-inserts.
@@ -206,7 +190,7 @@ In our experience this only leads to limited improvements though.
 It would be easier to use a programming language that does not use a garbage collector or probably not even a JIT compiler to optimize the algorithm to that depth.
 Still, Scala, Java and the JVM are well-suited to look at the asymptotic performance because memory allocation or cyclic data structures do not need to be considered in contrast to low level languages like C++ or Rust.
 
-#figure(
+#twoMinipageFigures(
   [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/simple-complex-real-world.pdf",
@@ -215,9 +199,8 @@ Still, Scala, Java and the JVM are well-suited to look at the asymptotic perform
         time
       ],
     )
-    <fig:simple-complex-real-world-time>
-
-    #figure(
+    <fig:simple-complex-real-world-time>],
+  [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/simple-complex-real-world-memory.pdf",
       ),
@@ -225,15 +208,8 @@ Still, Scala, Java and the JVM are well-suited to look at the asymptotic perform
         memory
       ],
     )
-    <fig:simple-complex-real-world-memory>
-
-  ],
-  caption: [
-    Benchmark results for real world editing trace comparing the simple algorithm and the batching algorithm
-  ],
+    <fig:simple-complex-real-world-memory>],
 )
-<fig:simple-complex-real-world>
-
 ===== Results for real world editing trace
 <results-for-real-world-editing-trace>
 While this results in good performance, it clearly does not cover real world editing behavior.
@@ -249,7 +225,7 @@ It is the editing trace from the LaTeX~source of #link(
 This is because the batching only helps to improve the performance by some factor that is correlated with the size of consecutive insertions.
 We therefore looked into an approach that fixes the root cause which is the search of the node in the tree that represents the character at a position in the text.
 
-#figure(
+#twoMinipageFigures(
   [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/simple-complex-simpleavl-real-world.pdf",
@@ -258,9 +234,8 @@ We therefore looked into an approach that fixes the root cause which is the sear
         time
       ],
     )
-    <fig:simple-complex-simpleavl-real-world-time>
-
-    #figure(
+    <fig:simple-complex-simpleavl-real-world-time>],
+  [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/simple-complex-simpleavl-real-world-memory.pdf",
       ),
@@ -268,16 +243,9 @@ We therefore looked into an approach that fixes the root cause which is the sear
         memory
       ],
     )
-    <fig:simple-complex-simpleavl-real-world-memory>
-
-  ],
-  caption: [
-    Benchmark results for real world editing trace comparing the simple algorithm, the batching algorithm and the simple AVL algorithm
-  ],
+    <fig:simple-complex-simpleavl-real-world-memory>],
 )
-<fig:simple-complex-simpleavl-real-world>
-
-#figure(
+#twoMinipageFigures(
   [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/simpleavl-real-world.pdf",
@@ -286,9 +254,8 @@ We therefore looked into an approach that fixes the root cause which is the sear
         time
       ],
     )
-    <fig:simpleavl-real-world-time>
-
-    #figure(
+    <fig:simpleavl-real-world-time>],
+  [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/simpleavl-real-world-memory.pdf",
       ),
@@ -296,15 +263,8 @@ We therefore looked into an approach that fixes the root cause which is the sear
         memory
       ],
     )
-    <fig:simpleavl-real-world-memory>
-
-  ],
-  caption: [
-    Benchmark results for real world editing trace with the simple AVL algorithm
-  ],
+    <fig:simpleavl-real-world-memory>],
 )
-<fig:simpleavl-real-world>
-
 #pagebreak()
 == Optimization Using a Look-Up Datastructure
 <sec:optimization-look-up-datastructure>
@@ -323,7 +283,7 @@ The memory overhead is still very high, because a new node in the AVL tree and t
 @fig:simpleavl-real-world shows a memory usage of about 250 bytes per character operation.
 Note that this also includes the full insertion and deletion history and not only the tree itself.
 
-#figure(
+#twoMinipageFigures(
   [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/simpleavl-complexavl-real-world.pdf",
@@ -332,9 +292,8 @@ Note that this also includes the full insertion and deletion history and not onl
         time
       ],
     )
-    <fig:simpleavl-complexavl-real-world-time>
-
-    #figure(
+    <fig:simpleavl-complexavl-real-world-time>],
+  [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/simpleavl-complexavl-real-world-memory.pdf",
       ),
@@ -342,15 +301,8 @@ Note that this also includes the full insertion and deletion history and not onl
         memory
       ],
     )
-    <fig:simpleavl-complexavl-real-world-memory>
-
-  ],
-  caption: [
-    Benchmark results for real world editing trace comparing the simple AVL algorithm and the batching AVL algorithm
-  ],
+    <fig:simpleavl-complexavl-real-world-memory>],
 )
-<fig:simpleavl-complexavl-real-world>
-
 == Combined Optimizations
 <combined-optimizations>
 Combining the AVL tree optimization and node batching improves the memory usage and runtime.
@@ -359,8 +311,25 @@ The runtime per operation is one microsecond, thus one million operations can be
 The memory usage per operation is about 25 bytes per operation.
 This concludes our optimization of the common execution path.
 
-#evil-edge-case("evil-children", "edge case with many children")
 #figure(
+  [#figure(image("/result/evil-children-before.pdf"), caption: [
+      before
+    ])
+    <fig:edge-case-evil-children-before>
+
+    #figure(image("/result/evil-children-after.pdf"), caption: [
+      after
+    ])
+    <fig:edge-case-evil-children-after>
+
+  ],
+  caption: [
+    Example for edge case with many children
+  ],
+)
+<fig:edge-case-evil-children-example>
+
+#twoMinipageFigures(
   [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-children.pdf",
@@ -369,9 +338,8 @@ This concludes our optimization of the common execution path.
         time
       ],
     )
-    <fig:complexavl-evil-children-time>
-
-    #figure(
+    <fig:complexavl-evil-children-time>],
+  [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-children-memory.pdf",
       ),
@@ -379,15 +347,8 @@ This concludes our optimization of the common execution path.
         memory
       ],
     )
-    <fig:complexavl-evil-children-memory>
-
-  ],
-  caption: [
-    Benchmark results of an edge case with many children
-  ],
+    <fig:complexavl-evil-children-memory>],
 )
-<fig:complexavl-evil-children>
-
 == Performance Edge Cases
 <edge-cases>
 An optimal algorithm must perform efficiently in #emph[all] cases.
@@ -403,11 +364,25 @@ Child insertions need to be efficient even after many children are inserted at t
 Therefore, the children are stored in a `mutable.SortedSet`, so a binary search tree.
 This results in logarithmic insertion.
 
-#evil-edge-case(
-  "evil-insert-1",
-  "edge case for insertion to the left of the root",
-)
 #figure(
+  [#figure(image("/result/evil-insert-1-before.pdf"), caption: [
+      before
+    ])
+    <fig:edge-case-evil-insert-1-before>
+
+    #figure(image("/result/evil-insert-1-after.pdf"), caption: [
+      after
+    ])
+    <fig:edge-case-evil-insert-1-after>
+
+  ],
+  caption: [
+    Example for edge case for insertion to the left of the root
+  ],
+)
+<fig:edge-case-evil-insert-1-example>
+
+#twoMinipageFigures(
   [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-1.pdf",
@@ -416,9 +391,8 @@ This results in logarithmic insertion.
         time
       ],
     )
-    <fig:complexavl-evil-insert-1-time>
-
-    #figure(
+    <fig:complexavl-evil-insert-1-time>],
+  [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-1-memory.pdf",
       ),
@@ -426,15 +400,8 @@ This results in logarithmic insertion.
         memory
       ],
     )
-    <fig:complexavl-evil-insert-1-memory>
-
-  ],
-  caption: [
-    Benchmark results of an edge case for insertion to the left of the root
-  ],
+    <fig:complexavl-evil-insert-1-memory>],
 )
-<fig:complexavl-evil-insert-1>
-
 #figure(
   [```scala
     val firstRightChild = leftOrigin.firstRightChild()
@@ -468,11 +435,25 @@ The cache also uses an AVL tree with the specialty of storing a parent reference
 Therefore, the leftmost descendant of this group of nodes can be efficiently retrieved and updated, the cache can be efficiently split up by splitting the AVL tree and new nodes can be efficiently inserted.
 
 #pagebreak()
-#evil-edge-case(
-  "evil-insert-2",
-  "edge case for concurrent insertion to the right",
-)
 #figure(
+  [#figure(image("/result/evil-insert-2-before.pdf"), caption: [
+      before
+    ])
+    <fig:edge-case-evil-insert-2-before>
+
+    #figure(image("/result/evil-insert-2-after.pdf"), caption: [
+      after
+    ])
+    <fig:edge-case-evil-insert-2-after>
+
+  ],
+  caption: [
+    Example for edge case for concurrent insertion to the right
+  ],
+)
+<fig:edge-case-evil-insert-2-example>
+
+#twoMinipageFigures(
   [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-2.pdf",
@@ -481,9 +462,8 @@ Therefore, the leftmost descendant of this group of nodes can be efficiently ret
         time
       ],
     )
-    <fig:complexavl-evil-insert-2-time>
-
-    #figure(
+    <fig:complexavl-evil-insert-2-time>],
+  [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-2-memory.pdf",
       ),
@@ -491,15 +471,8 @@ Therefore, the leftmost descendant of this group of nodes can be efficiently ret
         memory
       ],
     )
-    <fig:complexavl-evil-insert-2-memory>
-
-  ],
-  caption: [
-    Benchmark results of an edge case for concurrent insertion to the right
-  ],
+    <fig:complexavl-evil-insert-2-memory>],
 )
-<fig:complexavl-evil-insert-2>
-
 #figure(
   [```scala
     val base = if (rightChildrenBuffer.nn.isEmpty || before.isEmpty) {
@@ -526,8 +499,25 @@ For example as this is a concurrent insertion, the first `c` node needs to be in
 Therefore, the last node in the subtree of its left child needs to be retrieved, which requires to get the rightmost descendant of that child as shown in @lst:code-evil-insert-2.
 Therefore, this also needs the optimization as explained for the previous edge case.
 
-#evil-edge-case("evil-split", "edge case for node splitting")
 #figure(
+  [#figure(image("/result/evil-split-before.pdf"), caption: [
+      before
+    ])
+    <fig:edge-case-evil-split-before>
+
+    #figure(image("/result/evil-split-after.pdf"), caption: [
+      after
+    ])
+    <fig:edge-case-evil-split-after>
+
+  ],
+  caption: [
+    Example for edge case for node splitting
+  ],
+)
+<fig:edge-case-evil-split-example>
+
+#twoMinipageFigures(
   [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split.pdf",
@@ -536,9 +526,8 @@ Therefore, this also needs the optimization as explained for the previous edge c
         time
       ],
     )
-    <fig:complexavl-evil-split-time>
-
-    #figure(
+    <fig:complexavl-evil-split-time>],
+  [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split-memory.pdf",
       ),
@@ -546,15 +535,8 @@ Therefore, this also needs the optimization as explained for the previous edge c
         memory
       ],
     )
-    <fig:complexavl-evil-split-memory>
-
-  ],
-  caption: [
-    Benchmark results of an edge case for node splitting
-  ],
+    <fig:complexavl-evil-split-memory>],
 )
-<fig:complexavl-evil-split>
-
 #pagebreak()
 ===== Edge case for node splitting
 <subsection:evil-split>
@@ -564,11 +546,31 @@ Therefore, instead of splitting it, nodes reference a subpart of the buffer.
 This means splitting a node only requires creating and inserting a new node and updating a few references to the buffer start and end, inserting it into the AVL tree and updating the descendant cache.
 The disadvantage is that the memory for deleted nodes is not reclaimed.
 
-#evil-edge-case(
-  "evil-split-many-right-children",
-  "edge case for node splitting with many right children",
-)
 #figure(
+  [#figure(
+      image("/result/evil-split-many-right-children-before.pdf"),
+      caption: [
+        before
+      ],
+    )
+    <fig:edge-case-evil-split-many-right-children-before>
+
+    #figure(
+      image("/result/evil-split-many-right-children-after.pdf"),
+      caption: [
+        after
+      ],
+    )
+    <fig:edge-case-evil-split-many-right-children-after>
+
+  ],
+  caption: [
+    Example for edge case for node splitting with many right children
+  ],
+)
+<fig:edge-case-evil-split-many-right-children-example>
+
+#twoMinipageFigures(
   [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split-many-right-children.pdf",
@@ -577,9 +579,8 @@ The disadvantage is that the memory for deleted nodes is not reclaimed.
         time
       ],
     )
-    <fig:complexavl-evil-split-many-right-children-time>
-
-    #figure(
+    <fig:complexavl-evil-split-many-right-children-time>],
+  [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split-many-right-children-memory.pdf",
       ),
@@ -587,15 +588,8 @@ The disadvantage is that the memory for deleted nodes is not reclaimed.
         memory
       ],
     )
-    <fig:complexavl-evil-split-many-right-children-memory>
-
-  ],
-  caption: [
-    Benchmark results of an edge case for node splitting with many right children
-  ],
+    <fig:complexavl-evil-split-many-right-children-memory>],
 )
-<fig:complexavl-evil-split-many-right-children>
-
 ===== Edge case for node splitting with many right children
 <edge-case-for-node-splitting-with-many-right-children>
 A previous version of the algorithm stored a reference to the parent in each node.

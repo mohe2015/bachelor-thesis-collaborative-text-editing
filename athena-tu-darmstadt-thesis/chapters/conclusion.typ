@@ -1,4 +1,4 @@
-#import "../utils.typ": evil-edge-case, gls, glspl, twoMinipageFigures
+#import "../utils.typ": gls, glspl, twoMinipageFigures
 = Conclusion
 <chapter:conclusion>
 This thesis shows that efficient collaborative plain text editing in a decentralized and #emph[non-realtime] setting while preserving user intentions is possible.

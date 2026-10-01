@@ -1,4 +1,4 @@
-#import "../utils.typ": evil-edge-case, gls, glspl, twoMinipageFigures
+#import "../utils.typ": gls, glspl, twoMinipageFigures
 = Fugue Algorithm
 <chapter:background>
 This chapter explains how the Fugue algorithm works and is heavily based on the Fugue paper @2023-weidner-minimizing-interleaving.

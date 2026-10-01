@@ -1,2 +1,2 @@
-#import "../utils.typ": evil-edge-case, twoMinipageFigures, gls, glspl
+#import "../utils.typ": twoMinipageFigures, gls, glspl
 $body$

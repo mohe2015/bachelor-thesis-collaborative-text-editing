@@ -1,4 +1,4 @@
-#import "../utils.typ": evil-edge-case, gls, glspl, twoMinipageFigures
+#import "../utils.typ": gls, glspl, twoMinipageFigures
 = Future Work
 <chapter:future-work>
 In this chapter we look at what is missing and which aspects could be researched further.

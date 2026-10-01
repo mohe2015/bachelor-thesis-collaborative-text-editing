@@ -1,4 +1,4 @@
-#import "../utils.typ": evil-edge-case, gls, glspl, twoMinipageFigures
+#import "../utils.typ": gls, glspl, twoMinipageFigures
 toc#pagebreak()
 
 = Evaluation
@@ -101,7 +101,7 @@ The `HashMap$Node`, `[Lscala.collection.mutable.HashMap$Node`, `Tuple2` and `Sim
 The `RedBlackTree` and `TreeSet` are used for multiple same-side children and for quickly retrieving the correct node when a batching node has been split.
 The `FixtureOperation` is the underlying test data and therefore does not count towards the memory usage when measuring the memory usage difference before and after running the test.
 
-#figure(
+#twoMinipageFigures(
   [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/complexavl-extra-large-local-real-world.pdf",
@@ -110,9 +110,8 @@ The `FixtureOperation` is the underlying test data and therefore does not count 
         time
       ],
     )
-    <fig:complexavl-extra-large-local-real-world-time>
-
-    #figure(
+    <fig:complexavl-extra-large-local-real-world-time>],
+  [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/complexavl-extra-large-local-real-world-memory.pdf",
       ),
@@ -120,16 +119,9 @@ The `FixtureOperation` is the underlying test data and therefore does not count 
         memory
       ],
     )
-    <fig:complexavl-extra-large-local-real-world-memory>
-
-  ],
-  caption: [
-    Benchmark results for repeatedly concatenated real world text inserted locally with the batching AVL algorithm
-  ],
+    <fig:complexavl-extra-large-local-real-world-memory>],
 )
-<fig:complexavl-extra-large-local-real-world>
-
-#figure(
+#twoMinipageFigures(
   [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/complexavl-extra-large-remote-real-world.pdf",
@@ -138,9 +130,8 @@ The `FixtureOperation` is the underlying test data and therefore does not count 
         time
       ],
     )
-    <fig:complexavl-extra-large-remote-real-world-time>
-
-    #figure(
+    <fig:complexavl-extra-large-remote-real-world-time>],
+  [#figure(
       image(
         "../text-rdt/jvm/figure-benchmark-results/complexavl-extra-large-remote-real-world-memory.pdf",
       ),
@@ -148,15 +139,8 @@ The `FixtureOperation` is the underlying test data and therefore does not count 
         memory
       ],
     )
-    <fig:complexavl-extra-large-remote-real-world-memory>
-
-  ],
-  caption: [
-    Benchmark results for repeatedly concatenated real world text inserted remotely with the batching AVL algorithm
-  ],
+    <fig:complexavl-extra-large-remote-real-world-memory>],
 )
-<fig:complexavl-extra-large-remote-real-world>
-
 == Results
 <results>
 @edge-cases already looked at performance edge cases and artificial cases which are important to cover in the context of decentralized algorithms, so there is no case that could severely reduce the performance of the algorithm which could lead to it becoming unusable.
