@@ -38,18 +38,30 @@ Combining all that will therefore produce the text `"small trees grow"`.
 
 #figure({
   show figure: set figure(numbering: "(a)", supplement: [])
-  grid(
-    columns: 2,
-    align: bottom,
-    [#figure(image("/result/empty.pdf"), caption: [
-        Fugue tree with root node
-      ])
-      <fig:fugue-root-node>],
-    [#figure(image("/result/root-right-a.pdf"), caption: [
-        Insertion of `"a"` into Fugue tree at index $0$
-      ])
-      <fig:fugue-right-a>],
-  )
+  layout(size => context {
+    let gutter = 1em.to-absolute()
+    let colw = (size.width - gutter) / 2
+
+    let a = image("/result/empty.pdf")
+    let b = image("/result/root-right-a.pdf")
+
+    // tallest image at the width it will actually get
+    let h = calc.max(
+      measure(a, width: colw).height,
+      measure(b, width: colw).height,
+    )
+
+    // bottom-align each image inside a box of that common height
+    let pic(img) = box(width: 100%, height: h, align(bottom + center, img))
+
+    grid(
+      columns: (colw, colw),
+      column-gutter: gutter,
+      align: top,
+      [#figure(pic(a), caption: [Fugue tree with root node]) <fig:fugue-root-node>],
+      [#figure(pic(b), caption: [Insertion of `"a"` into Fugue tree at index $0$]) <fig:fugue-right-a>],
+    )
+  })
 })
 == Initial State
 <initial-state>
