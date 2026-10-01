@@ -1,4 +1,4 @@
-#import "../utils.typ": gls, glspl, twoMinipageFigures
+#import "../utils.typ": gls, glspl
 Text editing is ubiquitous, as it occurs on almost every website, mobile app, and desktop application.
 Collaborative text editing avoids manual synchronization when working together with others on text.
 This requires algorithms that can efficiently combine the concurrent edit operations in an intent-preserving way.

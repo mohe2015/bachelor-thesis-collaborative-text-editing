@@ -159,6 +159,31 @@ local function transform(doc, opts)
     end,
 
     Figure = function(fig)
+      if fig.classes:includes('grid') then
+        local cells = {}
+        for _, b in ipairs(fig.content) do
+          if b.t == 'Figure' then
+            cells[#cells + 1] = '      [' .. render({ b }) .. '],'
+          end
+        end
+        local label = ''
+        if fig.identifier ~= '' then
+          label = ' <' .. (opts.identifier_prefix or '') .. fig.identifier .. '>'
+        end
+        return pandoc.RawBlock('typst',
+          '#figure(\n'
+            .. '  {\n'
+            .. '    show figure: set figure(numbering: "(a)", supplement: [])\n'
+            .. '    grid(\n'
+            .. '      columns: ' .. #cells .. ',\n'
+            .. '      align: bottom,\n'
+            .. table.concat(cells, '\n') .. '\n'
+            .. '    )\n'
+            .. '  },\n'
+            .. '  caption: [' .. render(fig.caption.long) .. '],\n'
+            .. ')' .. label)
+      end
+
       if not fig.classes:includes('marginfigure') then return end
 
       local label_argument = ''

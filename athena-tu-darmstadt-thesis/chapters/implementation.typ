@@ -1,4 +1,4 @@
-#import "../utils.typ": gls, glspl, twoMinipageFigures
+#import "../utils.typ": gls, glspl
 = Implementation of Fugue Algorithm
 <section:implementation>
 This chapter first lists the requirements for an implementation of the Fugue algorithm in @section:implementation-requirements.

@@ -60,20 +60,22 @@ local definitions = [=[
 \newcommand{\addtocontents}{}
 
 \newcommand{\twoMinipageFigures}[4]{
-  \begin{minipage}
   \begin{figure}
-  \includegraphics{#1}
-  #2
+    \pandocgrid{}\par
+    \begin{figure}
+      \includegraphics{#1}
+      #2
+    \end{figure}
+    \begin{figure}
+      \includegraphics{#3}
+      #4
+    \end{figure}
   \end{figure}
-  \begin{figure}
-  \includegraphics{#3}
-  #4
-  \end{figure}
-  \end{minipage}
 }
 
 \newcommand{\benchmarkResults}[2]{
-    \begin{minipage}
+    \begin{figure}
+        \pandocgrid{}\par
         \begin{subfigure}{.5\textwidth}
             \includegraphics[width=\textwidth]{../text-rdt/jvm/figure-benchmark-results/#1.pdf}
             \caption{time}
@@ -86,7 +88,7 @@ local definitions = [=[
         \end{subfigure}
         \caption{#2}
         \label{fig:#1}
-    \end{minipage}
+    \end{figure}
 }
 
 \newcommand{\twoSubfigures}[4]{
@@ -102,6 +104,7 @@ local definitions = [=[
 
 \newcommand{\evilEdgeCase}[2]{
     \begin{figure}
+        \pandocgrid{}\par
         \twoSubfigures{../text-rdt/target/pdfs/#1-before.pdf}{\caption{before}
             \label{fig:edge-case-#1-before}}{../text-rdt/target/pdfs/#1-after.pdf}{\caption{after}
             \label{fig:edge-case-#1-after}}
@@ -158,6 +161,10 @@ function Reader(input, opts)
       if marker_text(fig.content[1]) == '\\pandocmargin{}' then
         fig.content:remove(1)
         fig.classes:insert('marginfigure')
+      end
+      if marker_text(fig.content[1]) == '\\pandocgrid{}' then
+        fig.content:remove(1)
+        fig.classes:insert('grid')
       end
 
       -- Walk fig.content so fig.identifier mutations persist

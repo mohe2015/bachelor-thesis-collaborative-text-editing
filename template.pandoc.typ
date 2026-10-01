@@ -1,2 +1,2 @@
-#import "../utils.typ": twoMinipageFigures, gls, glspl
+#import "../utils.typ": gls, glspl
 $body$
