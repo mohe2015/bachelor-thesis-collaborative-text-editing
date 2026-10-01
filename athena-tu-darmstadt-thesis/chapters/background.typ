@@ -52,8 +52,8 @@ Combining all that will therefore produce the text `"small trees grow"`.
         <fig:fugue-right-a>],
     )
   },
-  caption: [Insertion of `"a"` into Fugue tree at index $0$],
-) <fig:fugue-right-a>
+  caption: [],
+)
 == Initial State
 <initial-state>
 The initial state consists only of the root node as shown in @fig:fugue-root-node.
@@ -82,8 +82,8 @@ All indices are zero based, so the element at index $0$ is the first element.
         <fig:fugue-right-ac-left-b>],
     )
   },
-  caption: [Insertion of `"b"` into Fugue tree at index $1$],
-) <fig:fugue-right-ac-left-b>
+  caption: [],
+)
 ==== Insert operation
 <insert-operation>
 To insert an element $x$ at a position $i$, the algorithm first creates a new @simple-ID.
@@ -122,8 +122,8 @@ Starting with the previous tree, @fig:fugue-right-ac-left-b shows an insertion a
         <fig:fugue-concurrent-insert-b>],
     )
   },
-  caption: [Fugue tree with text insertion at replica B],
-) <fig:fugue-concurrent-insert-b>
+  caption: [],
+)
 #figure(
   {
     show figure: set figure(numbering: "(a)", supplement: [])
@@ -140,8 +140,8 @@ Starting with the previous tree, @fig:fugue-right-ac-left-b shows an insertion a
         <fig:fugue-delete>],
     )
   },
-  caption: [Fugue tree with deletions],
-) <fig:fugue-delete>
+  caption: [],
+)
 ==== Concurrent insert operation
 <concurrent-insert-operation>
 Due to concurrent insertions, it may happen that a node has several right or left children.
@@ -174,8 +174,8 @@ If it already was deleted by a concurrent user, the operation does nothing.
         <fig:fugue-reverse-sequential-inserts>],
     )
   },
-  caption: [Fugue tree with reverse sequential insertions],
-) <fig:fugue-reverse-sequential-inserts>
+  caption: [],
+)
 #figure(image("/result/shopping.pdf"), caption: [
   Fugue tree for shopping example
 ])

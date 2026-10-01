@@ -70,6 +70,8 @@ local definitions = [=[
       \includegraphics{#3}
       #4
     \end{figure}
+    \caption{}
+    \label{}
   \end{figure}
 }
 
