@@ -21,6 +21,12 @@ local function evil_edge_case(text)
     .. typst_string(b:sub(2, -2)) .. ')'
 end
 
+local function caption_is_empty(caption)
+  return caption ~= nil
+     and pandoc.utils.stringify(caption.long) == ''
+     and #caption.long <= 1
+end
+
 local function author_cites(cite)
   local out, changed = pandoc.Inlines{}, false
   for _, c in ipairs(cite.citations) do
@@ -170,6 +176,10 @@ local function transform(doc, opts)
         if fig.identifier ~= '' then
           label = ' <' .. (opts.identifier_prefix or '') .. fig.identifier .. '>'
         end
+        local caption_line = ''
+        if not caption_is_empty(fig.caption) then
+          caption_line = '  caption: [' .. render(fig.caption.long) .. '],\n'
+        end
         return pandoc.RawBlock('typst',
           '#figure(\n'
             .. '  {\n'
@@ -180,7 +190,7 @@ local function transform(doc, opts)
             .. table.concat(cells, '\n') .. '\n'
             .. '    )\n'
             .. '  },\n'
-            .. '  caption: [' .. render(fig.caption.long) .. '],\n'
+            .. caption_line
             .. ')' .. label)
       end
 

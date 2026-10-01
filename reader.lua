@@ -63,12 +63,12 @@ local definitions = [=[
   \begin{figure}
     \pandocgrid{}\par
     \begin{figure}
-      \includegraphics{#1}
       #2
+      \includegraphics{#1}
     \end{figure}
     \begin{figure}
-      \includegraphics{#3}
       #4
+      \includegraphics{#3}
     \end{figure}
     \caption{}
     \label{}
@@ -127,6 +127,7 @@ local function marker_text(block)
     return block.text
   end
 end
+
 
 function Reader(input, opts)
   return pandoc.read(definitions .. tostring(input),
