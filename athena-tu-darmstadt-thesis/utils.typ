@@ -47,18 +47,14 @@
 ) #label("fig:edge-case-" + name + "-example") ]
 
 #let twoMinipageFigures(
-  file1,
-  caption1,
-  label1,
-  file2,
-  caption2,
-  label2,
+  figure1,
+  figure2,
 ) = figure({
   show figure: set figure(numbering: "(a)", supplement: [])
   grid(
     columns: (50%, 50%),
     align: bottom,
-    [ #figure(image(file1), caption: caption1, kind: "fig1") #label(label1) ],
-    [ #figure(image(file2), caption: caption2, kind: "fig1") #label(label2) ],
+    figure1,
+    figure2
   )
 })

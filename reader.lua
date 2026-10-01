@@ -60,14 +60,16 @@ local definitions = [=[
 \newcommand{\addtocontents}{}
 
 \newcommand{\twoMinipageFigures}[4]{
+  \begin{minipage}
   \begin{figure}
-    \includegraphics{#1}
-    #2
+  \includegraphics{#1}
+  #2
   \end{figure}
   \begin{figure}
-    \includegraphics{#3}
-    #4
+  \includegraphics{#3}
+  #4
   \end{figure}
+  \end{minipage}
 }
 
 \newcommand{\benchmarkResults}[2]{

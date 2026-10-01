@@ -1,4 +1,4 @@
-#import "../utils.typ": evil-edge-case, gls, glspl
+#import "../utils.typ": evil-edge-case, gls, glspl, twoMinipageFigures
 = Introduction
 <introduction>
 Nearly all applications require text editing in some form --- even if just for text entry into a form element.

@@ -177,7 +177,24 @@ local function transform(doc, opts)
       return pandoc.RawBlock('typst',
         '#haobook.side-figure(\n' .. indent(rendered:sub(2)) .. ',\n'
           .. label_argument .. ')')
-    end
+    end,
+
+    Div = function(div)
+      if not div.classes:includes('minipage') then return end
+
+      local figs = div.content:filter(function(b) return b.t == 'Figure' end)
+      if #figs ~= 2 or #div.content ~= 2 then
+        error('minipage requires a Div containing exactly two Figures')
+      end
+
+      -- Pass each figure as a content block, so its trailing label stays
+      -- attached to the #figure(...) it follows.
+      return pandoc.RawBlock('typst',
+        '#twoMinipageFigures(\n'
+          .. '  [' .. render({ figs[1] }) .. '],\n'
+          .. '  [' .. render({ figs[2] }) .. '],\n'
+          .. ')')
+    end,
   }
 
   return doc
