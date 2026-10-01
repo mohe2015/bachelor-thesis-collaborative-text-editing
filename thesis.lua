@@ -21,6 +21,21 @@ local function evil_edge_case(text)
     .. typst_string(b:sub(2, -2)) .. ')'
 end
 
+local function author_cites(cite)
+  local out, changed = pandoc.Inlines{}, false
+  for _, c in ipairs(cite.citations) do
+    if #out > 0 then out:insert(pandoc.Space()) end
+    if c.mode == 'AuthorInText' then
+      changed = true
+      out:insert(pandoc.RawInline('typst',
+        '#cite(<' .. c.id .. '>, form: "author")'))
+    else
+      out:insert(pandoc.Cite(cite.content, {c}))
+    end
+  end
+  if changed then return out end
+end
+
 local function transform(doc, opts)
   doc = doc:walk {
     RawInline = function(raw)
@@ -70,6 +85,7 @@ local function transform(doc, opts)
   -- Convert layout markers before rendering notes or figure fragments,
   -- and map the LaTeX project's images/ directory to the Typst assets directory.
   doc = doc:walk {
+    Cite = author_cites,
     Span = function(span)
       if #span.content == 0 and span.classes:includes('pagebreak') then
         return pandoc.RawInline('typst', '#pagebreak()')
