@@ -28,7 +28,7 @@ local function author_cites(cite)
     if c.mode == 'AuthorInText' then
       changed = true
       out:insert(pandoc.RawInline('typst',
-        '#cite(<' .. c.id .. '>, form: "author")'))
+        '#cite(<' .. c.id .. '>, form: "author")#h(0pt)')) -- hack to prevent merging citations
     else
       out:insert(pandoc.Cite(cite.content, {c}))
     end

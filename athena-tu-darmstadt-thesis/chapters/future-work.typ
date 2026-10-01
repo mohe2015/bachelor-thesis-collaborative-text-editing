@@ -8,6 +8,8 @@ In this chapter we look at what is missing and which aspects could be researched
 In their review of the Fugue paper, #cite(
   <2023-sun-critical-examination-fugue-ot>,
   form: "author",
+)#h(
+  0pt,
 ) shows that the claims in the Fugue paper @2023-weidner-minimizing-interleaving about @ot being interleaving are not correct @2023-sun-critical-examination-fugue-ot@2023-sun-critical-examination-fugue-ot-1@2023-sun-critical-examination-fugue-ot-2@2023-sun-critical-examination-fugue-ot-3.
 First, they show that mistakes were made in the Fugue paper when applying the @ot algorithms which render their results regarding @ot invalid @2023-sun-critical-examination-fugue-ot-1@2023-sun-critical-examination-fugue-ot-2.
 They also show that interleaving has been examined and documented before and can be solved in @ot, usually by having operations based on strings and not single characters, but this is also possible when operating on single characters @2023-sun-critical-examination-fugue-ot-2.
@@ -15,9 +17,8 @@ Therefore, investigating OT algorithms, especially in a #emph[non-realtime] sett
 
 ===== Necessary Non-interleaving Properties for Intent-Preserving Text Editing
 <necessary-non-interleaving-properties-for-intent-preserving-text-editing>
-The review by #cite(
-  <2023-sun-critical-examination-fugue-ot>,
-  form: "author",
+The review by #cite(<2023-sun-critical-examination-fugue-ot>, form: "author")#h(
+  0pt,
 ) also suggests that not all the properties that are proposed in the Fugue paper (especially multi-user relay interleaving and backward interleaving) are necessary or useful for user intent preserving text editing @2023-sun-critical-examination-fugue-ot-2.
 While the examples we show in @section:challenges-text-interleaving and @section:challenges-text-interleaving-fugue are realistic, we do not know which properties are strictly necessary, as required properties seriously limit the freedom in the design of suitable algorithms.
 For example, the Fugue paper proposes a property of maximally non-interleaving that produces a unique order with the least possible interleaving.
