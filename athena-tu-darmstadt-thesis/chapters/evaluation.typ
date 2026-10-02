@@ -103,7 +103,7 @@ The `FixtureOperation` is the underlying test data and therefore does not count 
 
 #figure(
   {
-    show figure: set figure(numbering: "(a)")
+    show figure: set figure(numbering: "(a)", placement: top)
     show figure: set align(bottom)
     grid(
       columns: 2,

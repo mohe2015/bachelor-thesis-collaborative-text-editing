@@ -48,10 +48,7 @@
   abstract: [
     #include "chapters/abstract.typ"
   ],
-  bib: bibliography("./literature.bib", style: "basic.csl"),
   margin: tud_page_margin_big,
-  // outline_table_of_contents_style: "adapted",
-  // reduce_heading_space_when_first_on_page: false
   show_pages: (
     title_page: true,
     outline_table_of_contents: true,
@@ -118,13 +115,11 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
  entry-list
 )
 
+#bibliography("./literature.bib", style: "basic.csl"),
+
 #set heading(numbering: (..nums) => {
   nums = nums.pos()
-  if nums.len() == 1 {
-    return "A"
-  } else if nums.len() == 2 {
-    return "A." + numbering("1", ..nums.slice(1))
-  }
+  return "A." + numbering("1", ..nums.slice(1))
 })
 
 = Appendix
@@ -133,7 +128,7 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 == CPU Profile for Simple Algorithm with Sequential Insertions
 <appendix:simple-sequential-inserts-cpu>
 
-#image("/result/simple-sequential-inserts-cpu.png")
+#image("/result/simple-sequential-inserts-cpu.png", width: 80%)
 
 == CPU Profile for Batching Algorithm with Sequential Insertions
 <appendix:complex-sequential-inserts-cpu>
