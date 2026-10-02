@@ -3,17 +3,23 @@
 
 #show: make-glossary
 #let entry-list = (
-    (key: "crdt", short: "CRDT", long: "conflict-free replicated data type"),
-    (key: "ot", short: "OT", long: "operational transformation"),
-    (key: "oo", short: "OO", long: "Object-oriented"),
-    (key: "fp", short: "FP", long: "Functional programming"),
-    (key: "p2p", short: "P2P", long: "peer-to-peer"),
-    (key: "dtn", short: "DTN", long: "delay tolerant network"),
-    (key: "rdt", short: "RDT", long: "replicated data type"),
-    (key: "woot", short: "WOOT", long: "WithOut Operational Transforms"),
-    (key: "rga", short: "RGA", long: "Replicated Growable Array"),
-    (key: "yata", short: "YATA", long: "Yet Another Transformation Approach"),
-    (key: "manet", short: "MANET", long: "mobile ad hoc network"),
+  (key: "crdt", short: "CRDT", long: "conflict-free replicated data type"),
+  (key: "ot", short: "OT", long: "operational transformation"),
+  (key: "oo", short: "OO", long: "Object-oriented"),
+  (key: "fp", short: "FP", long: "Functional programming"),
+  (key: "p2p", short: "P2P", long: "peer-to-peer"),
+  (key: "dtn", short: "DTN", long: "delay tolerant network"),
+  (key: "rdt", short: "RDT", long: "replicated data type"),
+  (key: "woot", short: "WOOT", long: "WithOut Operational Transforms"),
+  (key: "rga", short: "RGA", long: "Replicated Growable Array"),
+  (key: "yata", short: "YATA", long: "Yet Another Transformation Approach"),
+  (key: "manet", short: "MANET", long: "mobile ad hoc network"),
+  (key: "simple-algorithm", short: "simple algorithm", description: "Our algorithm without batching and without an AVL tree"),
+  (key: "simple-ID", short: "simple ID", description: "The ID for our simple algorithm"),
+  (key: "batching-ID", short: "batching ID", description: "The ID for our batching algorithm"),
+  (key: "batching-algorithm", short: "batching algorithm", description: "Our algorithm with batching but without an AVL tree"),
+  (key: "simple-AVL-algorithm", short: "simple AVL algorithm", description: "Our algorithm without batching but with an AVL tree"),
+  (key: "batching-AVL-algorithm", short: "batching AVL algorithm", description: "Our algorithm with batching and with an AVL tree"),
 )
 #register-glossary(entry-list)
 
@@ -42,24 +48,53 @@
   abstract: [
     #include "chapters/abstract.typ"
   ],
-  bib: bibliography("./literature.bib"),
   margin: tud_page_margin_big,
-  // outline_table_of_contents_style: "adapted",
-  // reduce_heading_space_when_first_on_page: false
   show_pages: (
     title_page: true,
     outline_table_of_contents: true,
     thesis_statement_pursuant: true
   ),
+  page_numbering_starts_after_outline: false,
+  additional_pages_after_title_page: [
+    #set page(header: none, footer: none)
+    #grid(rows: 1fr,
+    [Optimizing Collaborative Plain Text Editing Algorithms\
+    for Decentralized Non-Realtime Text Editing
+
+    Bachelor thesis by Moritz Hedtke
+
+    Date of submission: August 5, 2024
+
+    Darmstadt],
+
+    [Bitte zitieren Sie dieses Dokument als:\
+    URN: urn:nbn:de:tuda-tuprints-278347\
+    URL: https://tuprints.ulb.tu-darmstadt.de/27834\
+    Jahr der Veröffentlichung auf TUprints: 2024
+
+    Dieses Dokument wird bereitgestellt von tuprints,\
+    E-Publishing-Service der TU Darmstadt\
+    https://tuprints.ulb.tu-darmstadt.de\
+    tuprints\@ulb.tu-darmstadt.de],
+
+    [Die Veröffentlichung steht unter folgender Creative Commons Lizenz:\
+    Namensnennung 4.0 International\
+    https://creativecommons.org/licenses/by/4.0/\
+    This work is licensed under a Creative Commons License:\
+    Attribution 4.0 International\
+    https://creativecommons.org/licenses/by/4.0/])
+    #pagebreak(weak: true)
+  ],
   thesis_statement_pursuant_include_english_translation: false,
 )
 
+#set heading(numbering: "1.")
+#show heading.where(level: 1): set heading(supplement: [Chapter])
+
+// https://forum.typst.app/t/are-there-equivalent-to-the-latex-microtype-package-and-the-memoir-document-class/1540
+#set par(justify: true, justification-limits: (tracking: (min: -0.01em, max: 0.02em)))
+
 #set figure(placement: top)
-
-= THIS IS AN INCOMPLETE TYPST CONVERSION OF MY THESIS
-
-My actual thesis is published at https://doi.org/10.26083/tuprints-00027834.
-Some parts have been lost in the conversion using pandoc and I did not put in the effort to fix this manually. This is only as a proof of concept and not for actually reading my thesis.
 
 #include "chapters/introduction.typ"
 #include "chapters/challenges.typ"
@@ -80,13 +115,11 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
  entry-list
 )
 
+#bibliography("./literature.bib", style: "basic.csl"),
+
 #set heading(numbering: (..nums) => {
   nums = nums.pos()
-  if nums.len() == 1 {
-    return "A"
-  } else if nums.len() == 2 {
-    return "A." + numbering("1", ..nums.slice(1))
-  }
+  return "A." + numbering("1", ..nums.slice(1))
 })
 
 = Appendix
@@ -95,32 +128,32 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 == CPU Profile for Simple Algorithm with Sequential Insertions
 <appendix:simple-sequential-inserts-cpu>
 
-#image("../result/simple-sequential-inserts-cpu.png")
+#image("/result/simple-sequential-inserts-cpu.png", width: 80%)
 
 == CPU Profile for Batching Algorithm with Sequential Insertions
 <appendix:complex-sequential-inserts-cpu>
 
-#image("../result/complex-sequential-inserts-cpu.png")
+#image("/result/complex-sequential-inserts-cpu.png")
 
 == Allocation Profile for Batching Algorithm with Sequential Insertions
 <appendix:complex-sequential-inserts-alloc>
 
-#image("../result/complex-sequential-inserts-alloc.png")
+#image("/result/complex-sequential-inserts-alloc.png")
 
 == CPU Profile for Batching Algorithm with Real World Dataset
 <appendix:complex-real-world-cpu>
 
-#image("../result/complex-real-world-cpu.png")
+#image("/result/complex-real-world-cpu.png")
 
 == CPU Profile for Simple AVL Algorithm with Real World Dataset
 <appendix:simpleavl-real-world-cpu>
 
-#image("../result/simpleavl-real-world-cpu.png")
+#image("/result/simpleavl-real-world-cpu.png")
 
 == Allocation Profile for Simple AVL Algorithm with Real World Dataset
 <appendix:simpleavl-real-world-alloc>
 
-#image("../result/simpleavl-real-world-alloc.png")
+#image("/result/simpleavl-real-world-alloc.png")
 
 == Code Showing FugueMax Is Interleaving
 <appendix:code-fuguemax-interleaving>
