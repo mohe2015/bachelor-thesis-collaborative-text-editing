@@ -1,5 +1,6 @@
 #import "@preview/athena-tu-darmstadt-thesis:0.1.2": *
 #import "utils.typ": make-glossary, register-glossary, print-glossary, gls, glspl
+#import "@preview/numera:0.1.0": heading-dependent, normal-figure, numera
 
 #let entry-list = (
   (key: "crdt", short: "CRDT", long: "conflict-free replicated data type"),
@@ -27,7 +28,7 @@
   reduce_heading_space_when_first_on_page: false, // so it converges
   thesis_type: "bachelor",
   title: [Optimizing Collaborative Plain~Text Editing Algorithms],
-  title_german: [for Decentralized Non-Realtime Text Editing],
+  subtitle: [for Decentralized Non-Realtime Text Editing],
   author: "Moritz Hedtke",
   date_of_submission: datetime(
       year: 2024,
@@ -90,6 +91,13 @@
 
 #set heading(numbering: "1.")
 #show heading.where(level: 1): set heading(supplement: [Chapter])
+
+#let level = 1
+#show: numera(level: level)
+
+#show normal-figure: set figure(
+  numbering: heading-dependent(level, "1")
+)
 
 // https://forum.typst.app/t/are-there-equivalent-to-the-latex-microtype-package-and-the-memoir-document-class/1540
 #set par(justify: true, justification-limits: (tracking: (min: -0.01em, max: 0.02em)))
