@@ -13,7 +13,9 @@
   (key: "woot", short: [WOOT], long: [WithOut Operational Transforms]),
   (key: "rga", short: [RGA], long: [Replicated Growable Array]),
   (key: "yata", short: [YATA], long: [Yet Another Transformation Approach]),
-  (key: "manet", short: [MANET], long: [mobile ad hoc network]),
+  (key: "manet", short: [MANET], long: [mobile ad hoc network])
+)
+#let hidden-entry-list = (
   (key: "simple-algorithm", short: [simple algorithm], description: "Our algorithm without batching and without an AVL tree"),
   (key: "simple-ID", short: [simple ID], description: "The ID for our simple algorithm"),
   (key: "batching-ID", short: [batching ID], description: "The ID for our batching algorithm"),
@@ -22,7 +24,7 @@
   (key: "batching-AVL-algorithm", short: [batching AVL algorithm], description: "Our algorithm with batching and with an AVL tree"),
 )
 #show: make-glossary
-#register-glossary(entry-list)
+#register-glossary(entry-list + hidden-entry-list))
 
 #show: tudapub.with(
   reduce_heading_space_when_first_on_page: false, // so it converges
@@ -119,9 +121,8 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 
 #heading(numbering: none, [Acronyms])
 
-#print-glossary(
- entry-list
-)
+#print-glossary(entry-list, deduplicate-back-references: true)
+#print-glossary(hidden-entry-list, invisible: true)
 
 #bibliography("./literature.bib", style: "basic.csl")
 
