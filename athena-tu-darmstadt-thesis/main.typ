@@ -1,7 +1,6 @@
 #import "@preview/athena-tu-darmstadt-thesis:0.1.2": *
 #import "utils.typ": make-glossary, register-glossary, print-glossary, gls, glspl
 
-#show: make-glossary
 #let entry-list = (
   (key: "crdt", short: "CRDT", long: "conflict-free replicated data type"),
   (key: "ot", short: "OT", long: "operational transformation"),
@@ -21,6 +20,7 @@
   (key: "simple-AVL-algorithm", short: "simple AVL algorithm", description: "Our algorithm without batching but with an AVL tree"),
   (key: "batching-AVL-algorithm", short: "batching AVL algorithm", description: "Our algorithm with batching and with an AVL tree"),
 )
+#show: make-glossary
 #register-glossary(entry-list)
 
 #show: tudapub.with(
@@ -109,13 +109,13 @@
 
 I would like to thank everyone who reviewed drafts of this thesis. I would also like to thank my human and non-human rubber ducks for their help in debugging my code.
 
-#heading(numbering: none, "Acronyms")
+#heading(numbering: none, [Acronyms])
 
 #print-glossary(
  entry-list
 )
 
-#bibliography("./literature.bib", style: "basic.csl"),
+#bibliography("./literature.bib", style: "basic.csl")
 
 #set heading(numbering: (..nums) => {
   nums = nums.pos()
