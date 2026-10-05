@@ -181,9 +181,8 @@ local function transform(doc, opts)
           caption_line = '  caption: [' .. render(fig.caption.long) .. '],\n'
         end
         return pandoc.RawBlock('typst',
-          '#figure(\n'
+          '#figure(kind: "hidden", supplement: none,\n'
             .. '  {\n'
-            .. '    show figure: set figure(numbering: "(a)")\n'
             .. '    show figure: set align(bottom)\n'
             .. '    grid(\n'
             .. '      columns: ' .. #cells .. ',\n'

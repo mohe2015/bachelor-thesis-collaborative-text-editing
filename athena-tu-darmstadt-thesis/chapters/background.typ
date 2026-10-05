@@ -63,8 +63,7 @@ The chosen operations are insertion and deletion based on an index into the text
 The reason for choosing that interface is that text editors conform to it.
 All indices are zero based, so the element at index $0$ is the first element.
 
-#figure({
-  show figure: set figure(numbering: "(a)")
+#figure(kind: "hidden", supplement: none, {
   show figure: set align(bottom)
   grid(
     columns: 2,
@@ -101,8 +100,7 @@ The right origin is the next node (visible or not) in the tree traversal after t
 This right origin can not already have left children as otherwise one of them would be the right origin as they come earlier in the tree traversal.
 Starting with the previous tree, @fig:fugue-right-ac-left-b shows an insertion at index $1$.
 
-#figure({
-  show figure: set figure(numbering: "(a)")
+#figure(kind: "hidden", supplement: none, {
   show figure: set align(bottom)
   grid(
     columns: 2,
@@ -117,8 +115,7 @@ Starting with the previous tree, @fig:fugue-right-ac-left-b shows an insertion a
       <fig:fugue-concurrent-insert-b>],
   )
 })
-#figure({
-  show figure: set figure(numbering: "(a)")
+#figure(kind: "hidden", supplement: none, {
   show figure: set align(bottom)
   grid(
     columns: 2,
@@ -149,8 +146,7 @@ As there is no choice that is inherently better, it is just important that all c
 The node to delete, which is calculated from the index in the tree traversal of visible nodes, is simply marked as deleted.
 If it already was deleted by a concurrent user, the operation does nothing.
 
-#figure({
-  show figure: set figure(numbering: "(a)")
+#figure(kind: "hidden", supplement: none, {
   show figure: set align(bottom)
   grid(
     columns: 2,

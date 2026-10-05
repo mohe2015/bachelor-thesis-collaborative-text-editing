@@ -251,7 +251,7 @@ Comparing the results#footnote[#link(
   [```text
     Tii(Ins[p1,c1], Ins[p2, c2]) {
       if p1 < p2 or (p1 = p2 and u1 > u2)
-        return Ins[p1, c1];
+        return Ins[p1, c1];              
       else
         return Ins[p1+1, c1];
     }
