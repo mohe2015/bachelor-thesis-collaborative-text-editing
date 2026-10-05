@@ -36,8 +36,7 @@ Combining all that will therefore produce the text `"small trees grow"`.
 ])
 <fig:fugue-traversal>
 
-#figure({
-  show figure: set figure(numbering: "(a)")
+#figure(kind: "hidden", supplement: none, {
   show figure: set align(bottom)
   grid(
     columns: 2,

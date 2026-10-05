@@ -96,7 +96,7 @@
 #show: numera(level: level)
 
 #show normal-figure: set figure(
-  numbering: heading-dependent(level, "1")
+  numbering: heading-dependent(level, "1.")
 )
 
 // https://forum.typst.app/t/are-there-equivalent-to-the-latex-microtype-package-and-the-memoir-document-class/1540
