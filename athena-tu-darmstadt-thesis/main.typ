@@ -24,7 +24,7 @@
   (key: "batching-AVL-algorithm", short: [batching AVL algorithm], description: "Our algorithm with batching and with an AVL tree"),
 )
 #show: make-glossary
-#register-glossary(entry-list + hidden-entry-list))
+#register-glossary(entry-list + hidden-entry-list)
 
 #show: tudapub.with(
   reduce_heading_space_when_first_on_page: false, // so it converges
@@ -124,7 +124,8 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 #print-glossary(entry-list, deduplicate-back-references: true)
 #print-glossary(hidden-entry-list, invisible: true)
 
-#bibliography("./literature.bib", style: "basic.csl")
+#heading([Bibliography], numbering: none, outlined: false)
+#bibliography(title: none, "./literature.bib", style: "basic.csl")
 
 #set heading(numbering: (..nums) => {
   nums = nums.pos()

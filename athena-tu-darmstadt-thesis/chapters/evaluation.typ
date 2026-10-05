@@ -1,5 +1,5 @@
 #import "../utils.typ": gls, glspl
-toc#pagebreak()
+#pagebreak()
 
 = Evaluation
 <chapter:evaluation>
