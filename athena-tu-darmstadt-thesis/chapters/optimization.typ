@@ -151,7 +151,7 @@ In this case a new node is added as a left child of the existing node.
 ===== Otherwise:
 <otherwise>
 In the other cases, so \"Insert to the right not at the right edge\" and \"Insert to the left not at the left edge\" the node needs to be split and inserted at the correct location.
-Further details about splitting can be found in @subsection:evil-split.
+Further details about splitting can be found in @edge-cases.
 As later optimizations combine sequential #emph[deletions], this also needs to be handled correctly.
 
 ===== Delete operation
