@@ -1,6 +1,6 @@
 #import "@preview/athena-tu-darmstadt-thesis:0.1.2": *
 #import "utils.typ": make-glossary, register-glossary, print-glossary, gls, glspl
-#import "@preview/numera:0.1.0": heading-dependent, normal-figure, numera
+#import "@preview/numera:0.1.0": heading-dependent, normal-figure, numera, ref-dependent, subfigure-dependent, subfigure-counter-dependent
 #import "@preview/zebraw:0.6.3": *
 #import "@preview/codly:1.3.0": *
 #import "@preview/codly-languages:0.1.10": *
@@ -100,9 +100,15 @@
 #let level = 1
 #show: numera(level: level)
 
-#show normal-figure: set figure(
-  numbering: heading-dependent(level, "1.")
-)
+#show figure: set figure(numbering: ref-dependent(
+  subfigure-dependent("(a)", figure-numbering: heading-dependent(level, "1.")),
+  heading-dependent(level, subfigure-counter-dependent(
+    "1a",
+    figure-numbering: auto,
+  )),
+))
+
+#show figure.where(kind: "subfigure"): set figure(supplement: "")
 
 // override
 #show heading.where(level: 5): it => {
