@@ -3,181 +3,180 @@
   <info>
     <title>Bachelor thesis original bibliography (numeric, author-title-year)</title>
     <id>http://www.zotero.org/styles/bachelor-thesis-original-numeric</id>
-    <link href="http://www.zotero.org/styles/bachelor-thesis-original-numeric" rel="self"/>
+    <link href="http://www.zotero.org/styles/bachelor-thesis-original-numeric" rel="self" />
     <author>
       <name>Custom</name>
     </author>
-    <category citation-format="numeric"/>
-    <category field="generic-base"/>
-    <summary>Numeric citations without range collapsing; bibliography sorted by author, title, and year. Four or more authors are abbreviated to the first author et al. Includes access dates and archive identifiers when supplied.</summary>
+    <category citation-format="numeric" />
+    <category field="generic-base" />
+    <summary>Numeric author-title-year bibliography matching the original thesis. Use literature-compatible.bib for Typst arXiv fields and punctuation normalization. Four or more authors are abbreviated; online publishers and electronic ISBNs are omitted.</summary>
     <updated>2026-10-06T00:00:00+00:00</updated>
   </info>
-
-  <!-- Preserve the existing processor-specific prose-citation branch.
-       Bibliography names follow biblatex's default maxbibnames=3. -->
   <macro name="author">
     <choose>
       <if position="first subsequent ibid ibid-with-locator near-note" match="any">
         <names variable="author">
-          <name form="short" and="text" delimiter=", " et-al-min="3" et-al-use-first="1"/>
+          <name form="short" and="text" delimiter=", " et-al-min="3" et-al-use-first="1" />
           <substitute>
-            <names variable="editor"/>
+            <names variable="editor" />
           </substitute>
         </names>
       </if>
       <else>
         <names variable="author">
-          <name and="text" delimiter=", " delimiter-precedes-last="contextual" initialize="false" et-al-min="4" et-al-use-first="1"/>
+          <name and="text" delimiter=", " delimiter-precedes-last="contextual" initialize="false" et-al-min="4" et-al-use-first="1" />
           <substitute>
-            <names variable="editor"/>
-            <text variable="title"/>
+            <names variable="editor" />
+            <text variable="title" />
           </substitute>
         </names>
       </else>
     </choose>
   </macro>
-
   <macro name="author-sort">
     <names variable="author">
-      <name name-as-sort-order="all" form="long" delimiter=" "/>
+      <name name-as-sort-order="all" form="long" delimiter=" " />
       <substitute>
-        <names variable="editor"/>
-        <text variable="title"/>
+        <names variable="editor" />
+        <text variable="title" />
       </substitute>
     </names>
   </macro>
-
   <macro name="editor">
     <names variable="editor" prefix="Ed. by ">
-      <name and="text" delimiter=", " delimiter-precedes-last="contextual" initialize="false" et-al-min="4" et-al-use-first="1"/>
+      <name and="text" delimiter=", " delimiter-precedes-last="contextual" initialize="false" et-al-min="4" et-al-use-first="1" />
     </names>
   </macro>
-
   <macro name="title-quoted">
-    <text variable="title" prefix="“" suffix="”"/>
+    <text variable="title" prefix="“" suffix="”" />
   </macro>
-
   <macro name="title-italic">
-    <text variable="title" font-style="italic"/>
+    <text variable="title" font-style="italic" />
   </macro>
-
   <macro name="pages">
-    <text variable="page" prefix="pp. "/>
+    <choose>
+      <if is-numeric="page">
+        <text variable="page" prefix="pp. " />
+      </if>
+      <else>
+        <text variable="page" />
+      </else>
+    </choose>
   </macro>
-
   <macro name="year">
     <date variable="issued">
-      <date-part name="year"/>
+      <date-part name="year" />
     </date>
   </macro>
-
   <macro name="publisher-line">
     <group delimiter=", ">
       <group delimiter=": ">
-        <text variable="publisher-place"/>
-        <text variable="publisher"/>
+        <text variable="publisher-place" />
+        <text variable="publisher" />
       </group>
-      <text macro="year"/>
-      <text macro="pages"/>
+      <text macro="year" />
+      <text macro="pages" />
     </group>
   </macro>
-
   <macro name="identifiers">
     <group delimiter=". ">
-      <text variable="ISBN" prefix="isbn: "/>
-      <text variable="ISSN" prefix="issn: "/>
-      <text variable="DOI" prefix="doi: "/>
-      <!-- For arXiv records, supply archive="arXiv" and archive_location
-           with the identifier. CSL cannot extract it from a DOI or URL. -->
+      <choose>
+        <if type="book paper-conference chapter" match="any">
+          <text variable="ISBN" prefix="isbn: " />
+        </if>
+      </choose>
+      <text variable="ISSN" prefix="issn: " />
+      <text variable="DOI" prefix="doi: " />
       <choose>
         <if variable="archive archive_location" match="all">
           <group delimiter=": ">
-            <text variable="archive"/>
-            <text variable="archive_location"/>
+            <text variable="archive" />
+            <text variable="archive_location" />
           </group>
         </if>
+        <else>
+          <text variable="note" />
+        </else>
       </choose>
       <choose>
         <if variable="URL">
           <group delimiter=" ">
-            <text variable="URL" prefix="url: "/>
+            <text variable="URL" prefix="url: " />
             <date variable="accessed" prefix="(visited on " suffix=")" delimiter="/">
-              <date-part name="month" form="numeric-leading-zeros"/>
-              <date-part name="day" form="numeric-leading-zeros"/>
-              <date-part name="year"/>
+              <date-part name="month" form="numeric-leading-zeros" />
+              <date-part name="day" form="numeric-leading-zeros" />
+              <date-part name="year" />
             </date>
           </group>
         </if>
       </choose>
     </group>
   </macro>
-
   <citation et-al-min="3" et-al-use-first="1">
     <sort>
-      <key variable="citation-number"/>
+      <key variable="citation-number" />
     </sort>
     <layout prefix="[" suffix="]" delimiter=", ">
       <group delimiter=", ">
-        <text variable="citation-number"/>
-        <text variable="locator"/>
+        <text variable="citation-number" />
+        <text variable="locator" />
       </group>
     </layout>
   </citation>
-
   <bibliography et-al-min="4" et-al-use-first="1" second-field-align="flush" entry-spacing="0">
     <sort>
-      <key macro="author-sort"/>
-      <key variable="title"/>
-      <key variable="issued"/>
+      <key macro="author-sort" />
+      <key variable="title" />
+      <key variable="issued" />
     </sort>
     <layout suffix=".">
-      <text variable="citation-number" prefix="[" suffix="]"/>
-      <group delimiter=". ">
-        <text macro="author"/>
+      <text variable="citation-number" prefix="[" suffix="]" />
+      <group delimiter=" ">
+        <text macro="author" suffix="." />
         <choose>
           <if type="article-journal article-magazine article-newspaper" match="any">
-            <text macro="title-quoted"/>
-            <group delimiter=", ">
+            <text macro="title-quoted" suffix="." />
+            <group delimiter=", " suffix=".">
               <group delimiter=" ">
-                <text value="In:"/>
-                <text variable="container-title"/>
+                <text value="In:" />
+                <text variable="container-title" />
                 <group>
-                  <text variable="volume"/>
-                  <text variable="issue" prefix="."/>
+                  <text variable="volume" />
+                  <text variable="issue" prefix="." />
                 </group>
                 <group prefix="(" suffix=")">
-                  <text macro="year"/>
+                  <text macro="year" />
                 </group>
               </group>
-              <text variable="page" prefix="pp. "/>
+              <text variable="page" prefix="pp. " />
             </group>
           </if>
           <else-if type="paper-conference chapter entry-encyclopedia" match="any">
-            <text macro="title-quoted"/>
-            <group delimiter=". ">
+            <text macro="title-quoted" suffix="." />
+            <group delimiter=" " suffix=".">
               <group delimiter=" ">
-                <text value="In:"/>
-                <text variable="container-title"/>
+                <text value="In:" />
+                <text variable="container-title" />
               </group>
-              <text variable="collection-title"/>
-              <text macro="editor"/>
-              <text macro="publisher-line"/>
+              <text variable="collection-title" suffix="." />
+              <text macro="editor" suffix="." />
+              <text macro="publisher-line" suffix="." />
             </group>
           </else-if>
           <else-if type="report thesis" match="any">
-            <text macro="title-italic"/>
-            <text macro="year"/>
+            <text macro="title-italic" />
+            <text macro="year" suffix="." />
           </else-if>
           <else-if type="book" match="any">
-            <text macro="title-italic"/>
-            <text macro="year"/>
+            <text macro="title-italic" />
+            <text macro="year" suffix="." />
           </else-if>
           <else>
-            <text macro="title-italic"/>
-            <text macro="publisher-line"/>
+            <text macro="title-italic" />
+            <text macro="year" suffix="." />
           </else>
         </choose>
-        <text macro="identifiers"/>
+        <text macro="identifiers" suffix="." />
       </group>
     </layout>
   </bibliography>
