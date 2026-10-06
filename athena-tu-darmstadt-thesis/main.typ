@@ -162,7 +162,7 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 #heading([Bibliography], numbering: none, outlined: false)
 #bibliography(title: none, "./literature.bib", style: "basic.csl")
 
-#set heading(numbering: (..nums) => {
+#set heading(supplement: [Appendix], numbering: (..nums) => {
   nums = nums.pos()
   return "A." + numbering("1", ..nums.slice(1))
 })
