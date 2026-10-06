@@ -165,17 +165,11 @@ local function transform(doc, opts)
     end,
 
     Figure = function(fig)
+      local figure_options = ''
       if fig.classes:includes('subfigure') then
-        local rendered = render({ fig })
-        assert(rendered:match('^#figure%('), 'Unexpected Typst figure output')
-        return pandoc.RawBlock('typst',
-          (rendered:gsub('^#figure%(', '#figure(kind: "subfigure",', 1)))
-      end
-      if fig.classes:includes('minipage') then
-        local rendered = render({ fig })
-        assert(rendered:match('^#figure%('), 'Unexpected Typst figure output')
-        return pandoc.RawBlock('typst',
-          (rendered:gsub('^#figure%(', '#figure(kind: "minpage", supplement: none,', 1)))
+        figure_options = 'kind: "subfigure",'
+      elseif fig.classes:includes('minipage') then
+        figure_options = 'kind: "minpage", supplement: none,'
       end
 
       if fig.classes:includes('grid') then
@@ -194,7 +188,7 @@ local function transform(doc, opts)
           caption_line = '  caption: [' .. render(fig.caption.long) .. '],\n'
         end
         return pandoc.RawBlock('typst',
-          '#figure(\n'
+          '#figure(' .. figure_options .. '\n'
             .. '  {\n'
             .. '    show figure: set align(bottom)\n'
             .. '    grid(\n'
@@ -205,6 +199,13 @@ local function transform(doc, opts)
             .. '  },\n'
             .. caption_line
             .. ')' .. label)
+      end
+
+      if figure_options ~= '' then
+        local rendered = render({ fig })
+        assert(rendered:match('^#figure%('), 'Unexpected Typst figure output')
+        return pandoc.RawBlock('typst',
+          (rendered:gsub('^#figure%(', '#figure(' .. figure_options, 1)))
       end
 
       if not fig.classes:includes('marginfigure') then return end
