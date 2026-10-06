@@ -4,7 +4,7 @@ if PANDOC_VERSION < pandoc.types.Version '3.11' then
 end
 
 -- Pandoc 3.x Lua filter and custom Typst writer for the accompanying reader.
--- Input classes: Figure.marginfigure; Span.sidenote / Span.marginnote
+-- Input classes: Figure.marginfigure / Figure.subfigure; Span.sidenote / Span.marginnote
 -- wrapping exactly one Note. Requires haobook in the Typst document scope.
 
 -- Escape text for use inside a Typst string literal.
@@ -165,10 +165,17 @@ local function transform(doc, opts)
     end,
 
     Figure = function(fig)
+      if fig.classes:includes('subfigure') then
+        local rendered = render({ fig })
+        assert(rendered:match('^#figure%('), 'Unexpected Typst figure output')
+        return pandoc.RawBlock('typst',
+          (rendered:gsub('^#figure%(', '#figure(kind: "subfigure",', 1)))
+      end
+
       if fig.classes:includes('grid') then
         local cells = {}
         for _, b in ipairs(fig.content) do
-          if b.t == 'Figure' then
+          if b.t == 'Figure' or (b.t == 'RawBlock' and b.format == 'typst') then
             cells[#cells + 1] = '      [' .. render({ b }) .. '],'
           end
         end
@@ -181,7 +188,7 @@ local function transform(doc, opts)
           caption_line = '  caption: [' .. render(fig.caption.long) .. '],\n'
         end
         return pandoc.RawBlock('typst',
-          '#figure(kind: "hidden", supplement: none,\n'
+          '#figure(\n'
             .. '  {\n'
             .. '    show figure: set align(bottom)\n'
             .. '    grid(\n'

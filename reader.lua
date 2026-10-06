@@ -16,6 +16,12 @@ local definitions = [=[
 \newcommand{\marginfigureB}[1][]{\begin{figure}\pandocmargin{}\par}
 \newcommand{\endmarginfigure}{\end{figure}}
 
+\newcommand{\subfigure}[1]{\begin{figure}\pandocsubfigure{}\par}
+\newcommand{\endsubfigure}{\end{figure}}
+
+\newcommand{\minipage}[1]{\begin{figure}\pandocminipage{}\par}
+\newcommand{\endminipage}{\end{figure}}
+
 \newcommand{\makebox}[1][]{\makeboxB}
 \newcommand{\makeboxB}[1][]{\makeboxC}
 \newcommand{\makeboxC}[1]{#1}
@@ -62,14 +68,14 @@ local definitions = [=[
 \newcommand{\twoMinipageFigures}[4]{
   \begin{figure}
     \pandocgrid{}\par
-    \begin{figure}
+    \begin{minipage}
       #2
       \includegraphics{#1}
-    \end{figure}
-    \begin{figure}
+    \end{minipage}
+    \begin{minipage}
       #4
       \includegraphics{#3}
-    \end{figure}
+    \end{minipage}
     \caption{}
     \label{}
   \end{figure}
@@ -161,6 +167,14 @@ function Reader(input, opts)
     end,
 
     Figure = function(fig)
+      if marker_text(fig.content[1]) == '\\pandocsubfigure{}' then
+        fig.content:remove(1)
+        fig.classes:insert('subfigure')
+      end
+      if marker_text(fig.content[1]) == '\\pandocminipage{}' then
+        fig.content:remove(1)
+        fig.classes:insert('minipage')
+      end
       if marker_text(fig.content[1]) == '\\pandocmargin{}' then
         fig.content:remove(1)
         fig.classes:insert('marginfigure')

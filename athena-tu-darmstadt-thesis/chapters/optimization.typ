@@ -163,14 +163,13 @@ Later optimizations avoid this for sequential forward and backward deletions by 
 Instead, the deleted element is moved to the node containing the other already deleted elements if the parent node has no other right children.
 
 #figure(
-  kind: "hidden",
-  supplement: none,
   {
     show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/simple-complex-sequential-inserts.pdf",
           ),
@@ -180,6 +179,7 @@ Instead, the deleted element is moved to the node containing the other already d
         )
         <fig:simple-complex-sequential-inserts-time>],
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/simple-complex-sequential-inserts-memory.pdf",
           ),
@@ -211,14 +211,13 @@ It would be easier to use a programming language that does not use a garbage col
 Still, Scala, Java and the JVM are well-suited to look at the asymptotic performance because memory allocation or cyclic data structures do not need to be considered in contrast to low level languages like C++ or Rust.
 
 #figure(
-  kind: "hidden",
-  supplement: none,
   {
     show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/simple-complex-real-world.pdf",
           ),
@@ -228,6 +227,7 @@ Still, Scala, Java and the JVM are well-suited to look at the asymptotic perform
         )
         <fig:simple-complex-real-world-time>],
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/simple-complex-real-world-memory.pdf",
           ),
@@ -256,14 +256,13 @@ This is because the batching only helps to improve the performance by some facto
 We therefore looked into an approach that fixes the root cause which is the search of the node in the tree that represents the character at a position in the text.
 
 #figure(
-  kind: "hidden",
-  supplement: none,
   {
     show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/simple-complex-simpleavl-real-world.pdf",
           ),
@@ -273,6 +272,7 @@ We therefore looked into an approach that fixes the root cause which is the sear
         )
         <fig:simple-complex-simpleavl-real-world-time>],
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/simple-complex-simpleavl-real-world-memory.pdf",
           ),
@@ -286,14 +286,13 @@ We therefore looked into an approach that fixes the root cause which is the sear
   caption: [Benchmark results for real world editing trace comparing the simple algorithm, the batching algorithm and the simple AVL algorithm],
 ) <fig:simple-complex-simpleavl-real-world>
 #figure(
-  kind: "hidden",
-  supplement: none,
   {
     show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/simpleavl-real-world.pdf",
           ),
@@ -303,6 +302,7 @@ We therefore looked into an approach that fixes the root cause which is the sear
         )
         <fig:simpleavl-real-world-time>],
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/simpleavl-real-world-memory.pdf",
           ),
@@ -334,14 +334,13 @@ The memory overhead is still very high, because a new node in the AVL tree and t
 Note that this also includes the full insertion and deletion history and not only the tree itself.
 
 #figure(
-  kind: "hidden",
-  supplement: none,
   {
     show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/simpleavl-complexavl-real-world.pdf",
           ),
@@ -351,6 +350,7 @@ Note that this also includes the full insertion and deletion history and not onl
         )
         <fig:simpleavl-complexavl-real-world-time>],
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/simpleavl-complexavl-real-world-memory.pdf",
           ),
@@ -372,34 +372,39 @@ The memory usage per operation is about 25 bytes per operation.
 This concludes our optimization of the common execution path.
 
 #figure(
-  kind: "hidden",
-  supplement: none,
-  {
-    show figure: set align(bottom)
-    grid(
-      columns: 2,
-      align: bottom,
-      [#figure(image("/result/evil-children-before.pdf"), caption: [
-          before
-        ])
-        <fig:edge-case-evil-children-before>],
-      [#figure(image("/result/evil-children-after.pdf"), caption: [
-          after
-        ])
-        <fig:edge-case-evil-children-after>],
-    )
-  },
-  caption: [Example for edge case with many children],
-) <fig:edge-case-evil-children-example>
-#figure(
-  kind: "hidden",
-  supplement: none,
   {
     show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
       [#figure(
+          kind: "subfigure",
+          image("/result/evil-children-before.pdf"),
+          caption: [
+            before
+          ],
+        )
+        <fig:edge-case-evil-children-before>],
+      [#figure(
+          kind: "subfigure",
+          image("/result/evil-children-after.pdf"),
+          caption: [
+            after
+          ],
+        )
+        <fig:edge-case-evil-children-after>],
+    )
+  },
+  caption: [Example for edge case with many children],
+) <fig:edge-case-evil-children-example>
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-children.pdf",
           ),
@@ -409,6 +414,7 @@ This concludes our optimization of the common execution path.
         )
         <fig:complexavl-evil-children-time>],
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-children-memory.pdf",
           ),
@@ -437,34 +443,39 @@ Therefore, the children are stored in a `mutable.SortedSet`, so a binary search 
 This results in logarithmic insertion.
 
 #figure(
-  kind: "hidden",
-  supplement: none,
-  {
-    show figure: set align(bottom)
-    grid(
-      columns: 2,
-      align: bottom,
-      [#figure(image("/result/evil-insert-1-before.pdf"), caption: [
-          before
-        ])
-        <fig:edge-case-evil-insert-1-before>],
-      [#figure(image("/result/evil-insert-1-after.pdf"), caption: [
-          after
-        ])
-        <fig:edge-case-evil-insert-1-after>],
-    )
-  },
-  caption: [Example for edge case for insertion to the left of the root],
-) <fig:edge-case-evil-insert-1-example>
-#figure(
-  kind: "hidden",
-  supplement: none,
   {
     show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
       [#figure(
+          kind: "subfigure",
+          image("/result/evil-insert-1-before.pdf"),
+          caption: [
+            before
+          ],
+        )
+        <fig:edge-case-evil-insert-1-before>],
+      [#figure(
+          kind: "subfigure",
+          image("/result/evil-insert-1-after.pdf"),
+          caption: [
+            after
+          ],
+        )
+        <fig:edge-case-evil-insert-1-after>],
+    )
+  },
+  caption: [Example for edge case for insertion to the left of the root],
+) <fig:edge-case-evil-insert-1-example>
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-1.pdf",
           ),
@@ -474,6 +485,7 @@ This results in logarithmic insertion.
         )
         <fig:complexavl-evil-insert-1-time>],
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-1-memory.pdf",
           ),
@@ -520,34 +532,39 @@ Therefore, the leftmost descendant of this group of nodes can be efficiently ret
 
 #pagebreak()
 #figure(
-  kind: "hidden",
-  supplement: none,
-  {
-    show figure: set align(bottom)
-    grid(
-      columns: 2,
-      align: bottom,
-      [#figure(image("/result/evil-insert-2-before.pdf"), caption: [
-          before
-        ])
-        <fig:edge-case-evil-insert-2-before>],
-      [#figure(image("/result/evil-insert-2-after.pdf"), caption: [
-          after
-        ])
-        <fig:edge-case-evil-insert-2-after>],
-    )
-  },
-  caption: [Example for edge case for concurrent insertion to the right],
-) <fig:edge-case-evil-insert-2-example>
-#figure(
-  kind: "hidden",
-  supplement: none,
   {
     show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
       [#figure(
+          kind: "subfigure",
+          image("/result/evil-insert-2-before.pdf"),
+          caption: [
+            before
+          ],
+        )
+        <fig:edge-case-evil-insert-2-before>],
+      [#figure(
+          kind: "subfigure",
+          image("/result/evil-insert-2-after.pdf"),
+          caption: [
+            after
+          ],
+        )
+        <fig:edge-case-evil-insert-2-after>],
+    )
+  },
+  caption: [Example for edge case for concurrent insertion to the right],
+) <fig:edge-case-evil-insert-2-example>
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-2.pdf",
           ),
@@ -557,6 +574,7 @@ Therefore, the leftmost descendant of this group of nodes can be efficiently ret
         )
         <fig:complexavl-evil-insert-2-time>],
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-2-memory.pdf",
           ),
@@ -596,34 +614,39 @@ Therefore, the last node in the subtree of its left child needs to be retrieved,
 Therefore, this also needs the optimization as explained for the previous edge case.
 
 #figure(
-  kind: "hidden",
-  supplement: none,
-  {
-    show figure: set align(bottom)
-    grid(
-      columns: 2,
-      align: bottom,
-      [#figure(image("/result/evil-split-before.pdf"), caption: [
-          before
-        ])
-        <fig:edge-case-evil-split-before>],
-      [#figure(image("/result/evil-split-after.pdf"), caption: [
-          after
-        ])
-        <fig:edge-case-evil-split-after>],
-    )
-  },
-  caption: [Example for edge case for node splitting],
-) <fig:edge-case-evil-split-example>
-#figure(
-  kind: "hidden",
-  supplement: none,
   {
     show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
       [#figure(
+          kind: "subfigure",
+          image("/result/evil-split-before.pdf"),
+          caption: [
+            before
+          ],
+        )
+        <fig:edge-case-evil-split-before>],
+      [#figure(
+          kind: "subfigure",
+          image("/result/evil-split-after.pdf"),
+          caption: [
+            after
+          ],
+        )
+        <fig:edge-case-evil-split-after>],
+    )
+  },
+  caption: [Example for edge case for node splitting],
+) <fig:edge-case-evil-split-example>
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split.pdf",
           ),
@@ -633,6 +656,7 @@ Therefore, this also needs the optimization as explained for the previous edge c
         )
         <fig:complexavl-evil-split-time>],
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split-memory.pdf",
           ),
@@ -655,14 +679,13 @@ This means splitting a node only requires creating and inserting a new node and 
 The disadvantage is that the memory for deleted nodes is not reclaimed.
 
 #figure(
-  kind: "hidden",
-  supplement: none,
   {
     show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
       [#figure(
+          kind: "subfigure",
           image("/result/evil-split-many-right-children-before.pdf"),
           caption: [
             before
@@ -670,6 +693,7 @@ The disadvantage is that the memory for deleted nodes is not reclaimed.
         )
         <fig:edge-case-evil-split-many-right-children-before>],
       [#figure(
+          kind: "subfigure",
           image("/result/evil-split-many-right-children-after.pdf"),
           caption: [
             after
@@ -681,14 +705,13 @@ The disadvantage is that the memory for deleted nodes is not reclaimed.
   caption: [Example for edge case for node splitting with many right children],
 ) <fig:edge-case-evil-split-many-right-children-example>
 #figure(
-  kind: "hidden",
-  supplement: none,
   {
     show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split-many-right-children.pdf",
           ),
@@ -698,6 +721,7 @@ The disadvantage is that the memory for deleted nodes is not reclaimed.
         )
         <fig:complexavl-evil-split-many-right-children-time>],
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split-many-right-children-memory.pdf",
           ),

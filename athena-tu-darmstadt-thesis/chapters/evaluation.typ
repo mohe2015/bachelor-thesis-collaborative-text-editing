@@ -100,14 +100,13 @@ The `RedBlackTree` and `TreeSet` are used for multiple same-side children and fo
 The `FixtureOperation` is the underlying test data and therefore does not count towards the memory usage when measuring the memory usage difference before and after running the test.
 
 #figure(
-  kind: "hidden",
-  supplement: none,
   {
     show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-extra-large-local-real-world.pdf",
           ),
@@ -117,6 +116,7 @@ The `FixtureOperation` is the underlying test data and therefore does not count 
         )
         <fig:complexavl-extra-large-local-real-world-time>],
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-extra-large-local-real-world-memory.pdf",
           ),
@@ -130,14 +130,13 @@ The `FixtureOperation` is the underlying test data and therefore does not count 
   caption: [Benchmark results for repeatedly concatenated real world text inserted locally with the batching AVL algorithm],
 ) <fig:complexavl-extra-large-local-real-world>
 #figure(
-  kind: "hidden",
-  supplement: none,
   {
     show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-extra-large-remote-real-world.pdf",
           ),
@@ -147,6 +146,7 @@ The `FixtureOperation` is the underlying test data and therefore does not count 
         )
         <fig:complexavl-extra-large-remote-real-world-time>],
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-extra-large-remote-real-world-memory.pdf",
           ),

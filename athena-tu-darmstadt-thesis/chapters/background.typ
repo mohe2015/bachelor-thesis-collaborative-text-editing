@@ -36,19 +36,11 @@ Combining all that will therefore produce the text `"small trees grow"`.
 ])
 <fig:fugue-traversal>
 
-#figure(kind: "hidden", supplement: none, {
+#figure({
   show figure: set align(bottom)
   grid(
-    columns: 2,
+    columns: 0,
     align: bottom,
-    [#figure(image("/result/empty.pdf"), caption: [
-        Fugue tree with root node
-      ])
-      <fig:fugue-root-node>],
-    [#figure(image("/result/root-right-a.pdf"), caption: [
-        Insertion of `"a"` into Fugue tree at index $0$
-      ])
-      <fig:fugue-right-a>],
   )
 })
 == Initial State
@@ -63,19 +55,11 @@ The chosen operations are insertion and deletion based on an index into the text
 The reason for choosing that interface is that text editors conform to it.
 All indices are zero based, so the element at index $0$ is the first element.
 
-#figure(kind: "hidden", supplement: none, {
+#figure({
   show figure: set align(bottom)
   grid(
-    columns: 2,
+    columns: 0,
     align: bottom,
-    [#figure(image("/result/root-right-ac.pdf"), caption: [
-        Insertion of `"c"` into Fugue tree at index $1$
-      ])
-      <fig:fugue-right-ac>],
-    [#figure(image("/result/root-right-ac-left-b.pdf"), caption: [
-        Insertion of `"b"` into Fugue tree at index $1$
-      ])
-      <fig:fugue-right-ac-left-b>],
   )
 })
 ==== Insert operation
@@ -100,34 +84,18 @@ The right origin is the next node (visible or not) in the tree traversal after t
 This right origin can not already have left children as otherwise one of them would be the right origin as they come earlier in the tree traversal.
 Starting with the previous tree, @fig:fugue-right-ac-left-b shows an insertion at index $1$.
 
-#figure(kind: "hidden", supplement: none, {
+#figure({
   show figure: set align(bottom)
   grid(
-    columns: 2,
+    columns: 0,
     align: bottom,
-    [#figure(image("/result/concurrent-insert-a.pdf"), caption: [
-        Fugue tree with text insertion at replica A
-      ])
-      <fig:fugue-concurrent-insert-a>],
-    [#figure(image("/result/concurrent-insert-b.pdf"), caption: [
-        Fugue tree with text insertion at replica B
-      ])
-      <fig:fugue-concurrent-insert-b>],
   )
 })
-#figure(kind: "hidden", supplement: none, {
+#figure({
   show figure: set align(bottom)
   grid(
-    columns: 2,
+    columns: 0,
     align: bottom,
-    [#figure(image("/result/concurrent-insert-both.pdf"), caption: [
-        Fugue tree with concurrent insertions after synchronization between replica A and replica B
-      ])
-      <fig:fugue-concurrent-insert-both>],
-    [#figure(image("/result/delete.pdf"), caption: [
-        Fugue tree with deletions
-      ])
-      <fig:fugue-delete>],
   )
 })
 ==== Concurrent insert operation
@@ -146,19 +114,11 @@ As there is no choice that is inherently better, it is just important that all c
 The node to delete, which is calculated from the index in the tree traversal of visible nodes, is simply marked as deleted.
 If it already was deleted by a concurrent user, the operation does nothing.
 
-#figure(kind: "hidden", supplement: none, {
+#figure({
   show figure: set align(bottom)
   grid(
-    columns: 2,
+    columns: 0,
     align: bottom,
-    [#figure(image("/result/sequential-inserts.pdf"), caption: [
-        Fugue tree with sequential insertions
-      ])
-      <fig:fugue-sequential-inserts>],
-    [#figure(image("/result/reverse-sequential-inserts.pdf"), caption: [
-        Fugue tree with reverse sequential insertions
-      ])
-      <fig:fugue-reverse-sequential-inserts>],
   )
 })
 #figure(image("/result/shopping.pdf"), caption: [
