@@ -16,6 +16,12 @@ local definitions = [=[
 \newcommand{\marginfigureB}[1][]{\begin{figure}\pandocmargin{}\par}
 \newcommand{\endmarginfigure}{\end{figure}}
 
+\newcommand{\subfigure}[1]{\begin{figure}\pandocsubfigure{}\par}
+\newcommand{\endsubfigure}{\end{figure}}
+
+\newcommand{\minipage}[1]{\begin{figure}\pandocminipage{}\par}
+\newcommand{\endminipage}{\end{figure}}
+
 \newcommand{\makebox}[1][]{\makeboxB}
 \newcommand{\makeboxB}[1][]{\makeboxC}
 \newcommand{\makeboxC}[1]{#1}
@@ -25,8 +31,10 @@ local definitions = [=[
 \newcommand{\labsec}[1]{\label{#1}}
 \newcommand{\labfig}[1]{\label{#1}}
 \newcommand{\Cref}[1]{\ref{#1}}
-\newcommand{\Citeauthor}[1]{\cite{#1}}
 \newcommand{\footref}[1]{\ref{#1}}
+
+\def\Citeauthor*#1{\citeauthor{#1}}
+
 \newcommand{\index}[1]{}
 \newcommand{\setchapterpreamble}[2][]{}
 \newcommand{\pagebreak}{\pandocpagebreak{}}
@@ -48,36 +56,34 @@ local definitions = [=[
 \newcommand{\glsfmttext}[1]{#1}
 \newcommand{\S}{\text{§}}
 \newenvironment{flushright}{}{}
-\newenvironment{listing}{}{}
 
-\newcommand{\addtocontents}{}
+\newcommand{\listing}{\begin{figure}}
+\newcommand{\endlisting}{\end{figure}}
+
+
+\renewenvironment{abstract}[1][]{}{}
+
+\newcommand{\addtocontents}[2]{}
 
 \newcommand{\twoMinipageFigures}[4]{
+  \begin{minipage}{.5\textwidth}
+    \pandocgrid{}\par
     \begin{figure}
-        \begin{minipage}[t]{.4875\textwidth}
-            \includegraphics[scale=\thelastscalefactor,valign=t]{#1}
-            #2
-        \end{minipage}
-        \begin{minipage}[t]{.4875\textwidth}
-            \includegraphics[scale=\thelastscalefactor,valign=t]{#3}
-            #4
-        \end{minipage}
+      #2
+      \includegraphics{#1}
     \end{figure}
-}
-
-\newcommand{\twoSubfigures}[4]{
-      \begin{subfigure}{.5\textwidth}
-          \includegraphics[scale=\thelastscalefactor,valign=t]{#1}
-          #2
-      \end{subfigure}%
-      \begin{subfigure}{.5\textwidth}
-          \includegraphics[scale=\thelastscalefactor,valign=t]{#3}
-          #4
-      \end{subfigure}
+    \begin{figure}
+      #4
+      \includegraphics{#3}
+    \end{figure}
+    \caption{}
+    \label{}
+  \end{minipage}
 }
 
 \newcommand{\benchmarkResults}[2]{
     \begin{figure}
+        \pandocgrid{}\par
         \begin{subfigure}{.5\textwidth}
             \includegraphics[width=\textwidth]{../text-rdt/jvm/figure-benchmark-results/#1.pdf}
             \caption{time}
@@ -93,8 +99,20 @@ local definitions = [=[
     \end{figure}
 }
 
+\newcommand{\twoSubfigures}[4]{
+  \begin{subfigure}{.5\textwidth}
+      \includegraphics[scale=\thelastscalefactor,valign=t]{#1}
+      #2
+  \end{subfigure}%
+  \begin{subfigure}{.5\textwidth}
+      \includegraphics[scale=\thelastscalefactor,valign=t]{#3}
+      #4
+  \end{subfigure}
+}
+
 \newcommand{\evilEdgeCase}[2]{
     \begin{figure}
+        \pandocgrid{}\par
         \twoSubfigures{../text-rdt/target/pdfs/#1-before.pdf}{\caption{before}
             \label{fig:edge-case-#1-before}}{../text-rdt/target/pdfs/#1-after.pdf}{\caption{after}
             \label{fig:edge-case-#1-after}}
@@ -115,6 +133,7 @@ local function marker_text(block)
     return block.text
   end
 end
+
 
 function Reader(input, opts)
   return pandoc.read(definitions .. tostring(input),
@@ -148,9 +167,21 @@ function Reader(input, opts)
     end,
 
     Figure = function(fig)
+      if marker_text(fig.content[1]) == '\\pandocsubfigure{}' then
+        fig.content:remove(1)
+        fig.classes:insert('subfigure')
+      end
+      if marker_text(fig.content[1]) == '\\pandocminipage{}' then
+        fig.content:remove(1)
+        fig.classes:insert('minipage')
+      end
       if marker_text(fig.content[1]) == '\\pandocmargin{}' then
         fig.content:remove(1)
         fig.classes:insert('marginfigure')
+      end
+      if marker_text(fig.content[1]) == '\\pandocgrid{}' then
+        fig.content:remove(1)
+        fig.classes:insert('grid')
       end
 
       -- Walk fig.content so fig.identifier mutations persist

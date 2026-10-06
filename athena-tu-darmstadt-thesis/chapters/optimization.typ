@@ -1,34 +1,4 @@
-#import "../utils.typ": benchmarkResults, gls, glspl
-
-#let evilEdgeCase(name, caption) = figure(
-  {
-    set figure(supplement: [])
-    show figure.caption: it => [
-      #context it.counter.display("(a)")
-      #it.body
-    ]
-    grid(
-      columns: (50%, 50%),
-      align: bottom,
-      [
-        #figure(
-          image("../../result/" + name + "-before.pdf"),
-          caption: "before",
-          kind: "fig" + name,
-        ) #label(name)
-      ],
-      [
-        #figure(
-          image("../../result/" + name + "-after.pdf"),
-          caption: "after",
-          kind: "fig" + name,
-        ) #label(name)
-      ],
-    )
-  },
-  caption: "Example for " + caption,
-)
-
+#import "../utils.typ": gls, glspl
 = Optimizing Common Edit Operations
 <optimization>
 Based on a theoretical understanding of our base implementation developed from the algorithmic description in the Fugue paper @2023-weidner-minimizing-interleaving[Algorithm~1] we expect quadratic runtime complexity and linear memory usage in relation to the text length.
@@ -37,86 +7,125 @@ This chapter discusses the implementation of benchmarks to verify the theoretica
 The Fugue paper already proposes an optimization, but does not go into detail.
 It proposes to condense sequentially-inserted tree nodes into a single "waypoint" object instead of using one object per node @2023-weidner-minimizing-interleaving[Section 5] but even with their implementation#footnote[#link(
   "https://github.com/mweidner037/fugue",
-);] available, their exact approach is unclear.
+)] available, their exact approach is unclear.
 To avoid premature optimization we analyze the performance and optimize based on that.
 
 The benchmarks also indicate a quadratic runtime complexity for our base implementation.
-In , we start with an optimization that combines consecutively inserted characters as that is how most text is written.
+In @sec:optimization-batching, we start with an optimization that combines consecutively inserted characters as that is how most text is written.
 This leads to good performance for sequentially written text but still quadratic runtime performance for text with realistic editing behavior like corrections and later additions.
-In , we create a look-up data structure that can quickly convert between text positions and nodes as that is the main performance bottleneck in the base implementation.
-This results in $O (l o g (n))$ runtime complexity per operation.
+In @sec:optimization-look-up-datastructure, we create a look-up data structure that can quickly convert between text positions and nodes as that is the main performance bottleneck in the base implementation.
+This results in $O\(l o g\(n\)\)$ runtime complexity per operation.
 Then, we combine both approaches to reduce memory usage using the batching optimization.
 This leads to the common case being well optimized, but there are still cases that can be quadratic for text of some length.
-In we investigate these performance edge cases, and develop optimizations for them to ensure good performance in all cases.
+In @edge-cases we investigate these performance edge cases, and develop optimizations for them to ensure good performance in all cases.
 This is important so malicious peers or unusual editing behavior can not lead to unusable runtime performance.
-Finally, in , we give an overview of the resulting data structure.
+Finally, in @final-high-level-code-overview, we give an overview of the resulting data structure.
 
-#benchmarkResults(
-  "simple-sequential-inserts",
-  [Benchmark results for sequential insertions with the \glsfmttext{simple algorithm}],
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/simple-sequential-inserts.pdf",
+          ),
+          caption: [
+            time
+          ],
+        )
+        <fig:simple-sequential-inserts-time>],
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/simple-sequential-inserts-memory.pdf",
+          ),
+          caption: [
+            memory
+          ],
+        )
+        <fig:simple-sequential-inserts-memory>],
+    )
+  },
+  caption: [Benchmark results for sequential insertions with the simple algorithm],
+) <fig:simple-sequential-inserts>
+#figure(
+  [```scala
+    override def atVisibleIndex(i: Int): SimpleTreeNode[V] = {
+      factory.nodes().drop(i).iterator.next
+    }
+    ```
+
+  ],
+  caption: [
+    Code excerpt of node search based on index for the simple algorithm
+  ],
 )
+<lst:simple-at-visible-index>
 
-#figure[
-  ```scala
-  override def atVisibleIndex(i: Int): SimpleTreeNode[V] = {
-    factory.nodes().drop(i).iterator.next
-  }
-  ```
-
-]
 The most basic case is sequential insertion of text which simulates a user that perfectly writes text and never needs to fix any mistakes or add something earlier in the text.
-Benchmarking our basic implementation called the simple algorithm leads to the result in .
+Benchmarking our basic implementation called the @simple-algorithm leads to the result in @fig:simple-sequential-inserts.
 
-Note: The graphs show the time and memory #emph[per character operation];, thus the total time to handle the character operations grows quadratically in .
+Note: The graphs show the time and memory #emph[per character operation], thus the total time to handle the character operations grows quadratically in @fig:simple-sequential-inserts.
 All graphs with the same border color have the same axis scale to make them comparable.
 
-As shown in almost all the time is spent in `atVisibleIndex`.
-This matches the repeated linear search to find the element at which we need to insert based on its index in the original algorithm as shown in .
+As shown in @appendix:simple-sequential-inserts-cpu almost all the time is spent in `atVisibleIndex`.
+This matches the repeated linear search to find the element at which we need to insert based on its index in the original algorithm as shown in @lst:simple-at-visible-index.
 
-#figure[
-  ```scala
-  final case class BatchingTreeNode(
-      rid: RID | Null,
-      counter: Int,
-      var _values: StringBuilder | Null,
-      var offset: Int,
-      var to: Int,
-      side: Side,
-      var parent: BatchingTreeNodeSingle | Null,
-      var leftChildrenBuffer: mutable.ArrayBuffer[BatchingTreeNode],
-      var rightChildrenBuffer: mutable.ArrayBuffer[BatchingTreeNode],
-      var allowAppend: Boolean
-  )
-  ```
+#figure(
+  [```scala
+    final case class BatchingTreeNode(
+        rid: RID | Null,
+        counter: Int,
+        var _values: StringBuilder | Null,
+        var offset: Int,
+        var to: Int,
+        side: Side,
+        var parent: BatchingTreeNodeSingle | Null,
+        var leftChildrenBuffer: mutable.ArrayBuffer[BatchingTreeNode],
+        var rightChildrenBuffer: mutable.ArrayBuffer[BatchingTreeNode],
+        var allowAppend: Boolean
+    )
+    ```
 
-]
+  ],
+  caption: [
+    Data structure of batching node
+  ],
+)
+<lst:data-structure-batching-node>
+
+#pagebreak()
 == Optimization Using Batching
 <sec:optimization-batching>
 The optimization that many algorithms already utilize and that the Fugue authors also have hinted at @2023-weidner-minimizing-interleaving[Section 5], is batching sequential insertions by one peer to reduce metadata and memory overhead.
 In the following section we describe what is needed for that optimization in detail.
 
-The previously used simple ID for tree nodes consists of a replica ID and a counter.
+The previously used @simple-ID for tree nodes consists of a replica ID and a counter.
 To combine sequential tree nodes by the same replica, an offset is added to be able to address single characters for insert and delete operations.
-This ID that consists of a replica ID, counter and offset is called a batching ID and our algorithm the batching algorithm.
+This ID that consists of a replica ID, counter and offset is called a @batching-ID and our algorithm the @batching-algorithm.
 
 The algorithm intentionally only optimizes consecutive right children or rather forward insertions as that is the most common case.
 In all cases this is only a best-effort optimization as operations may not be combinable at all, for example if they are from multiple peers.
 
-shows the rough data structure of a node.
-The `replicaId` and `counter` represent the simple ID part of this node.
+@lst:data-structure-batching-node shows the rough data structure of a node.
+The `replicaId` and `counter` represent the @simple-ID part of this node.
 If the `replicaId` is null, then the value of the `counter` is not relevant.
 This is the case for the root node.
-The `_values` reference one `ArrayBuffer` per simple ID, so multiple nodes may reference the same `ArrayBuffer`.
+The `_values` reference one `ArrayBuffer` per @simple-ID, so multiple nodes may reference the same `ArrayBuffer`.
 This happens when a batching node needs to be split.
 The `offset` and `to` variables represent which subrange of the `ArrayBuffer` this node represents, so which characters of the text it stores.
-This means the batching IDs for this node then consist of the simple ID part and each value in the range from `offset` until `to` combined with the character at that index in `_values`.
+This means the @batching-ID:pl for this node then consist of the @simple-ID part and each value in the range from `offset` until `to` combined with the character at that index in `_values`.
 In the tree these are always right children of their predecessor as we optimize forward insertions.
 The `side` stores if this is a left or right child of its parent, except for the root node where this value does not store anything meaningful.
 `BatchingTreeNodeSingle` stores a reference to the parent `BatchingTreeNode` combined with the offset into that node at which this node is added.
 The `leftChildrenBuffer` and `rightChildrenBuffer` store the children in an array.
 `allowAppend` stores whether appending an element to this node is possible by appending an element to `_values`.
-This is not allowed for the left part of a split because otherwise batching IDs could be duplicated.
+This is not allowed for the left part of a split because otherwise @batching-ID:pl could be duplicated.
 
+#pagebreak()
 ===== Insert operation
 <insert-operation>
 To insert an element there are the following cases.
@@ -142,45 +151,95 @@ In this case a new node is added as a left child of the existing node.
 ===== Otherwise:
 <otherwise>
 In the other cases, so \"Insert to the right not at the right edge\" and \"Insert to the left not at the left edge\" the node needs to be split and inserted at the correct location.
-Further details about splitting can be found in .
-As later optimizations combine sequential #emph[deletions];, this also needs to be handled correctly.
+Further details about splitting can be found in @edge-cases.
+As later optimizations combine sequential #emph[deletions], this also needs to be handled correctly.
 
 ===== Delete operation
 <delete-operation>
 If an element is already deleted because of concurrent actions, nothing needs to be done.
 Note that also the editor then does not need any updates.
-Deletion generally needs to split a node into up to three parts \(except if the first or last element is deleted) as there needs to be a node for the part before the deleted element, a node for the deleted element and a node for the part after the deleted element.
-Later optimizations avoid this for sequential forward and backward deletions by the same replica if both nodes have the same simple ID.
+Deletion generally needs to split a node into up to three parts (except if the first or last element is deleted) as there needs to be a node for the part before the deleted element, a node for the deleted element and a node for the part after the deleted element.
+Later optimizations avoid this for sequential forward and backward deletions by the same replica if both nodes have the same @simple-ID.
 Instead, the deleted element is moved to the node containing the other already deleted elements if the parent node has no other right children.
 
-#benchmarkResults(
-  "simple-complex-sequential-inserts",
-  [Benchmark results for sequential insertions comparing the \glsfmttext{simple algorithm} and the \glsfmttext{batching algorithm}],
-)
-
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/simple-complex-sequential-inserts.pdf",
+          ),
+          caption: [
+            time
+          ],
+        )
+        <fig:simple-complex-sequential-inserts-time>],
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/simple-complex-sequential-inserts-memory.pdf",
+          ),
+          caption: [
+            memory
+          ],
+        )
+        <fig:simple-complex-sequential-inserts-memory>],
+    )
+  },
+  caption: [Benchmark results for sequential insertions comparing the simple algorithm and the batching algorithm],
+) <fig:simple-complex-sequential-inserts>
 ===== Results for sequential insertions
 <results-for-sequential-insertions>
-Benchmarking the sequential insertions produces the results in .
-The reason the batching algorithm is so fast in comparison to the simple algorithm is that it mainly needs to append to an `ArrayBuffer` for sequential insertions.
+Benchmarking the sequential insertions produces the results in @fig:simple-complex-sequential-inserts.
+The reason the @batching-algorithm is so fast in comparison to the @simple-algorithm is that it mainly needs to append to an `ArrayBuffer` for sequential insertions.
 
 Even though every character insertion only needs to append a character to an `ArrayBuffer`, the memory usage per character is about 100 bytes.
 This is because it also stores the causal history which is required for properly syncing between peers but is only optimized in the final version later.
 
-The CPU profile in shows that most time is spent in garbage collection.
+The CPU profile in @appendix:complex-sequential-inserts-cpu shows that most time is spent in garbage collection.
 This indicates that allocating elements for the nodes and messages and resizing ArrayBuffers requires extensive CPU time.
 The profile shows the CPU time, so this affects the realtime less on a multithreaded system than on a single threaded system.
 Garbage collection makes it harder to optimize the code as the garbage collector creates a non-local performance bottleneck.
-It may be helpful to look at the allocation profile in .
+It may be helpful to look at the allocation profile in @appendix:complex-sequential-inserts-alloc.
 There are some things like allocations of temporary values for iterators and views that can be optimized away.
 In our experience this only leads to limited improvements though.
 It would be easier to use a programming language that does not use a garbage collector or probably not even a JIT compiler to optimize the algorithm to that depth.
 Still, Scala, Java and the JVM are well-suited to look at the asymptotic performance because memory allocation or cyclic data structures do not need to be considered in contrast to low level languages like C++ or Rust.
 
-#benchmarkResults(
-  "simple-complex-real-world",
-  [Benchmark results for real world editing trace comparing the \glsfmttext{simple algorithm} and the \glsfmttext{batching algorithm}],
-)
-
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/simple-complex-real-world.pdf",
+          ),
+          caption: [
+            time
+          ],
+        )
+        <fig:simple-complex-real-world-time>],
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/simple-complex-real-world-memory.pdf",
+          ),
+          caption: [
+            memory
+          ],
+        )
+        <fig:simple-complex-real-world-memory>],
+    )
+  },
+  caption: [Benchmark results for real world editing trace comparing the simple algorithm and the batching algorithm],
+) <fig:simple-complex-real-world>
 ===== Results for real world editing trace
 <results-for-real-world-editing-trace>
 While this results in good performance, it clearly does not cover real world editing behavior.
@@ -189,58 +248,185 @@ Therefore, we use the dataset from #link(
 ) which contains 259,778 insertion and deletion operations that produce a text with 104,852 characters.
 It is the editing trace from the LaTeX~source of #link(
   "https://arxiv.org/abs/1608.03960",
-);.
+).
 
-shows the runtime #emph[per operation] grows linearly and is also extremely slow for only a few tens of thousands of characters. shows that most time is spent in `findElementAtIndex` similar to the simple sequential insertions.
+@fig:simple-complex-real-world shows the runtime #emph[per operation] grows linearly and is also extremely slow for only a few tens of thousands of characters.
+@appendix:complex-real-world-cpu shows that most time is spent in `findElementAtIndex` similar to the simple sequential insertions.
 This is because the batching only helps to improve the performance by some factor that is correlated with the size of consecutive insertions.
 We therefore looked into an approach that fixes the root cause which is the search of the node in the tree that represents the character at a position in the text.
 
-#benchmarkResults(
-  "simple-complex-simpleavl-real-world",
-  [Benchmark results for real world editing trace comparing the \glsfmttext{simple algorithm}, the \glsfmttext{batching algorithm} and the \glsfmttext{simple AVL algorithm}],
-)
-
-#benchmarkResults(
-  "simpleavl-real-world",
-  [Benchmark results for real world editing trace with the \glsfmttext{simple AVL algorithm}],
-)
-
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/simple-complex-simpleavl-real-world.pdf",
+          ),
+          caption: [
+            time
+          ],
+        )
+        <fig:simple-complex-simpleavl-real-world-time>],
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/simple-complex-simpleavl-real-world-memory.pdf",
+          ),
+          caption: [
+            memory
+          ],
+        )
+        <fig:simple-complex-simpleavl-real-world-memory>],
+    )
+  },
+  caption: [Benchmark results for real world editing trace comparing the simple algorithm, the batching algorithm and the simple AVL algorithm],
+) <fig:simple-complex-simpleavl-real-world>
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/simpleavl-real-world.pdf",
+          ),
+          caption: [
+            time
+          ],
+        )
+        <fig:simpleavl-real-world-time>],
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/simpleavl-real-world-memory.pdf",
+          ),
+          caption: [
+            memory
+          ],
+        )
+        <fig:simpleavl-real-world-memory>],
+    )
+  },
+  caption: [Benchmark results for real world editing trace with the simple AVL algorithm],
+) <fig:simpleavl-real-world>
+#pagebreak()
 == Optimization Using a Look-Up Datastructure
 <sec:optimization-look-up-datastructure>
 For this optimization a data structure is needed, that can quickly retrieve the node based on its index in the text and also allows quick insertions and deletions at arbitrary positions.
 This is similar to a binary search tree with the difference that the index of a node shifts when inserting a node to the left of it.
-Therefore, instead of storing the index of a node, it stores the size of all \(visible) subnodes in the search tree.
+Therefore, instead of storing the index of a node, it stores the size of all (visible) subnodes in the search tree.
 Then a binary search on that size finds the insert position.
 This also means that an insertion needs to update all sizes up to the root.
 An AVL tree was chosen as the binary search tree because it has logarithmic asymptotic complexity in all cases and more complex and potentially faster binary search trees such as B-trees do not have better asymptotic complexity.
 The batching optimization is excluded to be able to isolate the performance changes to the algorithmic changes.
 
-This results in a very low time per character operation as shown in in comparison to the two other approaches with the real world benchmark.
-As it is not possible to read the values for the simple AVL algorithm there, shows only the simple AVL algorithm with the full text, so much more operations, and a different y-axis scale.
-The CPU profile in shows that there is not a single hot location, but execution is distributed over many methods.
-The memory overhead is still very high, because a new node in the AVL tree and the Fugue tree needs to be created for every character. shows a memory usage of about 250 bytes per character operation.
+This results in a very low time per character operation as shown in @fig:simple-complex-simpleavl-real-world in comparison to the two other approaches with the real world benchmark.
+As it is not possible to read the values for the @simple-AVL-algorithm there, @fig:simpleavl-real-world shows only the @simple-AVL-algorithm with the full text, so much more operations, and a different y-axis scale.
+The CPU profile in @appendix:simpleavl-real-world-cpu shows that there is not a single hot location, but execution is distributed over many methods.
+The memory overhead is still very high, because a new node in the AVL tree and the Fugue tree needs to be created for every character.
+@fig:simpleavl-real-world shows a memory usage of about 250 bytes per character operation.
 Note that this also includes the full insertion and deletion history and not only the tree itself.
 
-#benchmarkResults(
-  "simpleavl-complexavl-real-world",
-  [Benchmark results for real world editing trace comparing the \glsfmttext{simple AVL algorithm} and the \glsfmttext{batching AVL algorithm}],
-)
-
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/simpleavl-complexavl-real-world.pdf",
+          ),
+          caption: [
+            time
+          ],
+        )
+        <fig:simpleavl-complexavl-real-world-time>],
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/simpleavl-complexavl-real-world-memory.pdf",
+          ),
+          caption: [
+            memory
+          ],
+        )
+        <fig:simpleavl-complexavl-real-world-memory>],
+    )
+  },
+  caption: [Benchmark results for real world editing trace comparing the simple AVL algorithm and the batching AVL algorithm],
+) <fig:simpleavl-complexavl-real-world>
 == Combined Optimizations
 <combined-optimizations>
 Combining the AVL tree optimization and node batching improves the memory usage and runtime.
-The results are shown in for the real world benchmark.
+The results are shown in @fig:simpleavl-complexavl-real-world for the real world benchmark.
 The runtime per operation is one microsecond, thus one million operations can be handled per second.
 The memory usage per operation is about 25 bytes per operation.
 This concludes our optimization of the common execution path.
 
-#evilEdgeCase("evil-children", [edge case with many children])
-
-#benchmarkResults(
-  "complexavl-evil-children",
-  [Benchmark results of an edge case with many children],
-)
-
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image("/result/evil-children-before.pdf"),
+          caption: [
+            before
+          ],
+        )
+        <fig:edge-case-evil-children-before>],
+      [#figure(
+          kind: "subfigure",
+          image("/result/evil-children-after.pdf"),
+          caption: [
+            after
+          ],
+        )
+        <fig:edge-case-evil-children-after>],
+    )
+  },
+  caption: [Example for edge case with many children],
+) <fig:edge-case-evil-children-example>
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-children.pdf",
+          ),
+          caption: [
+            time
+          ],
+        )
+        <fig:complexavl-evil-children-time>],
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-children-memory.pdf",
+          ),
+          caption: [
+            memory
+          ],
+        )
+        <fig:complexavl-evil-children-memory>],
+    )
+  },
+  caption: [Benchmark results of an edge case with many children],
+) <fig:complexavl-evil-children>
 == Performance Edge Cases
 <edge-cases>
 An optimal algorithm must perform efficiently in #emph[all] cases.
@@ -252,39 +438,91 @@ Other algorithms need to be analyzed case by case.
 
 ===== Edge case with many children
 <edge-case-with-many-children>
-Child insertions need to be efficient even after many children are inserted at the same side of the same node as shown in with the benchmark results in .
+Child insertions need to be efficient even after many children are inserted at the same side of the same node as shown in @fig:edge-case-evil-children-example with the benchmark results in @fig:complexavl-evil-children.
 Therefore, the children are stored in a `mutable.SortedSet`, so a binary search tree.
 This results in logarithmic insertion.
 
-#evilEdgeCase(
-  "evil-insert-1",
-  [edge case for insertion to the left of the root],
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image("/result/evil-insert-1-before.pdf"),
+          caption: [
+            before
+          ],
+        )
+        <fig:edge-case-evil-insert-1-before>],
+      [#figure(
+          kind: "subfigure",
+          image("/result/evil-insert-1-after.pdf"),
+          caption: [
+            after
+          ],
+        )
+        <fig:edge-case-evil-insert-1-after>],
+    )
+  },
+  caption: [Example for edge case for insertion to the left of the root],
+) <fig:edge-case-evil-insert-1-example>
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-1.pdf",
+          ),
+          caption: [
+            time
+          ],
+        )
+        <fig:complexavl-evil-insert-1-time>],
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-1-memory.pdf",
+          ),
+          caption: [
+            memory
+          ],
+        )
+        <fig:complexavl-evil-insert-1-memory>],
+    )
+  },
+  caption: [Benchmark results of an edge case for insertion to the left of the root],
+) <fig:complexavl-evil-insert-1>
+#figure(
+  [```scala
+    val firstRightChild = leftOrigin.firstRightChild()
+    var side: Side | Null = null
+    val origin = if (firstRightChild == null) {
+      side = Side.Right
+      leftOrigin
+    } else {
+      side = Side.Left
+      firstRightChild.leftmostDescendant()
+    }
+    ```
+
+  ],
+  caption: [
+    Code excerpt of an edge case for insertion to the left of the root
+  ],
 )
+<lst:code-evil-insert-1>
 
-#benchmarkResults(
-  "complexavl-evil-insert-1",
-  [Benchmark results of an edge case for insertion to the left of the root],
-)
-
-#figure[
-  ```scala
-  val firstRightChild = leftOrigin.firstRightChild()
-  var side: Side | Null = null
-  val origin = if (firstRightChild == null) {
-    side = Side.Right
-    leftOrigin
-  } else {
-    side = Side.Left
-    firstRightChild.leftmostDescendant()
-  }
-  ```
-
-]
 ===== Edge case for insertion to the left of the root
 <edge-case-for-insertion-to-the-left-of-the-root>
-Another case is repeatedly inserting at position $0$ as shown in with the benchmark results in .
+Another case is repeatedly inserting at position $0$ as shown in @fig:edge-case-evil-insert-1-example with the benchmark results in @fig:complexavl-evil-insert-1.
 As the root node has a right child after the first insertion, further nodes need to be inserted to the left of that child.
-To find the node before the child our algorithm retrieves the leftmost descendant of it as shown in .
+To find the node before the child our algorithm retrieves the leftmost descendant of it as shown in @lst:code-evil-insert-1.
 This requires a recursive traversal down the leftmost child, which is a linear operation.
 Therefore, our algorithm uses a cache for the leftmost descendant of every node in the tree.
 As all nodes in the path from the node to its leftmost descendant have the same leftmost descendant, one cache is used for this group of nodes.
@@ -292,101 +530,258 @@ As shown later, it needs to be possible to split the cache up, if a child is ins
 The cache also uses an AVL tree with the specialty of storing a parent reference in each AVL tree node and the root node storing a reference to the leftmost descendant of all nodes of that AVL tree.
 Therefore, the leftmost descendant of this group of nodes can be efficiently retrieved and updated, the cache can be efficiently split up by splitting the AVL tree and new nodes can be efficiently inserted.
 
-#evilEdgeCase(
-  "evil-insert-2",
-  [edge case for concurrent insertion to the right],
+#pagebreak()
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image("/result/evil-insert-2-before.pdf"),
+          caption: [
+            before
+          ],
+        )
+        <fig:edge-case-evil-insert-2-before>],
+      [#figure(
+          kind: "subfigure",
+          image("/result/evil-insert-2-after.pdf"),
+          caption: [
+            after
+          ],
+        )
+        <fig:edge-case-evil-insert-2-after>],
+    )
+  },
+  caption: [Example for edge case for concurrent insertion to the right],
+) <fig:edge-case-evil-insert-2-example>
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-2.pdf",
+          ),
+          caption: [
+            time
+          ],
+        )
+        <fig:complexavl-evil-insert-2-time>],
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-insert-2-memory.pdf",
+          ),
+          caption: [
+            memory
+          ],
+        )
+        <fig:complexavl-evil-insert-2-memory>],
+    )
+  },
+  caption: [Benchmark results of an edge case for concurrent insertion to the right],
+) <fig:complexavl-evil-insert-2>
+#figure(
+  [```scala
+    val base = if (rightChildrenBuffer.nn.isEmpty || before.isEmpty) {
+      parent
+    } else {
+      BatchingAVLTreeNodeSingle(before.get, before.get.value.to)
+        .rightmostDescendant().complexTreeNode
+    }
+    ```
+
+  ],
+  caption: [
+    Code excerpt of an edge case for concurrent insertion to the right
+  ],
 )
+<lst:code-evil-insert-2>
 
-#benchmarkResults(
-  "complexavl-evil-insert-2",
-  [Benchmark results of an edge case for concurrent insertion to the right],
-)
-
-#figure[
-  ```scala
-  val base = if (rightChildrenBuffer.nn.isEmpty || before.isEmpty) {
-    parent
-  } else {
-    BatchingAVLTreeNodeSingle(before.get, before.get.value.to)
-      .rightmostDescendant().complexTreeNode
-  }
-  ```
-
-]
+#pagebreak()
 ===== Edge case for concurrent insertion to the right
 <edge-case-for-concurrent-insertion-to-the-right>
-In the edge case in with the benchmark results in the `p` nodes were first inserted and then `c` nodes were inserted concurrent to them.
+In the edge case in @fig:edge-case-evil-insert-2-example with the benchmark results in @fig:complexavl-evil-insert-2 the `p` nodes were first inserted and then `c` nodes were inserted concurrent to them.
 This means for every `c` node insertion, the node needs to be inserted at the correct position in the AVL tree to preserve the correct character ordering.
 For example as this is a concurrent insertion, the first `c` node needs to be inserted after the subtree of the child to the left of it.
-Therefore, the last node in the subtree of its left child needs to be retrieved, which requires to get the rightmost descendant of that child as shown in .
+Therefore, the last node in the subtree of its left child needs to be retrieved, which requires to get the rightmost descendant of that child as shown in @lst:code-evil-insert-2.
 Therefore, this also needs the optimization as explained for the previous edge case.
 
-#evilEdgeCase("evil-split", [edge case for node splitting])
-
-#benchmarkResults(
-  "complexavl-evil-split",
-  [Benchmark results of an edge case for node splitting],
-)
-
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image("/result/evil-split-before.pdf"),
+          caption: [
+            before
+          ],
+        )
+        <fig:edge-case-evil-split-before>],
+      [#figure(
+          kind: "subfigure",
+          image("/result/evil-split-after.pdf"),
+          caption: [
+            after
+          ],
+        )
+        <fig:edge-case-evil-split-after>],
+    )
+  },
+  caption: [Example for edge case for node splitting],
+) <fig:edge-case-evil-split-example>
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split.pdf",
+          ),
+          caption: [
+            time
+          ],
+        )
+        <fig:complexavl-evil-split-time>],
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split-memory.pdf",
+          ),
+          caption: [
+            memory
+          ],
+        )
+        <fig:complexavl-evil-split-memory>],
+    )
+  },
+  caption: [Benchmark results of an edge case for node splitting],
+) <fig:complexavl-evil-split>
+#pagebreak()
 ===== Edge case for node splitting
 <subsection:evil-split>
-Splitting a batched node as shown in with the benchmark results in needs to be efficiently handled.
+Splitting a batched node as shown in @fig:edge-case-evil-split-example with the benchmark results in @fig:complexavl-evil-split needs to be efficiently handled.
 The consecutive elements are stored in an `ArrayBuffer` and splitting it would be a linear operation.
 Therefore, instead of splitting it, nodes reference a subpart of the buffer.
 This means splitting a node only requires creating and inserting a new node and updating a few references to the buffer start and end, inserting it into the AVL tree and updating the descendant cache.
 The disadvantage is that the memory for deleted nodes is not reclaimed.
 
-#evilEdgeCase(
-  "evil-split-many-right-children",
-  [edge case for node splitting with many right children],
-)
-
-#benchmarkResults(
-  "complexavl-evil-split-many-right-children",
-  [Benchmark results of an edge case for node splitting with many right children],
-)
-
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image("/result/evil-split-many-right-children-before.pdf", width: 70%),
+          caption: [
+            before
+          ],
+        )
+        <fig:edge-case-evil-split-many-right-children-before>],
+      [#figure(
+          kind: "subfigure",
+          image("/result/evil-split-many-right-children-after.pdf", width: 70%),
+          caption: [
+            after
+          ],
+        )
+        <fig:edge-case-evil-split-many-right-children-after>],
+    )
+  },
+  caption: [Example for edge case for node splitting with many right children],
+) <fig:edge-case-evil-split-many-right-children-example>
+#figure(
+  {
+    show figure: set align(bottom)
+    grid(
+      columns: 2,
+      align: bottom,
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split-many-right-children.pdf",
+          ),
+          caption: [
+            time
+          ],
+        )
+        <fig:complexavl-evil-split-many-right-children-time>],
+      [#figure(
+          kind: "subfigure",
+          image(
+            "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split-many-right-children-memory.pdf",
+          ),
+          caption: [
+            memory
+          ],
+        )
+        <fig:complexavl-evil-split-many-right-children-memory>],
+    )
+  },
+  caption: [Benchmark results of an edge case for node splitting with many right children],
+) <fig:complexavl-evil-split-many-right-children>
 ===== Edge case for node splitting with many right children
 <edge-case-for-node-splitting-with-many-right-children>
 A previous version of the algorithm stored a reference to the parent in each node.
-Therefore, splitting a node as shown in with the benchmark results in required updating the parent of all its former children.
-The parent reference is not required for the batching AVL algorithm, therefore it was simply removed.
+Therefore, splitting a node as shown in @fig:edge-case-evil-split-many-right-children-example with the benchmark results in @fig:complexavl-evil-split-many-right-children required updating the parent of all its former children.
+The parent reference is not required for the @batching-AVL-algorithm, therefore it was simply removed.
 
 ===== Closing remarks
 <closing-remarks>
 It is important to note that there is no guarantee this covers all edge cases.
 Except for formal verification, the most feasible way is to thoroughly look at the source code and check that each possible operation is able to compute in the expected time.
-Appending to a batched node in our algorithm can be $O (n)$ in the case that the `ArrayBuffer` requires resizing, but our algorithm intentionally targets #emph[amortized] $O (log (n))$ as it is not relevant if a single operation takes a bit longer.
+Appending to a batched node in our algorithm can be $O\(n\)$ in the case that the `ArrayBuffer` requires resizing, but our algorithm intentionally targets #emph[amortized] $O\(log\(n\)\)$ as it is not relevant if a single operation takes a bit longer.
 Also, resizing the `ArrayBuffer` is fast as it only consists of a memory copy.
 
 All these data structures also lead to a high per-node memory overhead, so it may be interesting if there are better ways to achieve the same performance goal.
 Note especially the last edge case where almost 1300 bytes are needed per character operation.
 Through optimization, probably in an ahead-of-time compiled language and not Scala or another JVM based language, this can probably be reduced at least a bit.
 
-#figure[
-  ```scala
-  final case class BatchingAVLTreeNode[V](
-    replicaId: RID | Null,
-    counter: Int,
-    var _values: ArrayBuffer[V] | Null,
-    var offset: Int,
-    var to: Int,
-    side: Side,
-    var leftChildrenBuffer: SortedSet[AVLTreeNode[BatchingAVLTreeNode[V]]]
-                            | AVLTreeNode[BatchingAVLTreeNode[V]] | Null,
-    var rightChildrenBuffer: SortedSet[AVLTreeNode[BatchingAVLTreeNode[V]]]
-                            | AVLTreeNode[BatchingAVLTreeNode[V]] | Null,
-    var allowAppend: Boolean,
-    var leftDescCache: AVL2TreeNode[AVLTreeNode[BatchingAVLTreeNode[V]]],
-    var rightDescCache: AVL2TreeNode[AVLTreeNode[BatchingAVLTreeNode[V]]],
-  )
-  ```
+#figure(
+  [```scala
+    final case class BatchingAVLTreeNode[V](
+      replicaId: RID | Null,
+      counter: Int,
+      var _values: ArrayBuffer[V] | Null,
+      var offset: Int,
+      var to: Int,
+      side: Side,
+      var leftChildrenBuffer: SortedSet[AVLTreeNode[BatchingAVLTreeNode[V]]]
+                              | AVLTreeNode[BatchingAVLTreeNode[V]] | Null,
+      var rightChildrenBuffer: SortedSet[AVLTreeNode[BatchingAVLTreeNode[V]]]
+                              | AVLTreeNode[BatchingAVLTreeNode[V]] | Null,
+      var allowAppend: Boolean,
+      var leftDescCache: AVL2TreeNode[AVLTreeNode[BatchingAVLTreeNode[V]]],
+      var rightDescCache: AVL2TreeNode[AVLTreeNode[BatchingAVLTreeNode[V]]],
+    )
+    ```
 
-]
+  ],
+  caption: [
+    Code excerpt of node data structure for batching AVL algorithm
+  ],
+)
+<lst:final-code>
+
+#pagebreak()
 == Node Data Structure Including All Optimizations
 <final-high-level-code-overview>
-In we show our node data structure for the batching AVL algorithm that combines the batching with the look-up tree optimization.
-The fields that are from the batching node data structure shown in have the same meaning as explained in .
+In @lst:final-code we show our node data structure for the @batching-AVL-algorithm that combines the batching with the look-up tree optimization.
+The fields that are from the batching node data structure shown in @lst:data-structure-batching-node have the same meaning as explained in @sec:optimization-batching.
 For the look-up tree optimization, the `leftDescCache` and `rightDescCache` store an AVL tree for quickly retrieving the respective descendant.
-The `leftChildrenBuffer` and `rightChildrenBuffer` use a `SortedSet` to insert nodes in $log (n)$ and have an optimization for single or no children to save memory.
+The `leftChildrenBuffer` and `rightChildrenBuffer` use a `SortedSet` to insert nodes in $log\(n\)$ and have an optimization for single or no children to save memory.
 They also store the children in an `AVLTreeNode` for the fast node retrieval using an AVL tree.
