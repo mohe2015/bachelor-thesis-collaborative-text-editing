@@ -136,6 +136,14 @@
 
 #set figure(placement: top)
 
+#show bibliography: it => {
+  show regex("arXiv: [0-9]{4}\\.[0-9]{4,5}(v[0-9]+)?"): matched => {
+    let id = matched.text.replace("arXiv: ", "")
+    link("https://arxiv.org/abs/" + id, matched)
+  }
+  it
+}
+
 //#show: zebraw
 //#show: zebraw-init.with(background-color: none, lang: false)
 
