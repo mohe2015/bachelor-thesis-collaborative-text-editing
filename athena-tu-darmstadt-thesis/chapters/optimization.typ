@@ -686,7 +686,7 @@ The disadvantage is that the memory for deleted nodes is not reclaimed.
       align: bottom,
       [#figure(
           kind: "subfigure",
-          image("/result/evil-split-many-right-children-before.pdf"),
+          image("/result/evil-split-many-right-children-before.pdf", width: 70%),
           caption: [
             before
           ],
@@ -694,7 +694,7 @@ The disadvantage is that the memory for deleted nodes is not reclaimed.
         <fig:edge-case-evil-split-many-right-children-before>],
       [#figure(
           kind: "subfigure",
-          image("/result/evil-split-many-right-children-after.pdf"),
+          image("/result/evil-split-many-right-children-after.pdf", width: 70%),
           caption: [
             after
           ],
