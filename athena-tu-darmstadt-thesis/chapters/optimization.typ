@@ -642,11 +642,11 @@ Therefore, this also needs the optimization as explained for the previous edge c
 #figure(
   {
     show figure: set align(bottom)
-    set figure.caption(separator: none)
     grid(
       columns: 2,
       align: bottom,
-      [#figure(
+      [#set figure.caption(separator: none)
+        #figure(
           kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split.pdf",
