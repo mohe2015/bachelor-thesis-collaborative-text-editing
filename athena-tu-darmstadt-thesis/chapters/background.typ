@@ -39,8 +39,29 @@ Combining all that will therefore produce the text `"small trees grow"`.
 #figure({
   show figure: set align(bottom)
   grid(
-    columns: 0,
+    columns: 2,
     align: bottom,
+    [#figure(
+        kind: "minpage",
+        [Fugue tree with root node#box(image("/result/empty.pdf", alt: "image"))
+
+        ],
+        caption: [
+        ],
+      )
+      <fig:fugue-root-node>],
+    [#figure(
+        kind: "minpage",
+        [Insertion of `"a"` into Fugue tree at index $0$#box(image(
+            "/result/root-right-a.pdf",
+            alt: "image",
+          ))
+
+        ],
+        caption: [
+        ],
+      )
+      <fig:fugue-right-a>],
   )
 })
 == Initial State
@@ -58,8 +79,32 @@ All indices are zero based, so the element at index $0$ is the first element.
 #figure({
   show figure: set align(bottom)
   grid(
-    columns: 0,
+    columns: 2,
     align: bottom,
+    [#figure(
+        kind: "minpage",
+        [Insertion of `"c"` into Fugue tree at index $1$#box(image(
+            "/result/root-right-ac.pdf",
+            alt: "image",
+          ))
+
+        ],
+        caption: [
+        ],
+      )
+      <fig:fugue-right-ac>],
+    [#figure(
+        kind: "minpage",
+        [Insertion of `"b"` into Fugue tree at index $1$#box(image(
+            "/result/root-right-ac-left-b.pdf",
+            alt: "image",
+          ))
+
+        ],
+        caption: [
+        ],
+      )
+      <fig:fugue-right-ac-left-b>],
   )
 })
 ==== Insert operation
@@ -87,15 +132,59 @@ Starting with the previous tree, @fig:fugue-right-ac-left-b shows an insertion a
 #figure({
   show figure: set align(bottom)
   grid(
-    columns: 0,
+    columns: 2,
     align: bottom,
+    [#figure(
+        kind: "minpage",
+        [Fugue tree with text insertion at replica A#box(image(
+            "/result/concurrent-insert-a.pdf",
+            alt: "image",
+          ))
+
+        ],
+        caption: [
+        ],
+      )
+      <fig:fugue-concurrent-insert-a>],
+    [#figure(
+        kind: "minpage",
+        [Fugue tree with text insertion at replica B#box(image(
+            "/result/concurrent-insert-b.pdf",
+            alt: "image",
+          ))
+
+        ],
+        caption: [
+        ],
+      )
+      <fig:fugue-concurrent-insert-b>],
   )
 })
 #figure({
   show figure: set align(bottom)
   grid(
-    columns: 0,
+    columns: 2,
     align: bottom,
+    [#figure(
+        kind: "minpage",
+        [Fugue tree with concurrent insertions after synchronization between replica A and replica B#box(
+            image("/result/concurrent-insert-both.pdf", alt: "image"),
+          )
+
+        ],
+        caption: [
+        ],
+      )
+      <fig:fugue-concurrent-insert-both>],
+    [#figure(
+        kind: "minpage",
+        [Fugue tree with deletions
+
+          #box(image("/result/delete.pdf"))],
+        caption: [
+        ],
+      )
+      <fig:fugue-delete>],
   )
 })
 ==== Concurrent insert operation
@@ -117,8 +206,32 @@ If it already was deleted by a concurrent user, the operation does nothing.
 #figure({
   show figure: set align(bottom)
   grid(
-    columns: 0,
+    columns: 2,
     align: bottom,
+    [#figure(
+        kind: "minpage",
+        [Fugue tree with sequential insertions#box(image(
+            "/result/sequential-inserts.pdf",
+            alt: "image",
+          ))
+
+        ],
+        caption: [
+        ],
+      )
+      <fig:fugue-sequential-inserts>],
+    [#figure(
+        kind: "minpage",
+        [Fugue tree with reverse sequential insertions#box(image(
+            "/result/reverse-sequential-inserts.pdf",
+            alt: "image",
+          ))
+
+        ],
+        caption: [
+        ],
+      )
+      <fig:fugue-reverse-sequential-inserts>],
   )
 })
 #figure(image("/result/shopping.pdf"), caption: [

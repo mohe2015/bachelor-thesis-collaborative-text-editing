@@ -171,6 +171,12 @@ local function transform(doc, opts)
         return pandoc.RawBlock('typst',
           (rendered:gsub('^#figure%(', '#figure(kind: "subfigure",', 1)))
       end
+      if fig.classes:includes('minipage') then
+        local rendered = render({ fig })
+        assert(rendered:match('^#figure%('), 'Unexpected Typst figure output')
+        return pandoc.RawBlock('typst',
+          (rendered:gsub('^#figure%(', '#figure(kind: "minpage",', 1)))
+      end
 
       if fig.classes:includes('grid') then
         local cells = {}
