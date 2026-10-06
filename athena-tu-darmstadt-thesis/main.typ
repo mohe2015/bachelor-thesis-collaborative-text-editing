@@ -144,11 +144,8 @@
   it
 }
 
-//#show: zebraw
-//#show: zebraw-init.with(background-color: none, lang: false)
-
-#show: codly-init
-#codly(display-name: false, zebra-fill: none)
+#show: zebraw
+#show: zebraw-init.with(background-color: none, lang: false)
 
 #include "chapters/introduction.typ"
 #include "chapters/challenges.typ"
@@ -210,6 +207,7 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 #image("/result/simpleavl-real-world-alloc.png")
 
 #pagebreak(weak: true)
+#v(-13.5pt)
 == Code Showing FugueMax Is Interleaving
 <appendix:code-fuguemax-interleaving>
 
