@@ -1,6 +1,4 @@
 #import "../utils.typ": gls, glspl
-toc#pagebreak()
-
 = Evaluation
 <chapter:evaluation>
 We chose to evaluate our approach by benchmarking with JMH#footnote[#link(

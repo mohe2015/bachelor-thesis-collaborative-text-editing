@@ -57,7 +57,7 @@ local definitions = [=[
 
 \renewenvironment{abstract}[1][]{}{}
 
-\newcommand{\addtocontents}{}
+\newcommand{\addtocontents}[2]{}
 
 \newcommand{\twoMinipageFigures}[4]{
   \begin{figure}
