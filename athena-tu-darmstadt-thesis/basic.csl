@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" default-locale="en-US" demote-non-dropping-particle="never" page-range-format="expanded">
   <info>
-    <title>LaTeX default style (numeric, sorted by author; prose: first author et al.)</title>
-    <id>http://www.zotero.org/styles/latex-default-numeric-sorted-by-author</id>
-    <link href="http://www.zotero.org/styles/latex-default-numeric-sorted-by-author" rel="self"/>
+    <title>Bachelor thesis original bibliography (numeric, author-title-year)</title>
+    <id>http://www.zotero.org/styles/bachelor-thesis-original-numeric</id>
+    <link href="http://www.zotero.org/styles/bachelor-thesis-original-numeric" rel="self"/>
     <author>
       <name>Custom</name>
     </author>
     <category citation-format="numeric"/>
     <category field="generic-base"/>
-    <summary>Numeric [n] citations, bibliography sorted by author surname with numbers following that order, "Author et al." for prose citations. Mimics the default LaTeX (biblatex-style) layout.</summary>
-    <updated>2026-10-01T00:00:00+00:00</updated>
+    <summary>Numeric citations without range collapsing; bibliography sorted by author, title, and year. Four or more authors are abbreviated to the first author et al. Includes access dates and archive identifiers when supplied.</summary>
+    <updated>2026-10-06T00:00:00+00:00</updated>
   </info>
 
-  <!-- Prose citations (#cite(<key>, form: "prose")) are rendered by the
-       processor from this macro with a citation position set, so the first
-       branch yields "Bauwens et al."; the real bibliography takes the else
-       branch and lists all authors. -->
+  <!-- Preserve the existing processor-specific prose-citation branch.
+       Bibliography names follow biblatex's default maxbibnames=3. -->
   <macro name="author">
     <choose>
       <if position="first subsequent ibid ibid-with-locator near-note" match="any">
@@ -29,7 +27,7 @@
       </if>
       <else>
         <names variable="author">
-          <name and="text" delimiter=", " delimiter-precedes-last="contextual" initialize="false" et-al-min="99" et-al-use-first="1"/>
+          <name and="text" delimiter=", " delimiter-precedes-last="contextual" initialize="false" et-al-min="4" et-al-use-first="1"/>
           <substitute>
             <names variable="editor"/>
             <text variable="title"/>
@@ -51,7 +49,7 @@
 
   <macro name="editor">
     <names variable="editor" prefix="Ed. by ">
-      <name and="text" delimiter=", " delimiter-precedes-last="contextual" initialize="false"/>
+      <name and="text" delimiter=", " delimiter-precedes-last="contextual" initialize="false" et-al-min="4" et-al-use-first="1"/>
     </names>
   </macro>
 
@@ -89,15 +87,32 @@
       <text variable="ISBN" prefix="isbn: "/>
       <text variable="ISSN" prefix="issn: "/>
       <text variable="DOI" prefix="doi: "/>
+      <!-- For arXiv records, supply archive="arXiv" and archive_location
+           with the identifier. CSL cannot extract it from a DOI or URL. -->
+      <choose>
+        <if variable="archive archive_location" match="all">
+          <group delimiter=": ">
+            <text variable="archive"/>
+            <text variable="archive_location"/>
+          </group>
+        </if>
+      </choose>
       <choose>
         <if variable="URL">
-          <text variable="URL" prefix="url: "/>
+          <group delimiter=" ">
+            <text variable="URL" prefix="url: "/>
+            <date variable="accessed" prefix="(visited on " suffix=")" delimiter="/">
+              <date-part name="month" form="numeric-leading-zeros"/>
+              <date-part name="day" form="numeric-leading-zeros"/>
+              <date-part name="year"/>
+            </date>
+          </group>
         </if>
       </choose>
     </group>
   </macro>
 
-  <citation collapse="citation-number" et-al-min="3" et-al-use-first="1">
+  <citation et-al-min="3" et-al-use-first="1">
     <sort>
       <key variable="citation-number"/>
     </sort>
@@ -112,8 +127,8 @@
   <bibliography et-al-min="4" et-al-use-first="1" second-field-align="flush" entry-spacing="0">
     <sort>
       <key macro="author-sort"/>
-      <key variable="issued"/>
       <key variable="title"/>
+      <key variable="issued"/>
     </sort>
     <layout suffix=".">
       <text variable="citation-number" prefix="[" suffix="]"/>
@@ -144,13 +159,18 @@
                 <text value="In:"/>
                 <text variable="container-title"/>
               </group>
+              <text variable="collection-title"/>
               <text macro="editor"/>
               <text macro="publisher-line"/>
             </group>
           </else-if>
-          <else-if type="book thesis report" match="any">
+          <else-if type="report thesis" match="any">
             <text macro="title-italic"/>
-            <text macro="publisher-line"/>
+            <text macro="year"/>
+          </else-if>
+          <else-if type="book" match="any">
+            <text macro="title-italic"/>
+            <text macro="year"/>
           </else-if>
           <else>
             <text macro="title-italic"/>
