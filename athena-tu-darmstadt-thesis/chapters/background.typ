@@ -41,26 +41,13 @@ Combining all that will therefore produce the text `"small trees grow"`.
   grid(
     columns: 2,
     align: bottom,
-    [#figure(
-        kind: "minpage",
-        [Fugue tree with root node#box(image("/result/empty.pdf", alt: "image"))
-
-        ],
-        caption: [
-        ],
-      )
+    [#figure(kind: "minpage", image("/result/empty.pdf"), caption: [
+        Fugue tree with root node
+      ])
       <fig:fugue-root-node>],
-    [#figure(
-        kind: "minpage",
-        [Insertion of `"a"` into Fugue tree at index $0$#box(image(
-            "/result/root-right-a.pdf",
-            alt: "image",
-          ))
-
-        ],
-        caption: [
-        ],
-      )
+    [#figure(kind: "minpage", image("/result/root-right-a.pdf"), caption: [
+        Insertion of `"a"` into Fugue tree at index $0$
+      ])
       <fig:fugue-right-a>],
   )
 })
@@ -81,27 +68,15 @@ All indices are zero based, so the element at index $0$ is the first element.
   grid(
     columns: 2,
     align: bottom,
-    [#figure(
-        kind: "minpage",
-        [Insertion of `"c"` into Fugue tree at index $1$#box(image(
-            "/result/root-right-ac.pdf",
-            alt: "image",
-          ))
-
-        ],
-        caption: [
-        ],
-      )
+    [#figure(kind: "minpage", image("/result/root-right-ac.pdf"), caption: [
+        Insertion of `"c"` into Fugue tree at index $1$
+      ])
       <fig:fugue-right-ac>],
     [#figure(
         kind: "minpage",
-        [Insertion of `"b"` into Fugue tree at index $1$#box(image(
-            "/result/root-right-ac-left-b.pdf",
-            alt: "image",
-          ))
-
-        ],
+        image("/result/root-right-ac-left-b.pdf"),
         caption: [
+          Insertion of `"b"` into Fugue tree at index $1$
         ],
       )
       <fig:fugue-right-ac-left-b>],
@@ -136,25 +111,17 @@ Starting with the previous tree, @fig:fugue-right-ac-left-b shows an insertion a
     align: bottom,
     [#figure(
         kind: "minpage",
-        [Fugue tree with text insertion at replica A#box(image(
-            "/result/concurrent-insert-a.pdf",
-            alt: "image",
-          ))
-
-        ],
+        image("/result/concurrent-insert-a.pdf"),
         caption: [
+          Fugue tree with text insertion at replica A
         ],
       )
       <fig:fugue-concurrent-insert-a>],
     [#figure(
         kind: "minpage",
-        [Fugue tree with text insertion at replica B#box(image(
-            "/result/concurrent-insert-b.pdf",
-            alt: "image",
-          ))
-
-        ],
+        image("/result/concurrent-insert-b.pdf"),
         caption: [
+          Fugue tree with text insertion at replica B
         ],
       )
       <fig:fugue-concurrent-insert-b>],
@@ -167,23 +134,15 @@ Starting with the previous tree, @fig:fugue-right-ac-left-b shows an insertion a
     align: bottom,
     [#figure(
         kind: "minpage",
-        [Fugue tree with concurrent insertions after synchronization between replica A and replica B#box(
-            image("/result/concurrent-insert-both.pdf", alt: "image"),
-          )
-
-        ],
+        image("/result/concurrent-insert-both.pdf"),
         caption: [
+          Fugue tree with concurrent insertions after synchronization between replica A and replica B
         ],
       )
       <fig:fugue-concurrent-insert-both>],
-    [#figure(
-        kind: "minpage",
-        [Fugue tree with deletions
-
-          #box(image("/result/delete.pdf"))],
-        caption: [
-        ],
-      )
+    [#figure(kind: "minpage", image("/result/delete.pdf"), caption: [
+        Fugue tree with deletions
+      ])
       <fig:fugue-delete>],
   )
 })
@@ -210,25 +169,17 @@ If it already was deleted by a concurrent user, the operation does nothing.
     align: bottom,
     [#figure(
         kind: "minpage",
-        [Fugue tree with sequential insertions#box(image(
-            "/result/sequential-inserts.pdf",
-            alt: "image",
-          ))
-
-        ],
+        image("/result/sequential-inserts.pdf"),
         caption: [
+          Fugue tree with sequential insertions
         ],
       )
       <fig:fugue-sequential-inserts>],
     [#figure(
         kind: "minpage",
-        [Fugue tree with reverse sequential insertions#box(image(
-            "/result/reverse-sequential-inserts.pdf",
-            alt: "image",
-          ))
-
-        ],
+        image("/result/reverse-sequential-inserts.pdf"),
         caption: [
+          Fugue tree with reverse sequential insertions
         ],
       )
       <fig:fugue-reverse-sequential-inserts>],

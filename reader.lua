@@ -68,11 +68,11 @@ local definitions = [=[
 \newcommand{\twoMinipageFigures}[4]{
   \begin{figure}
     \pandocgrid{}\par
-    \begin{minipage}
+    \begin{minipage}{.5\textwidth}
       #2
       \includegraphics{#1}
     \end{minipage}
-    \begin{minipage}
+    \begin{minipage}{.5\textwidth}
       #4
       \includegraphics{#3}
     \end{minipage}
