@@ -159,6 +159,7 @@ The `FixtureOperation` is the underlying test data and therefore does not count 
   },
   caption: [Benchmark results for repeatedly concatenated real world text inserted remotely with the batching AVL algorithm],
 ) <fig:complexavl-extra-large-remote-real-world>
+
 == Results
 <results>
 @edge-cases already looked at performance edge cases and artificial cases which are important to cover in the context of decentralized algorithms, so there is no case that could severely reduce the performance of the algorithm which could lead to it becoming unusable.
