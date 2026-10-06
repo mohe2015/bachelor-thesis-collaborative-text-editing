@@ -81,7 +81,7 @@
     Dieses Dokument wird bereitgestellt von tuprints,\
     E-Publishing-Service der TU Darmstadt\
     https://tuprints.ulb.tu-darmstadt.de\
-    tuprints\@ulb.tu-darmstadt.de],
+    #link("mailto:tuprints@ulb.tu-darmstadt.de")],
 
     [Die Veröffentlichung steht unter folgender Creative Commons Lizenz:\
     Namensnennung 4.0 International\
