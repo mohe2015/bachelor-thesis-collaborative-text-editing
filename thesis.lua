@@ -175,7 +175,7 @@ local function transform(doc, opts)
         local rendered = render({ fig })
         assert(rendered:match('^#figure%('), 'Unexpected Typst figure output')
         return pandoc.RawBlock('typst',
-          (rendered:gsub('^#figure%(', '#figure(kind: "minpage",', 1)))
+          (rendered:gsub('^#figure%(', '#figure(kind: "minpage", supplement: none,', 1)))
       end
 
       if fig.classes:includes('grid') then

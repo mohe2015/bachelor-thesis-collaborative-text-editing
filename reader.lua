@@ -66,19 +66,19 @@ local definitions = [=[
 \newcommand{\addtocontents}[2]{}
 
 \newcommand{\twoMinipageFigures}[4]{
-  \begin{figure}
+  \begin{minipage}{.5\textwidth}
     \pandocgrid{}\par
-    \begin{minipage}{.5\textwidth}
+    \begin{figure}
       #2
       \includegraphics{#1}
-    \end{minipage}
-    \begin{minipage}{.5\textwidth}
+    \end{figure}
+    \begin{figure}
       #4
       \includegraphics{#3}
-    \end{minipage}
+    \end{figure}
     \caption{}
     \label{}
-  \end{figure}
+  \end{minipage}
 }
 
 \newcommand{\benchmarkResults}[2]{
