@@ -645,7 +645,7 @@ Therefore, this also needs the optimization as explained for the previous edge c
     grid(
       columns: 2,
       align: bottom,
-      [#set figure.caption(separator: none)
+      [
         #figure(
           kind: "subfigure",
           image(

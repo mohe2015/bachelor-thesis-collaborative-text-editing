@@ -109,6 +109,7 @@
 ))
 
 #show figure.where(kind: "subfigure"): set figure(supplement: "")
+#show figure.where(kind: "subfigure"): set figure.caption(separator: none)
 
 // override
 #show heading.where(level: 5): it => {
