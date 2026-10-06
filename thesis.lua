@@ -229,6 +229,25 @@ local function transform(doc, opts)
     end
   }
 
+  doc = doc:walk {
+    Note = function(note)
+      local labels = {}
+      local content = note.content:walk {
+        Span = function(span)
+          if span.identifier ~= '' and #span.content == 0 then
+            labels[#labels + 1] = ' <' .. (opts.identifier_prefix or '')
+              .. span.identifier .. '>'
+            return {}
+          end
+        end
+      }
+      if #labels > 0 then
+        return pandoc.RawInline('typst',
+          '#footnote[' .. render(content) .. ']' .. table.concat(labels))
+      end
+    end
+  }
+
   return doc
 end
 
