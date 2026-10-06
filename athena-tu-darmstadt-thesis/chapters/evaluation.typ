@@ -8,14 +8,14 @@ We ran the benchmarks on four Intel Xeon Gold vCPUs with 8~GB RAM rented from He
   "https://www.hetzner.com/cloud/",
 )] (type cx32).
 
-We use the JMH support for async-profiler#footnote[​<footnote:async-profiler>#link(
+We use the JMH support for async-profiler#footnote[​#link(
     "https://github.com/async-profiler/async-profiler",
-  )] because async-profiler is not affected by the Safepoint bias problem#footnote[#link(
+  )] <footnote:async-profiler> because async-profiler is not affected by the Safepoint bias problem#footnote[#link(
   "https://psy-lob-saw.blogspot.com/2016/02/why-most-sampling-java-profilers-are.html",
 )] which can lead to bias in the profiler results.
 Additionally, its allocation profiling does not influence Escape Analysis#footnote[#link(
   "https://blogs.oracle.com/javamagazine/post/escape-analysis-in-the-hotspot-jit-compiler",
-)] or prevent JIT optimizations like allocation elimination and therefore measures only actual heap allocations.
+)] or prevent JIT optimizations like allocation elimination and therefore measures only actual heap allocations@footnote:async-profiler.
 
 The Scala.js output was not considered in the analysis given the inherent challenges arising from the additional layer of indirection created by the transpilation from Scala to JavaScript.
 This indirection likely affects performance and complicates optimization efforts because they potentially only affect the transpiled version rather than the original.
@@ -82,9 +82,7 @@ This leads to an overhead because of the required metadata per object and becaus
 )
 <lst:memory-usage-results>
 
-#pagebreak(weak: true)
-#v(-13.5pt)
-== Measuring Maximum Memory Usage 
+== Measuring Maximum Memory Usage
 <sec:memory-results>
 The memory usage is calculated using the code in @lst:memory-usage, which is equivalent to `jcmd PID GC.class_histogram`.
 It is measured before and after running the operations and the difference is then visualized in our graphs.
@@ -131,8 +129,6 @@ The `FixtureOperation` is the underlying test data and therefore does not count 
   },
   caption: [Benchmark results for repeatedly concatenated real world text inserted locally with the batching AVL algorithm],
 ) <fig:complexavl-extra-large-local-real-world>
-
-#pagebreak(weak: true)
 #figure(
   {
     show figure: set align(bottom)
@@ -163,8 +159,6 @@ The `FixtureOperation` is the underlying test data and therefore does not count 
   },
   caption: [Benchmark results for repeatedly concatenated real world text inserted remotely with the batching AVL algorithm],
 ) <fig:complexavl-extra-large-remote-real-world>
-
-#v(-13.5pt)
 == Results
 <results>
 @edge-cases already looked at performance edge cases and artificial cases which are important to cover in the context of decentralized algorithms, so there is no case that could severely reduce the performance of the algorithm which could lead to it becoming unusable.
@@ -180,7 +174,6 @@ Memory usage is acceptable with about 25 bytes per operation but could likely be
 A real world editing trace with #emph[concurrent edits] in an offline context would be useful to analyze performance in that case, but unfortunately we are not aware of such a dataset.
 As our algorithm has a time complexity of $O\(n log\(n\)\)$ for $n$ character operations #emph[in all cases] this would only allow more accurate measurements, for example for the expected memory usage per operation.
 
-#pagebreak(weak: true)
 == Investigating Prior Benchmarks
 <investigating-prior-benchmarks>
 The prior benchmarks based on Jahns benchmark framework#footnote[#link(

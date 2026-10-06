@@ -645,8 +645,7 @@ Therefore, this also needs the optimization as explained for the previous edge c
     grid(
       columns: 2,
       align: bottom,
-      [
-        #figure(
+      [#figure(
           kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split.pdf",
@@ -687,7 +686,7 @@ The disadvantage is that the memory for deleted nodes is not reclaimed.
       align: bottom,
       [#figure(
           kind: "subfigure",
-          image("/result/evil-split-many-right-children-before.pdf", width: 70%),
+          image("/result/evil-split-many-right-children-before.pdf"),
           caption: [
             before
           ],
@@ -695,7 +694,7 @@ The disadvantage is that the memory for deleted nodes is not reclaimed.
         <fig:edge-case-evil-split-many-right-children-before>],
       [#figure(
           kind: "subfigure",
-          image("/result/evil-split-many-right-children-after.pdf", width: 70%),
+          image("/result/evil-split-many-right-children-after.pdf"),
           caption: [
             after
           ],
