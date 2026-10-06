@@ -645,8 +645,7 @@ Therefore, this also needs the optimization as explained for the previous edge c
     grid(
       columns: 2,
       align: bottom,
-      [
-        #figure(
+      [#figure(
           kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/complexavl-evil-split.pdf",
