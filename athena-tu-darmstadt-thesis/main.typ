@@ -104,6 +104,13 @@
   numbering: heading-dependent(level, "1.")
 )
 
+#show heading: it => {
+  if it.level <= level {
+    counter(footnote).update(0)
+  }
+  it
+}
+
 // https://forum.typst.app/t/are-there-equivalent-to-the-latex-microtype-package-and-the-memoir-document-class/1540
 #set par(justify: true, justification-limits: (tracking: (min: -0.01em, max: 0.02em)))
 
