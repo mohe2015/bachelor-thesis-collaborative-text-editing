@@ -1,6 +1,9 @@
 #import "@preview/athena-tu-darmstadt-thesis:0.1.2": *
 #import "utils.typ": make-glossary, register-glossary, print-glossary, gls, glspl
 #import "@preview/numera:0.1.0": heading-dependent, normal-figure, numera
+#import "@preview/zebraw:0.6.3": *
+#import "@preview/codly:1.3.0": *
+#import "@preview/codly-languages:0.1.10": *
 
 #let entry-list = (
   (key: "crdt", short: [CRDT], long: [conflict-free replicated data type]),
@@ -105,6 +108,12 @@
 #set par(justify: true, justification-limits: (tracking: (min: -0.01em, max: 0.02em)))
 
 #set figure(placement: top)
+
+//#show: zebraw
+//#show: zebraw-init.with(background-color: none, lang: false)
+
+#show: codly-init
+#codly(display-name: false, zebra-fill: none)
 
 #include "chapters/introduction.typ"
 #include "chapters/challenges.typ"
