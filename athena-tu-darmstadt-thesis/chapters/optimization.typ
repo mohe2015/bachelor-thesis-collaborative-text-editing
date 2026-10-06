@@ -22,14 +22,13 @@ This is important so malicious peers or unusual editing behavior can not lead to
 Finally, in @final-high-level-code-overview, we give an overview of the resulting data structure.
 
 #figure(
-  kind: "hidden",
-  supplement: none,
   {
     show figure: set align(bottom)
     grid(
       columns: 2,
       align: bottom,
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/simple-sequential-inserts.pdf",
           ),
@@ -39,6 +38,7 @@ Finally, in @final-high-level-code-overview, we give an overview of the resultin
         )
         <fig:simple-sequential-inserts-time>],
       [#figure(
+          kind: "subfigure",
           image(
             "../text-rdt/jvm/figure-benchmark-results/simple-sequential-inserts-memory.pdf",
           ),
