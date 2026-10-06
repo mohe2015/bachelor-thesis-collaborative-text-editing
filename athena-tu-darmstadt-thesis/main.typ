@@ -200,6 +200,7 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 
 #image("/result/simpleavl-real-world-alloc.png")
 
+#pagebreak(weak: true)
 == Code Showing FugueMax Is Interleaving
 <appendix:code-fuguemax-interleaving>
 
