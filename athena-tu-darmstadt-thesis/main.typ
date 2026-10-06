@@ -104,6 +104,19 @@
   numbering: heading-dependent(level, "1.")
 )
 
+// override
+#show heading.where(level: 5): it => {
+  par()[]
+  set text(
+    font: "Roboto",
+    fallback: false,
+    weight: "bold",
+    size: 10.909pt,
+  )
+  it.body
+  h(1mm)
+}
+
 #show heading: it => {
   if it.level <= level {
     counter(footnote).update(0)
