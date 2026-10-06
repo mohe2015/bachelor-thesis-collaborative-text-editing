@@ -65,7 +65,7 @@ We also implemented a demo using WebRTC#footnote[#link(
   "https://webrtc.org/",
 )] to collaboratively edit a text.
 It keeps the full history on all connected peers, so it is not possible to permanently delete anything.
-This is the reason for not implementing persistence, see @sec:data-privacy-issues.
+This is the reason for not implementing persistence, see @chapter:future-work.
 
 == Synchronization of Changes
 <sec:synchronization>
@@ -96,7 +96,7 @@ ScalaCheck generates `Command`s and their contents using Generators, e.g. `Gen.c
 
 Our property tests randomly create replicas, synchronize replicas, insert text at a replica or delete text at a replica.
 Then, they check whether replicas have the same text after they synchronized.
-Unfortunately it is not easily possible to check #emph[what] the expected text would be as that would need more or less a reimplementation of the synchronization logic, see @section:future-work-correctness.
+Unfortunately it is not easily possible to check #emph[what] the expected text would be as that would need more or less a reimplementation of the synchronization logic, see @chapter:future-work.
 We also have property tests that check that local operations match the same operations on a `String`.
 
 While trying out new approaches, implementation mistakes are likely, particularly when more complicated approaches have lots of edge cases.

@@ -3,7 +3,6 @@ if PANDOC_VERSION < pandoc.types.Version '3.11' then
   error('Pandoc 3.11 or higher is required (found ' .. tostring(PANDOC_VERSION) .. ')')
 end
 
--- TODO Cref chapter ref, so chapter where this label is within
 local definitions = [=[
 \newcommand{\sidenote}[1][]{\sidenoteB}
 \newcommand{\sidenoteB}[1][]{\sidenoteC}

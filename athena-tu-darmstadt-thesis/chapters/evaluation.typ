@@ -1,5 +1,5 @@
 #import "../utils.typ": gls, glspl
-#pagebreak()
+toc#pagebreak()
 
 = Evaluation
 <chapter:evaluation>
@@ -93,7 +93,7 @@ The memory usage is returned using JMH `AuxCounters`#footnote[#link(
 )] to ensure it is measured for exactly the same case as the CPU benchmarks.
 
 For the 100 times consecutively written real-world benchmark the memory usage is as shown in @lst:memory-usage-results.
-The `avl2` types are used for the leftmost and rightmost descendant cache which indicates that optimizing these would improve memory usage considerably, see @section:future-work-performance.
+The `avl2` types are used for the leftmost and rightmost descendant cache which indicates that optimizing these would improve memory usage considerably, see @chapter:future-work.
 The `ComplexAVLTreeNode` is created for every batched node and the `AVLTreeNode` is needed for the AVL lookup tree and also created for every batched node.
 The byte arrays (`[B`) in combination with `StringBuilder` are used to store the underlying text.
 The `ComplexAVLMessage` stores the history of all messages.
