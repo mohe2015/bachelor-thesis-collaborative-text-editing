@@ -26,6 +26,7 @@ While it is interesting that this property produces a unique order it is unclear
 Our example in @section:challenges-text-interleaving-fugue also shows that this property is not sufficient for non-interleaving when deletions are involved.
 Future work could investigate how this property could be adapted to better model non-interleaving in such cases.
 
+#pagebreak(weak: true)
 ===== Privacy
 <sec:data-privacy-issues>
 One big problem we see with all these algorithms is that it is hard or impossible to properly delete data in case a user wishes to do so while still being able to converge and preserve user intentions.
