@@ -1,0 +1,6 @@
+[package]
+name = "bachelor-thesis-collaborative-text-editing"
+version = "0.1.0"
+entrypoint = "main.typ"
+authors = ["Moritz Hedtke"]
+license = "CC-BY-4.0"

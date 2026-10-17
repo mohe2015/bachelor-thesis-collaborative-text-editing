@@ -2,6 +2,10 @@
     "files.watcherExclude": {
         "**/target": true
     },
+    "tinymist.rootPath": "${workspaceFolder}/athena-tu-darmstadt-thesis",
+    "tinymist.fontPaths": [
+        "${workspaceFolder}/athena-tu-darmstadt-thesis/fonts"
+    ],
     "latex-workshop.latex.recipe.default": "lastUsed",
     "latex-workshop.latex.recipes": [
         {
@@ -21,7 +25,4 @@
     "editor.wordWrap": "on",
     "terminal.integrated.scrollback": 1000000,
     "debug.inlineValues": "off",
-    "tinymist.fontPaths": [
-        "./athena-tu-darmstadt-thesis/fonts"
-    ]
 }

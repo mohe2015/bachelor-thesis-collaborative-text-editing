@@ -2,6 +2,10 @@
 
 ## Setup
 ```bash
+nix build --out-link figures .#figures
+nix build .#text-rdt-sbt-tests-thesis 
+# Typst then uses that build output?
+
 nix shell nixpkgs#sbt nixpkgs#openjdk21 nixpkgs#nodejs
 codium .
 
@@ -15,7 +19,7 @@ npm run preview
 
 cd text-rdt
 nix develop .#text-rdt-sbt-tests-thesis
-sbt "testOnly text_rdt.ComplexAVLBrowserFugueScalaCheckSuite"
+sbt "testOnly text_rdt.ThesisTestSuite"
 ```
 
 ## COTURN for demo
