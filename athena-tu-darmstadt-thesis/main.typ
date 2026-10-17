@@ -98,7 +98,7 @@
 #let level = 1
 #show: numera(level: level)
 
-#show figure: set figure(numbering: ref-dependent(
+#set figure(numbering: ref-dependent(
   subfigure-dependent("(a)", figure-numbering: heading-dependent(level, "1.")),
   heading-dependent(level, subfigure-counter-dependent(
     "1a",
