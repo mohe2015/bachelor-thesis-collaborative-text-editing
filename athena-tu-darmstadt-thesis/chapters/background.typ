@@ -130,6 +130,7 @@ Starting with the previous tree, @fig:fugue-right-ac-left-b shows an insertion a
       <fig:fugue-delete>],
   )
 })
+#pagebreak(weak: true)
 ==== Concurrent insert operation
 <concurrent-insert-operation>
 Due to concurrent insertions, it may happen that a node has several right or left children.
