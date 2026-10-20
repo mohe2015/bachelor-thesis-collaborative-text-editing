@@ -109,10 +109,10 @@
 
 #show ref: it => {
   if it.element == none or it.element.func() != heading { return it }
-  link-ref(it, counter(heading), patch-numbering(
+  link-ref(it, counter(heading), if type(it.element.numbering) != str { patch-numbering(
     it.element.numbering,
     ref: true,
-  ))
+  ) } else { it.element.numbering })
 }
 
 #set heading(numbering: "1.")
