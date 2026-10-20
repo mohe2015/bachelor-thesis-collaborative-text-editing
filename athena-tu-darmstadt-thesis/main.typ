@@ -132,7 +132,7 @@
 
 #show link: it => {
   if type(it.dest) == str {
-    set text(font: "Roboto Mono", size: 0.8em)
+    set text(font: "Roboto Mono", size: 0.85em)
     it
   } else {
     it
@@ -159,7 +159,7 @@
 #show figure.where(kind: "subfigure"): set figure.caption(separator: none)
 #show figure.caption.where(kind: "subfigure"): set align(left)
 
-#show footnote.entry: set text(font: "Roboto Mono", size: 0.8em)
+#show footnote.entry: set text(font: "Roboto Mono")
 
 // override
 #show heading.where(level: 5): it => {
