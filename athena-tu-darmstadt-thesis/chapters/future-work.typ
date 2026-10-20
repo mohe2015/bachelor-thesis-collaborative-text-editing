@@ -88,7 +88,7 @@ The approach of the antimatter#footnote[#link(
   "https://web.archive.org/web/20240623153539/https://braid.org/antimatter",
 )] algorithm is to combine operations that have been seen by the same group of peers by tracking acknowledgements.
 In case peers go offline but come online at some point later it can potentially still combine operations.
-#pagebreak(weak: true)
+
 Our current performance measurements only test non-concurrent actions.
 It may be beneficial to either find or create some real-world editing trace with concurrent actions or generate some artificial trace like in YATA @2016-yata-yjs[Section 6.1].
 
