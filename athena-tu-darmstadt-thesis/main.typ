@@ -130,6 +130,15 @@
   )),
 ))
 
+#show link: it => {
+  if type(it.dest) == str {
+    set text(font: "Roboto Mono", size: 0.8em)
+    it
+  } else {
+    it
+  }
+}
+
 // https://github.com/typst/typst/pull/6982
 // we need to make actual links monospace manually or don't override the show rule
 //#show link: set text(font: "Roboto Mono", size: 0.8em)
