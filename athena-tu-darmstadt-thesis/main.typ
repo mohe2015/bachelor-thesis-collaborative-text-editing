@@ -172,7 +172,7 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 
 #set heading(supplement: [Appendix], numbering: (..nums) => {
   nums = nums.pos()
-  return "A." + numbering("1", ..nums.slice(1))
+  return "A" + numbering(".1.", ..nums.slice(1))
 })
 
 = Appendix
