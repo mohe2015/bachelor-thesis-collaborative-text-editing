@@ -32,7 +32,7 @@ The two major ways in research to approach collaborative text editing are @ot an
 @ot algorithms store edit operations based on the text position and therefore need to transform concurrent edit operations against each other to correct the text positions.
 Then, the algorithms apply the operations directly to the text.
 Prior algorithms for @ot are, for example, COT @2009-sun-ot-context-undo and Jupiter @1995-nichols-jupiter.
-While some of these are #emph[not] able to work in a decentralized network but need a central server to order changes like Jupiter @1995-nichols-jupiter, a lot of them #emph[are] able to work in a decentralized network like COT @2009-sun-ot-context-undo @2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 4].
+While some of these are #emph[not] able to work in a decentralized network but need a central server to order changes like Jupiter @1995-nichols-jupiter, a lot of them #emph[are] able to work in a decentralized network like COT @2009-sun-ot-context-undo~@2019-sun-difference-ot-crdt-3-building-real-world-applications[Section 4].
 Prior @ot algorithms have a runtime complexity per remote operation that is linear in the amount of concurrent edit operations @2019-sun-difference-ot-crdt-2-correctness-complexity[Section 3.1.4].
 This makes them really efficient for #emph[near-realtime] editing where only few concurrent edit operations occur.
 Near-realtime editing means that only short connection interruptions happen @2016-yata-yjs.
