@@ -28,6 +28,7 @@
 #register-glossary(entry-list + hidden-entry-list)
 
 #show: tudapub.with(
+  reduce_heading_space_when_first_on_page: false,
   thesis_type: "bachelor",
   title: [Optimizing Collaborative Plain~Text Editing Algorithms],
   subtitle: [for Decentralized Non-Realtime Text Editing],

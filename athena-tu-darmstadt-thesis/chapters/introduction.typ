@@ -48,7 +48,7 @@ Also, for handling text of some length their runtime complexity is often quadrat
 
 While Fugue @2023-weidner-minimizing-interleaving avoids interleaving issues of prior solutions and works in an offline setting, the current implementation for handling text of some length has quadratic runtime complexity in relation to the text length.
 
-In this thesis, we first investigate suitable algorithms for local-first plain text editing to integrate into our Scala based applications, see @chapter:challenges.
+#pagebreak(weak: true)In this thesis, we first investigate suitable algorithms for local-first plain text editing to integrate into our Scala based applications, see @chapter:challenges.
 Based on the evaluation of prior solutions in Fugue @2023-weidner-minimizing-interleaving, we consider interleaving the major issue apart from performance issues, see @section:challenges-text-interleaving.
 Therefore, we extensively investigate how the Fugue algorithm avoids interleaving by looking at the algorithm, the examples and the proofs in the Fugue paper @2023-weidner-minimizing-interleaving, see @section:challenges-text-interleaving-fugue.
 Additionally, we show that the property of #emph[maximally non-interleaving] in the Fugue paper @2023-weidner-minimizing-interleaving still allows interleaving when deletions are involved.

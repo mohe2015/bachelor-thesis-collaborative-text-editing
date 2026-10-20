@@ -266,6 +266,7 @@ Comparing the results#footnote[#link(
 <lst:example-transformation-function>
 
 #pagebreak()
+#v(-13.5pt)
 == OT in Comparison to CRDTs
 <chapter:ot>
 This section explains the differences and similarities between @ot and @crdt:pl and shows that the current @crdt:pl runtime complexity is quadratic and current @ot algorithms are unsuitable for #emph[non-realtime] editing.
