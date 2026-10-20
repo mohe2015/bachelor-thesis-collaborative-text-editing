@@ -1,6 +1,6 @@
 #import "@preview/athena-tu-darmstadt-thesis:0.1.2": *
 #import "utils.typ": make-glossary, register-glossary, print-glossary, gls, glspl
-#import "@preview/numera:0.1.0": heading-dependent, normal-figure, numera, ref-dependent, subfigure-dependent, subfigure-counter-dependent
+#import "@preview/numera:0.1.0": heading-dependent, normal-figure, numera, ref-dependent, subfigure-dependent, subfigure-counter-dependent, my-numbering, patch-numbering
 #import "@preview/zebraw:0.6.3": *
 
 #let entry-list = (
@@ -91,6 +91,30 @@
   thesis_statement_pursuant_include_english_translation: false,
 )
 
+#let link-ref(it, counter, render) = {
+  let here = here()
+  let location = it.element.location()
+  assert(
+    here != location,
+    message: "cannot reference an element from its own location",
+  )
+  let rendered = counter.display(render, at: location)
+  let result = if it.element.supplement in ([], none) {
+    rendered
+  } else {
+    [#it.element.supplement~#rendered]
+  }
+  link(location, result)
+}
+
+#show ref: it => {
+  if it.element == none or it.element.func() != heading { return it }
+  link-ref(it, counter(heading), patch-numbering(
+    it.element.numbering,
+    ref: true,
+  ))
+}
+
 #set heading(numbering: "1.")
 #show heading.where(level: 1): set heading(supplement: [Chapter])
 
@@ -170,9 +194,9 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 #heading([Bibliography], numbering: none, outlined: false)
 #bibliography(title: none, "./literature.bib", style: "basic.csl")
 
-#set heading(supplement: [Appendix], numbering: (..nums) => {
+#set heading(supplement: [Appendix], numbering: (..nums, ref: false) => {
   nums = nums.pos()
-  return "A" + numbering(".1.", ..nums.slice(1))
+  return "A" + (if nums.len() == 1 {""} else {"."}) + my-numbering("1.", ref: ref, ..nums.slice(1))
 })
 
 = Appendix
