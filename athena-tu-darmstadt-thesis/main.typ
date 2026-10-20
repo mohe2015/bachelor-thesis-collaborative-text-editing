@@ -109,13 +109,13 @@
 
 #show ref: it => {
   if it.element == none or it.element.func() != heading { return it }
-  link-ref(it, counter(heading), if type(it.element.numbering) != str { patch-numbering(
+  link-ref(it, counter(heading), patch-numbering(
     it.element.numbering,
     ref: true,
-  ) } else { it.element.numbering })
+  ))
 }
 
-#set heading(numbering: "1.")
+#set heading(numbering: "1.1.1.1.1.1.1.1.1.") // TODO fixme numera patch-numbering is broken
 #show heading.where(level: 1): set heading(supplement: [Chapter])
 
 #let level = 1
@@ -196,7 +196,7 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 
 #set heading(supplement: [Appendix], numbering: (..nums, ref: false) => {
   nums = nums.pos()
-  return "A" + (if nums.len() == 1 {""} else {"."}) + my-numbering("1.", ref: ref, ..nums.slice(1))
+  return "A" + (if nums.len() == 1 {""} else {"."}) + my-numbering("1.1.1.1.1.1.1.1.1.", ref: ref, ..nums.slice(1))
 })
 
 = Appendix
