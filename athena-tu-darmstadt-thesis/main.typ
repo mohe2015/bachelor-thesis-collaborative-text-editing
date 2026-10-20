@@ -132,6 +132,7 @@
 
 #show figure.where(kind: "subfigure"): set figure(supplement: "")
 #show figure.where(kind: "subfigure"): set figure.caption(separator: none)
+#show figure.caption.where(kind: "subfigure"): set align(left)
 
 #show footnote.entry: set text(font: "Roboto Mono", size: 0.9em)
 
