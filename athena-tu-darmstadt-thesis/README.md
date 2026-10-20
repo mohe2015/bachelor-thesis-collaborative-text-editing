@@ -5,4 +5,6 @@ nix build --out-link figures .#figures
 nix build .#text-rdt-sbt-tests-thesis 
 typst compile --root . --font-path fonts/ main.typ
 typst compile --root . --font-path fonts/ --pdf-standard ua-1 main.typ
+
+diffpdf Bachelor_Thesis_Optimizing_Collaborative_Plain_Text_Editing_Algorithms.pdf main.pdf
 ```

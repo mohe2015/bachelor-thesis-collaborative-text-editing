@@ -28,7 +28,6 @@
 #register-glossary(entry-list + hidden-entry-list)
 
 #show: tudapub.with(
-  reduce_heading_space_when_first_on_page: false, // difference on page 48 would probably be fixed by this
   thesis_type: "bachelor",
   title: [Optimizing Collaborative Plain~Text Editing Algorithms],
   subtitle: [for Decentralized Non-Realtime Text Editing],
@@ -108,6 +107,8 @@
 
 #show figure.where(kind: "subfigure"): set figure(supplement: "")
 #show figure.where(kind: "subfigure"): set figure.caption(separator: none)
+
+#show footnote.entry: set text(font: "Roboto Mono")
 
 // override
 #show heading.where(level: 5): it => {
