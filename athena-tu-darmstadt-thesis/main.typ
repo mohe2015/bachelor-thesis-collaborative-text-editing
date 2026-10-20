@@ -108,7 +108,7 @@
 #show figure.where(kind: "subfigure"): set figure(supplement: "")
 #show figure.where(kind: "subfigure"): set figure.caption(separator: none)
 
-#show footnote.entry: set text(font: "Roboto Mono")
+#show footnote.entry: set text(font: "Roboto Mono", size: 0.9em)
 
 // override
 #show heading.where(level: 5): it => {
@@ -144,7 +144,10 @@
 }
 
 #show: zebraw
-#show: zebraw-init.with(background-color: none, lang: false)
+#show: zebraw-init.with(background-color: none, lang: false, numbering-font-args: (
+  font: "Noto Sans",
+  size: 0.623046875em
+))
 
 #include "chapters/introduction.typ"
 #include "chapters/challenges.typ"
