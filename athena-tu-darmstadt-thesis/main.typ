@@ -1,6 +1,6 @@
 #import "@preview/athena-tu-darmstadt-thesis:0.1.2": *
 #import "utils.typ": make-glossary, register-glossary, print-glossary, gls, glspl
-#import "@preview/numera:0.1.0": heading-dependent, normal-figure, numera, ref-dependent, subfigure-dependent, subfigure-counter-dependent
+#import "@preview/numera:0.1.0": heading-dependent, normal-figure, numera, ref-dependent, subfigure-dependent, subfigure-counter-dependent, my-numbering, patch-numbering
 #import "@preview/zebraw:0.6.3": *
 
 #let entry-list = (
@@ -28,7 +28,7 @@
 #register-glossary(entry-list + hidden-entry-list)
 
 #show: tudapub.with(
-  reduce_heading_space_when_first_on_page: false, // difference on page 48 would probably be fixed by this
+  reduce_heading_space_when_first_on_page: false,
   thesis_type: "bachelor",
   title: [Optimizing Collaborative Plain~Text Editing Algorithms],
   subtitle: [for Decentralized Non-Realtime Text Editing],
@@ -92,13 +92,37 @@
   thesis_statement_pursuant_include_english_translation: false,
 )
 
-#set heading(numbering: "1.")
+#let link-ref(it, counter, render) = {
+  let here = here()
+  let location = it.element.location()
+  assert(
+    here != location,
+    message: "cannot reference an element from its own location",
+  )
+  let rendered = counter.display(render, at: location)
+  let result = if it.element.supplement in ([], none) {
+    rendered
+  } else {
+    [#it.element.supplement~#rendered]
+  }
+  link(location, result)
+}
+
+#show ref: it => {
+  if it.element == none or it.element.func() != heading { return it }
+  link-ref(it, counter(heading), patch-numbering(
+    it.element.numbering,
+    ref: true,
+  ))
+}
+
+#set heading(numbering: "1.1.1.1.1.1.1.1.1.") // TODO fixme numera patch-numbering is broken
 #show heading.where(level: 1): set heading(supplement: [Chapter])
 
 #let level = 1
 #show: numera(level: level)
 
-#show figure: set figure(numbering: ref-dependent(
+#set figure(numbering: ref-dependent(
   subfigure-dependent("(a)", figure-numbering: heading-dependent(level, "1.")),
   heading-dependent(level, subfigure-counter-dependent(
     "1a",
@@ -106,8 +130,36 @@
   )),
 ))
 
+#show link: it => {
+  if type(it.dest) == str {
+    set text(font: "Roboto Mono", size: 0.85em)
+    it
+  } else {
+    it
+  }
+}
+
+// https://github.com/typst/typst/pull/6982
+// we need to make actual links monospace manually or don't override the show rule
+//#show link: set text(font: "Roboto Mono", size: 0.8em)
+/*#show ref: set text(
+    font: "XCharter",
+    size: 10.909pt,
+    fallback: false,
+    lang: "en",
+    kerning: true,
+    ligatures: false,
+    //spacing: 92%  // to make it look like the latex template
+    //spacing: 84%  // to make it look like the latex template
+    //spacing: 91%  // to make it look like the latex template
+    spacing: 95%, // to make it look like the latex template
+  )*/
+
 #show figure.where(kind: "subfigure"): set figure(supplement: "")
 #show figure.where(kind: "subfigure"): set figure.caption(separator: none)
+#show figure.caption.where(kind: "subfigure"): set align(left)
+
+#show footnote.entry: set text(font: "Roboto Mono")
 
 // override
 #show heading.where(level: 5): it => {
@@ -143,7 +195,10 @@
 }
 
 #show: zebraw
-#show: zebraw-init.with(background-color: none, lang: false)
+#show: zebraw-init.with(background-color: none, lang: false, numbering-font-args: (
+  font: "Noto Sans",
+  size: 0.623046875em
+))
 
 #include "chapters/introduction.typ"
 #include "chapters/challenges.typ"
@@ -166,9 +221,9 @@ I would like to thank everyone who reviewed drafts of this thesis. I would also 
 #heading([Bibliography], numbering: none, outlined: false)
 #bibliography(title: none, "./literature.bib", style: "basic.csl")
 
-#set heading(supplement: [Appendix], numbering: (..nums) => {
+#set heading(supplement: [Appendix], numbering: (..nums, ref: false) => {
   nums = nums.pos()
-  return "A." + numbering("1", ..nums.slice(1))
+  return "A" + (if nums.len() == 1 {""} else {"."}) + my-numbering("1.1.1.1.1.1.1.1.1.", ref: ref, ..nums.slice(1))
 })
 
 = Appendix

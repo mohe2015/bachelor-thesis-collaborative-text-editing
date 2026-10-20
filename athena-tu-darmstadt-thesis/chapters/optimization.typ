@@ -1,4 +1,6 @@
 #import "../utils.typ": gls, glspl
+#import "@preview/metalogo:1.2.0": TeX, LaTeX
+
 = Optimizing Common Edit Operations
 <optimization>
 Based on a theoretical understanding of our base implementation developed from the algorithmic description in the Fugue paper @2023-weidner-minimizing-interleaving[Algorithm~1] we expect quadratic runtime complexity and linear memory usage in relation to the text length.
@@ -246,9 +248,7 @@ While this results in good performance, it clearly does not cover real world edi
 Therefore, we use the dataset from #link(
   "https://github.com/automerge/automerge-perf",
 ) which contains 259,778 insertion and deletion operations that produce a text with 104,852 characters.
-It is the editing trace from the LaTeX~source of #link(
-  "https://arxiv.org/abs/1608.03960",
-).
+It is the editing trace from the #LaTeX~source of https://arxiv.org/abs/1608.03960.
 
 @fig:simple-complex-real-world shows the runtime #emph[per operation] grows linearly and is also extremely slow for only a few tens of thousands of characters.
 @appendix:complex-real-world-cpu shows that most time is spent in `findElementAtIndex` similar to the simple sequential insertions.
@@ -469,6 +469,25 @@ This results in logarithmic insertion.
   caption: [Example for edge case for insertion to the left of the root],
 ) <fig:edge-case-evil-insert-1-example>
 #figure(
+  [```scala
+    val firstRightChild = leftOrigin.firstRightChild()
+    var side: Side | Null = null
+    val origin = if (firstRightChild == null) {
+      side = Side.Right
+      leftOrigin
+    } else {
+      side = Side.Left
+      firstRightChild.leftmostDescendant()
+    }
+    ```
+
+  ],
+  caption: [
+    Code excerpt of an edge case for insertion to the left of the root
+  ],
+)
+<lst:code-evil-insert-1>
+#figure(
   {
     show figure: set align(bottom)
     grid(
@@ -498,25 +517,7 @@ This results in logarithmic insertion.
   },
   caption: [Benchmark results of an edge case for insertion to the left of the root],
 ) <fig:complexavl-evil-insert-1>
-#figure(
-  [```scala
-    val firstRightChild = leftOrigin.firstRightChild()
-    var side: Side | Null = null
-    val origin = if (firstRightChild == null) {
-      side = Side.Right
-      leftOrigin
-    } else {
-      side = Side.Left
-      firstRightChild.leftmostDescendant()
-    }
-    ```
 
-  ],
-  caption: [
-    Code excerpt of an edge case for insertion to the left of the root
-  ],
-)
-<lst:code-evil-insert-1>
 
 ===== Edge case for insertion to the left of the root
 <edge-case-for-insertion-to-the-left-of-the-root>
