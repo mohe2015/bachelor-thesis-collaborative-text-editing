@@ -130,11 +130,27 @@
   )),
 ))
 
+// https://github.com/typst/typst/pull/6982
+// we need to make actual links monospace manually or don't override the show rule
+//#show link: set text(font: "Roboto Mono", size: 0.8em)
+/*#show ref: set text(
+    font: "XCharter",
+    size: 10.909pt,
+    fallback: false,
+    lang: "en",
+    kerning: true,
+    ligatures: false,
+    //spacing: 92%  // to make it look like the latex template
+    //spacing: 84%  // to make it look like the latex template
+    //spacing: 91%  // to make it look like the latex template
+    spacing: 95%, // to make it look like the latex template
+  )*/
+
 #show figure.where(kind: "subfigure"): set figure(supplement: "")
 #show figure.where(kind: "subfigure"): set figure.caption(separator: none)
 #show figure.caption.where(kind: "subfigure"): set align(left)
 
-#show footnote.entry: set text(font: "Roboto Mono", size: 0.9em)
+#show footnote.entry: set text(font: "Roboto Mono", size: 0.8em)
 
 // override
 #show heading.where(level: 5): it => {

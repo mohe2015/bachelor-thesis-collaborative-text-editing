@@ -1,4 +1,6 @@
 #import "../utils.typ": gls, glspl
+#import "@preview/metalogo:1.2.0": TeX, LaTeX
+
 = Optimizing Common Edit Operations
 <optimization>
 Based on a theoretical understanding of our base implementation developed from the algorithmic description in the Fugue paper @2023-weidner-minimizing-interleaving[Algorithm~1] we expect quadratic runtime complexity and linear memory usage in relation to the text length.
@@ -246,9 +248,7 @@ While this results in good performance, it clearly does not cover real world edi
 Therefore, we use the dataset from #link(
   "https://github.com/automerge/automerge-perf",
 ) which contains 259,778 insertion and deletion operations that produce a text with 104,852 characters.
-It is the editing trace from the LaTeX~source of #link(
-  "https://arxiv.org/abs/1608.03960",
-).
+It is the editing trace from the #LaTeX~source of #text(font: "Roboto Mono", size: 0.8em, [https://arxiv.org/abs/1608.03960]) 
 
 @fig:simple-complex-real-world shows the runtime #emph[per operation] grows linearly and is also extremely slow for only a few tens of thousands of characters.
 @appendix:complex-real-world-cpu shows that most time is spent in `findElementAtIndex` similar to the simple sequential insertions.
